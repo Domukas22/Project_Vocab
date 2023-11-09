@@ -5,143 +5,86 @@
 import { useState } from "react";
 import { PRINT_colorChoiceBtn, GENERATE_id } from "./utils";
 
-const explanationOBJ = () => {
-  console.log("sssss");
-  return {
-    id: GENERATE_id(),
-    title: "",
-    examplesARR: [
-      {
-        id: GENERATE_id(),
-        text: "",
-      },
-    ],
-  };
-};
-
-function PRINT_textInput({ type, id, placeholder, value = "", onInputChange, parentid = undefined }) {
+function Example_NEW({ exID, typeFN }) {
+  console.log(exID);
   return (
-    <input
-      type="text"
-      data-typo={type}
-      name={type + id}
-      id={type + id}
-      data-realid={id}
-      placeholder={placeholder}
-      value={value}
-      onChange={onInputChange}
-      data-parentid={parentid}
-    />
+    <div className="inputANDdeleteWRAP">
+      <input type="text" placeholder="Beispiel eingeben..." data-id={exID} data-type="example" onChange={typeFN} />
+      <div className="button" data-id={exID} onClick={() => console.log("Delete example")}>
+        x
+      </div>
+    </div>
   );
 }
-
-function PRINT_explanationFieldset({ exOBJ, DELETE_explanation, onInputChange }) {
-  const { id, title, examplesARR } = exOBJ;
-  const [examples, setExamples] = useState(examplesARR);
-
-  function ADD_example() {
-    setExamples((x) => [...x, { id: GENERATE_id(), text: "" }]);
-  }
-  function DELETE_example(toDeleteID) {
-    setExamples((x) => [...x].filter((y) => y.id !== toDeleteID));
-  }
-
+function Rule_NEW({ ruleID, typeFN, children }) {
   return (
     <fieldset>
       <div className="top">
-        <legend>Erklärung</legend>
+        <legend>Regel</legend>
         <div className="buttons">
-          <div className="button" onClick={() => DELETE_explanation(id)}>
-            Löschen
-          </div>
+          <div className="button">Löschen</div>
         </div>
       </div>
       <div className="inputs">
         <div className="inputWRAP title">
-          <label htmlFor={"explanation_title" + id}>Erklärungstitel</label>
-          <PRINT_textInput
-            type={"explanation_title"}
-            id={id}
-            placeholder={"Erklärung eingeben..."}
-            onInputChange={onInputChange}
-            value={title}
-          />
+          <label htmlFor={"explanation_title"}>Regeltitel</label>
+          <input type="text" placeholder={"Regel eingeben..."} data-type="rule" data-id={ruleID} onChange={typeFN} />
         </div>
-        <div className="inputWRAP examples">
-          {examples.length > 0 && <label>Beispiele</label>}
-
-          {examples.map((ex) => {
-            return (
-              <div className="inputANDdeleteWRAP" key={ex.id}>
-                <PRINT_textInput
-                  type={"explanation_example"}
-                  id={ex.id}
-                  placeholder={"Beispiel eingeben..."}
-                  onInputChange={onInputChange}
-                  value={ex.text}
-                  parentid={id}
-                />
-                <div className="button" onClick={() => DELETE_example(ex.id)}>
-                  x
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        <div className="button" onClick={ADD_example}>
-          + Beispiel hinfügen
-        </div>
+        <div className="inputWRAP examples">{children}</div>
+        <div className="button">+ Beispiel hinfügen</div>
       </div>
     </fieldset>
   );
 }
 
-export function PRINT_form({ setTranslations, ISopen, TOGGLE_bigForm }) {
-  const [state, setState] = useState("add");
-  const [newTranslation, setNewTranslation] = useState({
-    id: GENERATE_id(),
-    text: "",
-    translation: "",
-    explanationsARR: [
-      {
-        id: GENERATE_id(),
+export function Form({ setTranslations, ISopen, TOGGLE_bigForm }) {
+  // const [creationSTATE, SET_creationSTATE] = useState("add");
+
+  const initialRuleID = GENERATE_id();
+  const initialExampleID = GENERATE_id();
+
+  const [trINFO, SET_trInfo] = useState({
+    body: {
+      id: GENERATE_id(),
+      title: "",
+      translation: "",
+      color: "low",
+      ruleIDs: [initialRuleID],
+    },
+    rules: {
+      [initialRuleID]: {
+        id: initialRuleID,
         title: "",
-        examplesARR: [
-          {
-            id: GENERATE_id(),
-            text: "",
-          },
-        ],
+        exampleIDs: [initialExampleID],
       },
-    ],
-    color: "low",
+    },
+    examples: {
+      [initialExampleID]: {
+        id: initialExampleID,
+        text: "",
+      },
+    },
   });
 
-  function ADD_explanation() {
-    setNewTranslation((x) => ({ ...x, explanationsARR: [...x.explanationsARR, explanationOBJ()] }));
-  }
-  function DELETE_explanation(toDeleteID) {
-    setNewTranslation((x) => ({ ...x, explanationsARR: [...x.explanationsARR].filter((x) => x.id !== toDeleteID) }));
-  }
+  function ADD_rule() {}
+  function DELETE_rule(toDeleteID) {}
   const HANLDE_InputChange = (e) => {
-    const { name, value } = e.target;
+    const type = e.target.dataset.type;
+    const value = e.target.value;
 
-    if (e.target.dataset.typo === "explanation_title") {
-      const targetID = parseInt(e.target.dataset.realid);
-      setNewTranslation((prevTR) => ({
-        ...prevTR,
-        explanationsARR: prevTR.explanationsARR.map((exOBJ) => {
-          if (exOBJ.id === targetID) {
-            return { ...exOBJ, title: value };
-          }
-          return { ...exOBJ };
-        }),
-      }));
-    } else {
-      setNewTranslation((prevTR) => ({
-        ...prevTR,
-        [name]: value,
-      }));
+    if (type === "title") {
+      SET_trInfo((tr) => ({ ...tr, title: value }));
+    }
+    if (type === "translation") {
+      SET_trInfo((tr) => ({ ...tr, translation: value }));
+    }
+    if (type === "rule") {
+      const id = e.target.dataset.id;
+      SET_trInfo((tr) => ({ ...tr, rules: { ...tr.rules, [id]: { ...tr.rules[id], title: value } } }));
+    }
+    if (type === "example") {
+      const id = e.target.dataset.id;
+      SET_trInfo((tr) => ({ ...tr, examples: { ...tr.examples, [id]: { ...tr.examples[id], text: value } } }));
     }
   };
 
@@ -151,8 +94,8 @@ export function PRINT_form({ setTranslations, ISopen, TOGGLE_bigForm }) {
         <div className="top" onClick={TOGGLE_bigForm}>
           <div className="textWRAP">
             <h1 className="formTITLE">
-              {"Übersetzung "}
-              {state === "add" ? "hinfügen" : "bearbeiten"}
+              {"Übersetzung hinfügen"}
+              {/* {creationSTATE === "add" ? "hinfügen" : "bearbeiten"} */}
             </h1>
           </div>
           <div className="btnWRAP"></div>
@@ -172,6 +115,7 @@ export function PRINT_form({ setTranslations, ISopen, TOGGLE_bigForm }) {
                   id="title"
                   placeholder="Titel eingeben..."
                   onChange={HANLDE_InputChange}
+                  data-type="title"
                 />
               </div>
               <div className="inputWRAP">
@@ -182,21 +126,21 @@ export function PRINT_form({ setTranslations, ISopen, TOGGLE_bigForm }) {
                   id="translation"
                   placeholder="Übersetzung eingeben..."
                   onChange={HANLDE_InputChange}
+                  data-type="translation"
                 />
               </div>
             </div>
           </fieldset>
-          {newTranslation.explanationsARR.map((exOBJ) => {
+          {Object.values(trINFO.rules).map((rule) => {
             return (
-              <PRINT_explanationFieldset
-                key={exOBJ.id}
-                exOBJ={exOBJ}
-                DELETE_explanation={DELETE_explanation}
-                onInputChange={HANLDE_InputChange}
-              />
+              <Rule_NEW key={rule.id} ruleID={rule.id} typeFN={HANLDE_InputChange}>
+                {rule.exampleIDs.map((exID) => (
+                  <Example_NEW key={exID} exID={exID} typeFN={HANLDE_InputChange} />
+                ))}
+              </Rule_NEW>
             );
           })}
-          <div className="button" onClick={ADD_explanation}>
+          <div className="button" onClick={ADD_rule}>
             + Neue Erklärung
           </div>
         </div>

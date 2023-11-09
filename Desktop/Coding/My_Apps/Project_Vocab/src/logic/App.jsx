@@ -5,7 +5,7 @@
 import { useState } from "react";
 import { PRINT_nav } from "./Nav";
 import { GENERATE_id, GET_availableLists, GET_storedVocabs, PRINT_colorChoiceBtn, STORE_vocabs } from "./utils";
-import { PRINT_form } from "./Form";
+import { Form } from "./Form";
 import { dummyVOCABS } from "./starter";
 
 function Rule({ ruleID, ruleOBJS, exampleOBJS }) {
@@ -87,10 +87,10 @@ function TranslationBoard({ currVIEW }) {
 }
 
 export default function App() {
-  // const [bigFormState, setBigFormState] = useState(true);
-  // const TOGGLE_bigForm = () => {
-  //   setBigFormState((x) => !x);
-  // };
+  const [bigFormState, setBigFormState] = useState(true);
+  const TOGGLE_bigForm = () => {
+    setBigFormState((x) => !x);
+  };
   const storedVOCABS = GET_storedVocabs();
   if (!storedVOCABS) {
     STORE_vocabs(dummyVOCABS);
@@ -110,10 +110,10 @@ export default function App() {
         currVIEW={currVIEW}
         listOPTIONS={GET_availableLists(vocabs)}
         changeVIEW={changeVIEW}
-        TOGGLE_bigForm={() => console.log("toggle form")}
+        TOGGLE_bigForm={TOGGLE_bigForm}
       />
       <TranslationBoard currVIEW={currVIEW} />
-      {/* <PRINT_form setTranslations={setTranslations} ISopen={bigFormState} TOGGLE_bigForm={() => console.log("toggle form")} /> */}
+      <Form ISopen={bigFormState} TOGGLE_bigForm={TOGGLE_bigForm} />
     </>
   );
 }

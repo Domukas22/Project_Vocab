@@ -4,7 +4,7 @@
 
 import { useState } from "react";
 
-export function PRINT_nav({ currVIEW, listOPTIONS, changeVIEW }) {
+export function PRINT_nav({ currVIEW, listOPTIONS, changeVIEW, TOGGLE_bigForm }) {
   const [listOPT, SET_listOpt] = useState(false);
 
   function TOGGLE_listOpt() {
@@ -30,7 +30,7 @@ export function PRINT_nav({ currVIEW, listOPTIONS, changeVIEW }) {
           })}
         </div>
       </div>
-      <div className="navBTN addTR">
+      <div className="navBTN addTR" onClick={TOGGLE_bigForm}>
         <div className="xWRAP">
           <div className="xLINE"></div>
           <div className="xLINE second"></div>
