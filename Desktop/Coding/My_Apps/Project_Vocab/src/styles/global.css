@@ -1,0 +1,24 @@
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+.xWRAP {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.xLINE {
+  width: 2.4rem;
+  height: 0.3rem;
+
+  position: absolute;
+  rotate: 45deg;
+
+  border-radius: 15px;
+  background-color: var(--low);
+}
+.xLINE.second {
+  rotate: -45deg;
+}
