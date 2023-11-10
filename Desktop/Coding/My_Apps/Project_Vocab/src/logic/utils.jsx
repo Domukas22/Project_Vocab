@@ -50,8 +50,8 @@ export function PRINT_colorChoiceBtn({ UPDATE_color }) {
 export function GENERATE_id() {
   return Math.floor(10000 + Math.random() * 900000);
 }
-export function GET_availableLists(translations) {
-  return Object.keys(translations).filter((key) => key !== "selected");
+export function GET_folderINFOS(vocabs) {
+  return Object.values(vocabs.folders).map((folder) => ({ id: folder.id, title: folder.title }));
 }
 export function GET_storedVocabs() {
   return JSON.parse(localStorage.getItem("vocabs"));

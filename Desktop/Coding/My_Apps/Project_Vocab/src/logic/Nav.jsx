@@ -4,33 +4,33 @@
 
 import { useState } from "react";
 
-export function PRINT_nav({ currVIEW, listOPTIONS, changeVIEW, TOGGLE_bigForm }) {
-  const [listOPT, SET_listOpt] = useState(false);
+export function PRINT_nav({ currFOLDER, availFOLDERS, CHANGE_folder, TOGGLE_form }) {
+  const [AREfoldersOpen, SET_foldersOpen] = useState(false);
 
   function TOGGLE_listOpt() {
-    SET_listOpt((state) => !state);
+    SET_foldersOpen((state) => !state);
   }
 
   return (
     <nav>
       <div className="navBTN" onClick={() => TOGGLE_listOpt()}>
-        {currVIEW.title}
-        <div className="listChoiceWRAP" data-open={listOPT}>
-          {listOPTIONS.map((opt) => {
+        {currFOLDER.title}
+        <div className="navFoldersWRAP" data-open={AREfoldersOpen}>
+          {availFOLDERS.map((folder) => {
             return (
               <div
-                className="listOPTION"
-                key={opt}
-                data-current={opt === currVIEW.title}
-                onClick={() => changeVIEW(opt)}
+                className="navFOLDER"
+                key={folder.id}
+                data-current={folder.id === currFOLDER.id}
+                onClick={() => CHANGE_folder(folder.id)}
               >
-                {opt}
+                {folder.title}
               </div>
             );
           })}
         </div>
       </div>
-      <div className="navBTN addTR" onClick={TOGGLE_bigForm}>
+      <div className="navBTN addTR" onClick={TOGGLE_form}>
         <div className="xWRAP">
           <div className="xLINE"></div>
           <div className="xLINE second"></div>

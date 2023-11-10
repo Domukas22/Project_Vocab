@@ -30,7 +30,7 @@ nav {
   background-color: #AFFB6D;
 }
 
-.listChoiceWRAP {
+.navFoldersWRAP {
   position: absolute;
   top: 110%;
 
@@ -49,13 +49,13 @@ nav {
   opacity: 0%;
 }
 
-.listChoiceWRAP[data-open="true"] {
+.navFoldersWRAP[data-open="true"] {
   pointer-events: all;
   opacity: 100%;
 }
 
 
-.listOPTION {
+.navFOLDER {
   padding: 2rem 0;
   width: 100%;
 
@@ -63,6 +63,6 @@ nav {
   align-items: center;
   justify-content: center;
 }
-.listOPTION[data-current="true"] {
+.navFOLDER[data-current="true"] {
   background-color:var(--highlight);
 }

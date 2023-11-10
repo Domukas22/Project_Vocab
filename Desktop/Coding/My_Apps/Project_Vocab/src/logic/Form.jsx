@@ -5,8 +5,41 @@
 import { useState } from "react";
 import { PRINT_colorChoiceBtn, GENERATE_id } from "./utils";
 
+function FormTopFieldset({ HANLDE_InputChange }) {
+  return (
+    <fieldset>
+      <div className="top">
+        <legend>Titel / Übersetzung</legend>
+        <div className="buttons"></div>
+      </div>
+      <div className="inputs">
+        <div className="inputWRAP">
+          <label htmlFor="title">Titel</label>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            placeholder="Titel eingeben..."
+            onChange={HANLDE_InputChange}
+            data-type="title"
+          />
+        </div>
+        <div className="inputWRAP">
+          <label htmlFor="translation">Übersetzung</label>
+          <input
+            type="text"
+            name="translation"
+            id="translation"
+            placeholder="Übersetzung eingeben..."
+            onChange={HANLDE_InputChange}
+            data-type="translation"
+          />
+        </div>
+      </div>
+    </fieldset>
+  );
+}
 function Example_NEW({ exID, typeFN }) {
-  console.log(exID);
   return (
     <div className="inputANDdeleteWRAP">
       <input type="text" placeholder="Beispiel eingeben..." data-id={exID} data-type="example" onChange={typeFN} />
@@ -66,25 +99,48 @@ export function Form({ setTranslations, ISopen, TOGGLE_bigForm }) {
     },
   });
 
-  function ADD_rule() {}
+  function ADD_rule() {
+    const newRuleID = GENERATE_id();
+    const newExampleID = GENERATE_id();
+    const newRuleOBJ = {
+      id: newRuleID,
+      title: "",
+      exampleIDs: [newExampleID],
+    };
+    const newExampleOBJ = {
+      id: newExampleID,
+      text: "",
+    };
+
+    SET_trInfo((oldTR) => ({
+      ...oldTR,
+      rules: { ...oldTR.rules, [newRuleID]: newRuleOBJ },
+      examples: { ...oldTR.examples, [newExampleID]: newExampleOBJ },
+    }));
+    console.log(trINFO.rules);
+  }
+
   function DELETE_rule(toDeleteID) {}
   const HANLDE_InputChange = (e) => {
     const type = e.target.dataset.type;
     const value = e.target.value;
 
     if (type === "title") {
-      SET_trInfo((tr) => ({ ...tr, title: value }));
+      SET_trInfo((oldTR) => ({ ...oldTR, title: value }));
     }
     if (type === "translation") {
-      SET_trInfo((tr) => ({ ...tr, translation: value }));
+      SET_trInfo((oldTR) => ({ ...oldTR, translation: value }));
     }
     if (type === "rule") {
       const id = e.target.dataset.id;
-      SET_trInfo((tr) => ({ ...tr, rules: { ...tr.rules, [id]: { ...tr.rules[id], title: value } } }));
+      SET_trInfo((oldTR) => ({ ...oldTR, rules: { ...oldTR.rules, [id]: { ...oldTR.rules[id], title: value } } }));
     }
     if (type === "example") {
       const id = e.target.dataset.id;
-      SET_trInfo((tr) => ({ ...tr, examples: { ...tr.examples, [id]: { ...tr.examples[id], text: value } } }));
+      SET_trInfo((oldTR) => ({
+        ...oldTR,
+        examples: { [id]: { ...oldTR.examples[id], text: value }, ...oldTR.examples },
+      }));
     }
   };
 
@@ -101,38 +157,10 @@ export function Form({ setTranslations, ISopen, TOGGLE_bigForm }) {
           <div className="btnWRAP"></div>
         </div>
         <div className="content">
-          <fieldset>
-            <div className="top">
-              <legend>Titel / Übersetzung</legend>
-              <div className="buttons"></div>
-            </div>
-            <div className="inputs">
-              <div className="inputWRAP">
-                <label htmlFor="title">Titel</label>
-                <input
-                  type="text"
-                  name="title"
-                  id="title"
-                  placeholder="Titel eingeben..."
-                  onChange={HANLDE_InputChange}
-                  data-type="title"
-                />
-              </div>
-              <div className="inputWRAP">
-                <label htmlFor="translation">Übersetzung</label>
-                <input
-                  type="text"
-                  name="translation"
-                  id="translation"
-                  placeholder="Übersetzung eingeben..."
-                  onChange={HANLDE_InputChange}
-                  data-type="translation"
-                />
-              </div>
-            </div>
-          </fieldset>
+          <FormTopFieldset HANLDE_InputChange={HANLDE_InputChange} />
           {Object.values(trINFO.rules).map((rule) => {
             return (
+              // for each rule in translation, print it with it's examples
               <Rule_NEW key={rule.id} ruleID={rule.id} typeFN={HANLDE_InputChange}>
                 {rule.exampleIDs.map((exID) => (
                   <Example_NEW key={exID} exID={exID} typeFN={HANLDE_InputChange} />
