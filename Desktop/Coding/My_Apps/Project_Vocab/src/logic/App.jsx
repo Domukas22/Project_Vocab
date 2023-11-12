@@ -37,7 +37,6 @@ function Translation({ tr, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs }) {
       ...vocabs,
       translations: { ...vocabs.translations, [tr.id]: { ...vocabs.translations[tr.id], color } },
     };
-
     SET_vocabs(newVOCABS);
     STORE_vocabs(newVOCABS);
   }
