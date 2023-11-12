@@ -22,3 +22,25 @@
 .xLINE.second {
   rotate: -45deg;
 }
+.checkWRAP {
+  width: 2.5rem;
+  height: 2.5rem;
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.checkLINE {
+  height: 1.4rem;
+  width: 0.4rem;
+  border-radius: 10px;
+  background: #AFFB6D;
+
+  position: absolute;
+  transform: rotate(-38deg) translateX(-0.7rem);
+}
+.checkLINE.second {
+  height: 2.4rem;
+  transform: rotate(34deg) translateX(0.3rem) translateY(-0.4rem);
+}

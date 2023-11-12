@@ -27,7 +27,6 @@ h2.formSUBTITLE {
 
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 10;
-  transition: 150ms;
 
   overflow-y: auto;
 }
@@ -55,9 +54,24 @@ form.bigForm > .top {
   display: flex;
   padding-bottom: 0px;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   align-self: stretch;
 }
+form.bigForm > .top > .btnWRAP {
+  display: flex;
+  column-gap: 1.2rem;
+}
+
+form.bigForm[data-color="low"] .colorCIRCLE {
+  background-color: var(--low);
+}
+form.bigForm[data-color="medium"] .colorCIRCLE {
+  background-color: var(--medium);
+}
+form.bigForm[data-color="high"] .colorCIRCLE {
+  background-color: var(--high);
+}
+
 form > * {
   width: 100%;
 }
@@ -93,7 +107,8 @@ fieldset > .inputs {
   flex-direction: column;
   margin-bottom: 2.4rem;
 }
-.inputWRAP:last-child {
+.inputWRAP:last-child,
+.inputWRAP.noMargin {
   margin-bottom: 0;
 }
 .inputANDdeleteWRAP {
@@ -112,9 +127,20 @@ label {
   font-weight: 300;
   letter-spacing: 0.03rem;
 }
-input[type="text"] {
+input[type="text"],
+textarea {
   padding: 1.6rem;
   background-color: var(--highlight);
   border-radius: var(--radius_medium);
   width: 100%;
+  resize: none
+}
+
+.formEndBtnWRAP {
+  display: flex;
+  column-gap: 1rem;
+}
+.formEndBtnWRAP .button:last-child {
+  flex: 1;
+  text-align: center;
 }
