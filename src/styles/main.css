@@ -39,11 +39,11 @@
   --bg_main: #313131;
   --bg_open:rgb(54, 54, 54);
   
-  --high: #FF9191;
-  --medium: #E7D991;
+  --high: #a7ffb5;
+  --medium: #fff1b5;
   --low: #6A6A6A;
 
-  --high_hover: #644848;
+  --high_hover: #a7ffb52b;
   --medium_hover: #66624c;
   --low_hover: #414141;
 
@@ -86,6 +86,11 @@ h1, h2, h3, h4, h5, p, li{
   color: var(--white_095);
 }
 
+
+
+.testText {
+  color: greenyellow
+}
 
 li {
   list-style: disc;
@@ -167,6 +172,14 @@ li {
 .translation[data-color="high"] .colorCIRCLE {
   background-color: var(--high);
 }
+.translation[data-color="medium"] h1.regularTEXT {
+  color: var(--medium);
+}
+.translation[data-color="high"] h1.regularTEXT {
+  color: var(--high);
+}
+
+
 
 
 

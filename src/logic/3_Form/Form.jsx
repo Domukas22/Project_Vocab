@@ -2,10 +2,12 @@
 //
 //
 
-import { useState } from "react";
-import { useEffect } from "react";
-import { PRINT_colorChoiceBtn, GENERATE_id, GET_storedVocabs, STORE_vocabs } from "./utils";
+import { useEffect, useState } from "react";
+import { STORE_vocabs } from "../4_General/general";
 import { terminal } from "virtual:terminal";
+import { CLEAN_vocabs, POPULATE_selectedTr, SORT_examples, SORT_rules } from "./utils";
+import { GENERATE_emptyEx, GENERATE_emptyRule, GENERATE_emptyTr, GENERATE_emptyCleanupIDs } from "./generate";
+import { ChooseColorBox } from "../4_General/Comps_general";
 
 function FormTopFieldset({ HANLDE_InputChange, trTITLE, trTR }) {
   return (
@@ -43,7 +45,6 @@ function FormTopFieldset({ HANLDE_InputChange, trTITLE, trTR }) {
     </fieldset>
   );
 }
-
 function Example({ ex, onChangeFN, DELETE_example, parentRuleID }) {
   return (
     <div className="inputANDdeleteWRAP" key={ex.id}>
@@ -114,114 +115,28 @@ function Rule({ rule, exIDs, exOBJS, DELETE_rule, ADD_example, DELETE_example, o
   );
 }
 
-function SORT_examples(exIDs, exOBJS) {
-  return exIDs.map((exID) => exOBJS[exID]).sort((a, b) => a.created + b.created);
-}
-function SORT_rules(rules) {
-  return Object.values(rules).sort((a, b) => a.created - b.created);
-}
-function GENERATE_emptyEx() {
-  return {
-    id: GENERATE_id("ex"),
-    text: "",
-    created: +new Date(),
-  };
-}
-function GENERATE_emptyRule() {
-  const newRuleID = GENERATE_id("rule");
-  const newExampleID = GENERATE_id("ex");
+function ADD_toCleanUp(oldCleanupOBJ, type, id, exIDs = null) {
+  const newCleanupOBJ = { ...oldCleanupOBJ };
+  if (type === "ex") {
+    newCleanupOBJ.ex.push(id);
+  }
+  if (type === "rule&ex") {
+    newCleanupOBJ.rules.push(id);
+    newCleanupOBJ.ex.push(...exIDs);
+  }
 
-  return {
-    newRuleID,
-    newExampleID,
-    newRuleOBJ: {
-      id: newRuleID,
-      title: "",
-      exampleIDs: [newExampleID],
-      created: +new Date(),
-    },
-    newExampleOBJ: {
-      id: newExampleID,
-      text: "",
-      created: +new Date(),
-    },
-  };
-}
-function GENERATE_emptyTr() {
-  const initialRuleID = GENERATE_id("rule");
-  const initialExampleID = GENERATE_id("ex");
-
-  return {
-    tr: {
-      id: GENERATE_id("tr"),
-      title: "",
-      translation: "",
-      color: "low",
-      ruleIDs: [initialRuleID],
-      created: +new Date(),
-    },
-    rules: {
-      [initialRuleID]: {
-        id: initialRuleID,
-        title: "",
-        exampleIDs: [initialExampleID],
-        created: +new Date(),
-      },
-    },
-    examples: {
-      [initialExampleID]: {
-        id: initialExampleID,
-        text: "",
-        created: +new Date(),
-      },
-    },
-  };
-}
-function PREPARE_editTr(trID, vocabs) {
-  const tr = { ...vocabs.translations[trID] };
-  const rulesOBJ = tr.ruleIDs.reduce((obj, ruleID) => {
-    const rule = Object.values(vocabs.rules).find((r) => r.id === ruleID);
-    obj[ruleID] = rule;
-    return obj;
-  }, {});
-  const examplesOBJ = Object.values(rulesOBJ).reduce((arr, rule) => {
-    for (let exID of rule.exampleIDs) {
-      arr[exID] = vocabs.examples[exID];
-    }
-    return arr;
-  }, {});
-
-  return {
-    tr: { ...vocabs.translations[trID] },
-    rules: rulesOBJ,
-    examples: examplesOBJ,
-  };
-}
-function GENERATE_emptyCleanupIDs() {
-  return {
-    tr: [],
-    rules: [],
-    ex: [],
-  };
-}
-
-function CLEAN_vocabs(newVOCABS, cleanupIDs) {
-  const { tr, rules, ex } = cleanupIDs;
-  return {
-    ...newVOCABS,
-    // rules: [],
-    rules: Object.fromEntries(Object.entries(newVOCABS.rules).filter(([ruleID, _]) => !rules.includes(ruleID))),
-    examples: Object.fromEntries(Object.entries(newVOCABS.examples).filter(([exID, _]) => !ex.includes(exID))),
-  };
+  return newCleanupOBJ;
 }
 
 export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, DELETE_tr }) {
   const [trOBJ, SET_trObj] = useState(GENERATE_emptyTr());
   const [cleanupIDs, SET_cleanupIDs] = useState(GENERATE_emptyCleanupIDs());
+  const ISanEdit = trEditID !== undefined;
 
   useEffect(() => {
-    if (trEditID !== undefined) {
-      SET_trObj(PREPARE_editTr(trEditID, vocabs));
+    // insert tr info if it's an edit
+    if (ISanEdit) {
+      SET_trObj(POPULATE_selectedTr(trEditID, vocabs));
     } else {
       SET_trObj(GENERATE_emptyTr());
     }
@@ -229,13 +144,12 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, DELETE
 
   useEffect(() => {
     terminal.log("------------------");
-    terminal.log("------------------");
-    terminal.log("------------------");
-    console.log(vocabs.translations["t111"].color);
   });
 
   function ADD_rule() {
     const { newRuleID, newExampleID, newRuleOBJ, newExampleOBJ } = GENERATE_emptyRule();
+
+    // add a new rule obj and it's ID to the parent translation
     SET_trObj((oldTR) => {
       return {
         tr: { ...oldTR.tr, ruleIDs: [...oldTR.tr.ruleIDs, newRuleID] },
@@ -245,62 +159,52 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, DELETE
     });
   }
   function ADD_example(targetRuleID) {
+    // add a new example obj and push it's ID to the respective rule
     const newExample = GENERATE_emptyEx();
-    SET_trObj((oldTR) => {
-      return {
-        tr: { ...oldTR.tr },
-        rules: {
-          ...oldTR.rules,
-          [targetRuleID]: {
-            ...oldTR.rules[targetRuleID],
-            exampleIDs: [...oldTR.rules[targetRuleID].exampleIDs, newExample.id],
-          },
+    SET_trObj((oldTR) => ({
+      tr: { ...oldTR.tr },
+      rules: {
+        ...oldTR.rules,
+        [targetRuleID]: {
+          ...oldTR.rules[targetRuleID],
+          exampleIDs: [...oldTR.rules[targetRuleID].exampleIDs, newExample.id],
         },
-        examples: { ...oldTR.examples, [newExample.id]: newExample },
-      };
-    });
+      },
+      examples: { ...oldTR.examples, [newExample.id]: newExample },
+    }));
   }
   function DELETE_example(targetRuleID, exampleID) {
-    if (trEditID !== undefined) {
-      SET_cleanupIDs((obj) => ({
-        ...obj,
-        ex: [...obj.rules, exampleID],
-      }));
+    if (ISanEdit) {
+      SET_cleanupIDs((obj) => ADD_toCleanUp(obj, "ex", exampleID));
     }
-    SET_trObj((oldTR) => {
-      return {
-        tr: { ...oldTR.tr },
-        rules: {
-          ...oldTR.rules,
-          [targetRuleID]: {
-            ...oldTR.rules[targetRuleID],
-            exampleIDs: [...oldTR.rules[targetRuleID].exampleIDs.filter((exID) => exID !== exampleID)],
-          },
+
+    // delete example obj and it's id from parent rule
+    SET_trObj((oldTR) => ({
+      tr: { ...oldTR.tr },
+      rules: {
+        ...oldTR.rules,
+        [targetRuleID]: {
+          ...oldTR.rules[targetRuleID],
+          exampleIDs: [...oldTR.rules[targetRuleID].exampleIDs.filter((exID) => exID !== exampleID)],
         },
-        examples: Object.fromEntries(Object.entries(oldTR.examples).filter(([exID, _]) => !exID.includes(exampleID))),
-      };
-    });
+      },
+      examples: Object.fromEntries(Object.entries(oldTR.examples).filter(([exID, _]) => !exID.includes(exampleID))),
+    }));
   }
   function DELETE_rule(ruleID) {
     const { [ruleID]: ruleToRemove, ...toKeepRULES } = trOBJ.rules;
-    const exIDs = ruleToRemove.exampleIDs;
+    const toRemoveExIDs = ruleToRemove.exampleIDs;
 
-    if (trEditID !== undefined) {
-      SET_cleanupIDs((obj) => ({
-        ...obj,
-        rules: [...obj.rules, ruleID],
-        ex: [...obj.ex, ...exIDs],
-      }));
+    if (ISanEdit) {
+      SET_cleanupIDs((obj) => ADD_toCleanUp(obj, "rule&ex", ruleID, toRemoveExIDs));
     }
 
-    // Remove the rule and its examples
-    SET_trObj((oldTR) => {
-      return {
-        tr: { ...oldTR.tr, ruleIDs: oldTR.tr.ruleIDs.filter((id) => id !== ruleID) },
-        rules: toKeepRULES,
-        examples: Object.fromEntries(Object.entries(oldTR.examples).filter(([exID, _]) => !exIDs.includes(exID))),
-      };
-    });
+    // delete rule obj and it's example objs
+    SET_trObj((oldTR) => ({
+      tr: { ...oldTR.tr, ruleIDs: oldTR.tr.ruleIDs.filter((id) => id !== ruleID) },
+      rules: toKeepRULES,
+      examples: Object.fromEntries(Object.entries(oldTR.examples).filter(([exID, _]) => !toRemoveExIDs.includes(exID))),
+    }));
   }
   function HANLDE_InputChange(e) {
     const type = e.target.dataset.type;
@@ -340,6 +244,8 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, DELETE
     TOGGLE_form();
   }
   function ADD_tr() {
+    // push the new tr ID to the folder tr ID list
+    // add a new tr obj, as well as it's rule/example objs
     const newVOCABS = {
       ...vocabs,
       folders: {
@@ -367,11 +273,11 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, DELETE
       <form action="submit" className="bigForm" data-color={trOBJ.tr.color}>
         <div className="top">
           <div className="textWRAP">
-            <h1 className="formTITLE">Übersetzung {trEditID !== undefined ? "bearbeiten" : "hinfügen"}</h1>
-            {trEditID !== undefined && <p>{trOBJ.tr.title}</p>}
+            <h1 className="formTITLE">Übersetzung {ISanEdit ? "bearbeiten" : "hinfügen"}</h1>
+            {ISanEdit && <p>{trOBJ.tr.title}</p>}
           </div>
           <div className="btnWRAP">
-            <PRINT_colorChoiceBtn UPDATE_color={EDIT_color} optionalCLASS={" seeThrough"} />
+            <ChooseColorBox UPDATE_color={EDIT_color} optionalCLASS={" seeThrough"} />
             <div className="button seeThrough" onClick={RESET_form}>
               <div className="xWRAP">
                 <div className="xLINE"></div>
@@ -405,7 +311,7 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, DELETE
           </div>
         </div>
         <div className="formEndBtnWRAP">
-          {trEditID !== undefined && (
+          {ISanEdit && (
             <button className="button" onClick={() => DELETE_tr(trEditID)} type="button">
               Delete
             </button>
