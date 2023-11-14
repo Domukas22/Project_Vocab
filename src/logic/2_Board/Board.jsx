@@ -3,9 +3,10 @@
 //
 //
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChooseColorBox } from "../4_General/Comps_general";
 import { STORE_vocabs } from "../4_General/general";
+import { terminal } from "virtual:terminal";
 
 function Example({ id, text }) {
   return <li key={id}>{text}</li>;
@@ -22,9 +23,19 @@ function Rule({ ruleTITLE, exIDs, vocabs }) {
     </div>
   );
 }
-function Translation({ tr, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs }) {
+function Translation({ tr, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs, index, sorting }) {
   const { color, title, translation, ruleIDs } = tr;
   const [isOpen, setIsOpen] = useState(false);
+
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen && bottomRef.current) {
+      bottomRef.current.style.height = `${bottomRef.current.firstChild.scrollHeight}px`;
+    } else if (bottomRef.current) {
+      bottomRef.current.style.height = "0px";
+    }
+  }, [isOpen, vocabs]);
 
   function TOGGLE_open() {
     setIsOpen((state) => !state);
@@ -41,31 +52,34 @@ function Translation({ tr, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs }) {
 
   return (
     <div className="translation" data-color={color} data-open={isOpen}>
-      <div className="top" onClick={() => TOGGLE_open()}>
+      <div className="top" onClick={TOGGLE_open}>
         <h1 className="regularTEXT title">{title}</h1>
+        {sorting === "Date" && <p>{index}</p>}
       </div>
-      <div className="bottom">
-        <h2 className="translatedTEXT">→ {translation}</h2>
-        {ruleIDs.map((ruleID) => {
-          const rule = vocabs.rules[ruleID];
-          return <Rule ruleTITLE={rule.title} exIDs={rule.exampleIDs} vocabs={vocabs} key={ruleID} />;
-        })}
-        <div className="translationBtnWRAP">
-          <div
-            className="button"
-            style={{ flex: 1, textAlign: "center" }}
-            onClick={() => {
-              SET_trEdit(tr.id);
-              TOGGLE_form();
-            }}
-          >
-            Bearbeiten
-          </div>
-          <ChooseColorBox UPDATE_color={UPDATE_color} />
-          <div className="button" onClick={() => TOGGLE_open()}>
-            <div className="checkWRAP">
-              <div className="checkLINE"></div>
-              <div className="checkLINE second"></div>
+      <div className="bottom" ref={bottomRef}>
+        <div className="contentWRAP" data-id={tr.id}>
+          <h2 className="translatedTEXT">→ {translation}</h2>
+          {ruleIDs.map((ruleID) => {
+            const rule = vocabs.rules[ruleID];
+            return <Rule ruleTITLE={rule.title} exIDs={rule.exampleIDs} vocabs={vocabs} key={ruleID} />;
+          })}
+          <div className="translationBtnWRAP">
+            <div
+              className="button"
+              style={{ flex: 1, textAlign: "center" }}
+              onClick={() => {
+                SET_trEdit(tr.id);
+                TOGGLE_form();
+              }}
+            >
+              Bearbeiten
+            </div>
+            <ChooseColorBox UPDATE_color={UPDATE_color} />
+            <div className="button" onClick={() => TOGGLE_open()}>
+              <div className="checkWRAP">
+                <div className="checkLINE"></div>
+                <div className="checkLINE second"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -73,14 +87,17 @@ function Translation({ tr, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs }) {
     </div>
   );
 }
-export function TranslationBoard({ trIDs, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs }) {
+
+export function TranslationBoard({ trIDs, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs, sorting }) {
   if (trIDs.length === 0) {
-    return <h3>No translations</h3>;
+    return <h3 className="noTR">No translations</h3>;
   }
   return (
     <div className="translationBOARD">
-      {trIDs.map((trID) => {
+      {trIDs.map((trID, index) => {
         const tr = vocabs.translations[trID];
+        // console.log("PRINT => " + trID);
+
         return (
           <Translation
             tr={tr}
@@ -89,6 +106,8 @@ export function TranslationBoard({ trIDs, vocabs, SET_trEdit, TOGGLE_form, SET_v
             SET_trEdit={SET_trEdit}
             TOGGLE_form={TOGGLE_form}
             SET_vocabs={SET_vocabs}
+            index={trIDs.length - index}
+            sorting={sorting}
           />
         );
       })}

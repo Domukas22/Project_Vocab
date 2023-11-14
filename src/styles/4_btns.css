@@ -68,3 +68,8 @@ form.bigForm[data-color="high"] .button.color.high {
 .button.wAbsolutes {
   padding: 0 3.2rem;
 }
+
+.button.boardBottom {
+  background-color: var(--bg_main);
+  border: var(--border_005);
+}

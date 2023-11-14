@@ -4,7 +4,6 @@
 
 import { useEffect, useState } from "react";
 import { STORE_vocabs } from "../4_General/general";
-import { terminal } from "virtual:terminal";
 import { CLEAN_vocabs, POPULATE_selectedTr, SORT_examples, SORT_rules } from "./utils";
 import { GENERATE_emptyEx, GENERATE_emptyRule, GENERATE_emptyTr, GENERATE_emptyCleanupIDs } from "./generate";
 import { ChooseColorBox } from "../4_General/Comps_general";
@@ -69,7 +68,7 @@ function Rule({ rule, exIDs, exOBJS, DELETE_rule, ADD_example, DELETE_example, o
   return (
     <fieldset>
       <div className="top">
-        <legend>Regel</legend>
+        <legend>Verwendungsregel</legend>
         <div className="buttons">
           <div className="button" onClick={() => DELETE_rule(rule.id)}>
             Löschen
@@ -128,7 +127,7 @@ function ADD_toCleanUp(oldCleanupOBJ, type, id, exIDs = null) {
   return newCleanupOBJ;
 }
 
-export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, DELETE_tr }) {
+export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, SET_allowSorting, SET_savedIdORDER }) {
   const [trOBJ, SET_trObj] = useState(GENERATE_emptyTr());
   const [cleanupIDs, SET_cleanupIDs] = useState(GENERATE_emptyCleanupIDs());
   const ISanEdit = trEditID !== undefined;
@@ -141,10 +140,6 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, DELETE
       SET_trObj(GENERATE_emptyTr());
     }
   }, [trEditID]);
-
-  useEffect(() => {
-    terminal.log("------------------");
-  });
 
   function ADD_rule() {
     const { newRuleID, newExampleID, newRuleOBJ, newExampleOBJ } = GENERATE_emptyRule();
@@ -242,17 +237,24 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, DELETE
     SET_trObj(() => GENERATE_emptyTr());
     SET_cleanupIDs(() => GENERATE_emptyCleanupIDs());
     TOGGLE_form();
+    document.querySelector(".formWRAP").scrollTop = 0;
   }
   function ADD_tr() {
     // push the new tr ID to the folder tr ID list
     // add a new tr obj, as well as it's rule/example objs
+
+    // if its NOT an edit, insert new tr ID, otherwise keep the same ID list
+    const newTrIDs = ISanEdit
+      ? [...vocabs.folders[vocabs.displayed].translationIDs]
+      : Array.from(new Set([trOBJ.tr.id, ...vocabs.folders[vocabs.displayed].translationIDs]));
+
     const newVOCABS = {
       ...vocabs,
       folders: {
         ...vocabs.folders,
         [vocabs.displayed]: {
           ...vocabs.folders[vocabs.displayed],
-          translationIDs: Array.from(new Set([trOBJ.tr.id, ...vocabs.folders[vocabs.displayed].translationIDs])),
+          translationIDs: newTrIDs,
         },
       },
       translations: { ...vocabs.translations, [trOBJ.tr.id]: trOBJ.tr },
@@ -261,11 +263,42 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, DELETE
     };
 
     const cleanVOCABS = CLEAN_vocabs(newVOCABS, cleanupIDs);
-    console.log(cleanVOCABS.translations[trOBJ.tr.id].color);
 
     SET_vocabs(cleanVOCABS);
     STORE_vocabs(cleanVOCABS);
+    SET_allowSorting(true);
     RESET_form();
+  }
+  function DELETE_tr(trID) {
+    console.log("DELETE => " + trID);
+    const ruleIDs = vocabs.translations[trID].ruleIDs;
+    const exIDs = ruleIDs.reduce((arr, ruleID) => {
+      for (let exID of vocabs.rules[ruleID].exampleIDs) {
+        arr.push(exID);
+      }
+      return arr;
+    }, []);
+
+    // delete tr ID from parent folder
+    // delete tr, as well as it's rules and their examples
+    const newVOCABS = {
+      ...vocabs,
+      folders: {
+        ...vocabs.folders,
+        [vocabs.displayed]: {
+          ...vocabs.folders[vocabs.displayed],
+          translationIDs: [...vocabs.folders[vocabs.displayed].translationIDs].filter((tID) => tID !== trID),
+        },
+      },
+      translations: Object.fromEntries(Object.entries(vocabs.translations).filter(([tID, _]) => tID !== trID)),
+      rules: Object.fromEntries(Object.entries(vocabs.rules).filter(([rID, _]) => !ruleIDs.includes(rID))),
+      examples: Object.fromEntries(Object.entries(vocabs.examples).filter(([eID, _]) => !exIDs.includes(eID))),
+    };
+
+    SET_vocabs(newVOCABS);
+    SET_savedIdORDER(newVOCABS.folders[newVOCABS.displayed].translationIDs);
+    STORE_vocabs(newVOCABS);
+    TOGGLE_form();
   }
 
   return (
@@ -274,7 +307,7 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, DELETE
         <div className="top">
           <div className="textWRAP">
             <h1 className="formTITLE">Übersetzung {ISanEdit ? "bearbeiten" : "hinfügen"}</h1>
-            {ISanEdit && <p>{trOBJ.tr.title}</p>}
+            {ISanEdit && <p className="titlePREVIEW">{trOBJ.tr.title}</p>}
           </div>
           <div className="btnWRAP">
             <ChooseColorBox UPDATE_color={EDIT_color} optionalCLASS={" seeThrough"} />
@@ -312,15 +345,15 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, DELETE
         </div>
         <div className="formEndBtnWRAP">
           {ISanEdit && (
-            <button className="button" onClick={() => DELETE_tr(trEditID)} type="button">
+            <button className="button" onClick={() => DELETE_tr(trEditID)} type="button" style={{ color: "#ff9292" }}>
               Delete
             </button>
           )}
           <div className="button" onClick={RESET_form} type="button">
             Abbrechen
           </div>
-          <div className="button" onClick={() => ADD_tr()} type="button">
-            Speichern
+          <div className="button" onClick={() => ADD_tr()} type="button" style={{ color: "#AFFB6D" }}>
+            {ISanEdit ? "Speichern" : "Hinfügen"}
           </div>
         </div>
       </form>

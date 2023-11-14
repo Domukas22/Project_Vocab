@@ -32,8 +32,8 @@ export function GENERATE_emptyRule() {
   };
 }
 export function GENERATE_emptyTr() {
-  const initialRuleID = GENERATE_id("rule");
-  const initialExampleID = GENERATE_id("ex");
+  // const initialRuleID = GENERATE_id("rule");
+  // const initialExampleID = GENERATE_id("ex");
 
   return {
     tr: {
@@ -41,23 +41,23 @@ export function GENERATE_emptyTr() {
       title: "",
       translation: "",
       color: "low",
-      ruleIDs: [initialRuleID],
+      ruleIDs: [],
       created: +new Date(),
     },
     rules: {
-      [initialRuleID]: {
-        id: initialRuleID,
-        title: "",
-        exampleIDs: [initialExampleID],
-        created: +new Date(),
-      },
+      // [initialRuleID]: {
+      //   id: initialRuleID,
+      //   title: "",
+      //   exampleIDs: [initialExampleID],
+      //   created: +new Date(),
+      // },
     },
     examples: {
-      [initialExampleID]: {
-        id: initialExampleID,
-        text: "",
-        created: +new Date(),
-      },
+      // [initialExampleID]: {
+      //   id: initialExampleID,
+      //   text: "",
+      //   created: +new Date(),
+      // },
     },
   };
 }

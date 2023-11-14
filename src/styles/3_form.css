@@ -41,8 +41,6 @@ form.bigForm {
 
   width: 100%;
   max-width: 80rem;
-  padding: 6rem 6.4rem;
-  gap: 2.4rem;
   
   display: flex;
   flex-direction: column;
@@ -50,27 +48,29 @@ form.bigForm {
 
   border-radius: var(--radius_big);
 }
+form.bigForm > * {
+  padding: 4rem 4rem;
+}
 form.bigForm > .top {
   display: flex;
-  padding-bottom: 0px;
+  padding: 2.6rem 4rem;
+
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   align-self: stretch;
 }
 form.bigForm > .top > .btnWRAP {
   display: flex;
   column-gap: 1.2rem;
+  margin-left: 2rem;
+}
+form.bigForm > .content {
+  border: var(--border_005);
+  border-width: 1px 0;
 }
 
-form.bigForm[data-color="low"] .colorCIRCLE {
-  background-color: var(--low);
-}
-form.bigForm[data-color="medium"] .colorCIRCLE {
-  background-color: var(--medium);
-}
-form.bigForm[data-color="high"] .colorCIRCLE {
-  background-color: var(--high);
-}
+
+
 
 form > * {
   width: 100%;
@@ -83,7 +83,7 @@ fieldset {
   margin-bottom: 3rem;
 }
 fieldset > .top {
-  padding: 1.6rem;
+  padding: 2rem;
   font-weight: 500;
   border-bottom: var(--border_005);
   display: flex;
@@ -97,9 +97,10 @@ fieldset > .top .button {
 }
 fieldset legend {
   margin-right: auto;
+  font-size: 2rem;
 }
 fieldset > .inputs {
-  padding: 1.6rem;
+  padding: 2rem;
 }
 
 .inputWRAP{
@@ -129,11 +130,25 @@ label {
 }
 input[type="text"],
 textarea {
-  padding: 1.6rem;
+  padding: 1.6rem 1.8rem;
+  height: 11.5rem;
   background-color: var(--highlight);
   border-radius: var(--radius_medium);
   width: 100%;
   resize: none
+}
+
+form.bigForm[data-color="medium"] textarea#title,
+form.bigForm[data-color="medium"] .titlePREVIEW {
+  color: var(--medium);
+}
+form.bigForm[data-color="high"] textarea#title,
+form.bigForm[data-color="high"] .titlePREVIEW {
+  color: var(--high);
+}
+
+fieldset {
+  border: var(--border_005);
 }
 
 .formEndBtnWRAP {
@@ -143,4 +158,14 @@ textarea {
 .formEndBtnWRAP .button:last-child {
   flex: 1;
   text-align: center;
+}
+
+form.bigForm[data-color="low"] .colorCIRCLE {
+  background-color: var(--low);
+}
+form.bigForm[data-color="medium"] .colorCIRCLE {
+  background-color: var(--medium);
+}
+form.bigForm[data-color="high"] .colorCIRCLE {
+  background-color: var(--high);
 }

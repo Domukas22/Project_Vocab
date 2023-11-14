@@ -2,11 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./logic/App";
 import "./styles/reset.css";
-import "./styles/main.css";
-import "./styles/form.css";
-import "./styles/nav.css";
 import "./styles/global.css";
-import "./styles/btn.css";
+import "./styles/1_nav.css";
+import "./styles/2_board.css";
+import "./styles/3_form.css";
+import "./styles/4_btns.css";
+// import { terminal } from "virtual:terminal";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

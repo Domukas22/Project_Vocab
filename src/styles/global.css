@@ -1,8 +1,111 @@
-/*  */
-/*  */
-/*  */
-/*  */
-/*  */
+@font-face {
+  font-family: "Poppins";
+  src: url(../assets/fonts/Poppins-Light.ttf);
+  font-weight: 300;
+  font-style: light;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url(../assets/fonts/Poppins-Regular.ttf);
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url(../assets/fonts/Poppins-Medium.ttf);
+  font-weight: 500;
+  font-style: medium;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url(../assets/fonts/Poppins-SemiBold.ttf);
+  font-weight: 600;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url(../assets/fonts/Poppins-Bold.ttf);
+  font-weight: 700;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url(../assets/fonts/Poppins-Black.ttf);
+  font-weight: 800;
+}
+
+:root {
+  --bgBODY: #2D2D2D;
+  --bgFORM: #464646;
+
+  --bg_main: #313131;
+  --bg_open:rgb(54, 54, 54);
+  
+  --high: #ff9e9e;
+  --medium: #fff1b5;
+  --low: #6A6A6A;
+
+  --high_hover: #ff9e9e30;
+  --medium_hover: #66624c;
+  --low_hover: #414141;
+
+  --white_003: rgba(255, 255, 255, 0.03);
+  --white_005: rgba(255, 255, 255, 0.05);
+  --white_01: rgba(255, 255, 255, 0.1);
+  --white_02: rgba(255, 255, 255, 0.2);
+  --white_03: rgba(255, 255, 255, 0.3);
+  --white_04: rgba(255, 255, 255, 0.4);
+  --white_05: rgba(255, 255, 255, 0.5);
+  --white_06: rgba(255, 255, 255, 0.6);
+  --white_07: rgba(255, 255, 255, 0.7);
+  --white_08: rgba(255, 255, 255, 0.8);
+  --white_085: rgba(255, 255, 255, 0.85);
+  --white_09: rgba(255, 255, 255, 0.9);
+  --white_095: rgba(255, 255, 255, 0.95);
+
+  --border_005: 0.1rem solid rgba(255, 255, 255, 0.05);
+
+  --radius_small: 0.8rem;
+  --radius_medium: 1.2rem;
+  --radius_big: 1.6rem;
+
+  --highlight: #4A4A4A;
+}
+#root {
+  width: 100%;
+  max-width: 62.5rem;
+  margin: auto;
+}
+
+body {
+  background-color: var(--bgBODY);
+  padding: 4rem;
+}
+h1, h2, h3, h4, h5, p, li{
+  font-weight: 300;
+  color: var(--white_095);
+}
+li {
+  list-style: disc;
+  list-style-position: inside;
+  margin-bottom: 1rem;
+}
+
+.colorCIRCLE {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50rem;
+}
+.chooseColorWRAP {
+  position: absolute;
+  top: -100%;
+  display: flex;
+
+  background-color:var(--bg_main);
+  box-shadow: 0 1px 6px 2px rgba(255, 255, 255, 0.199);
+
+  border-radius: var(--radius_big);
+  overflow: hidden;
+}
+
 .xWRAP {
   display: flex;
   align-items: center;
@@ -42,5 +145,10 @@
 }
 .checkLINE.second {
   height: 2.4rem;
-  transform: rotate(34deg) translateX(0.3rem) translateY(-0.4rem);
+  transform: rotate(30deg) translateX(0.25rem) translateY(-0.2rem);
 }
+
+
+
+
+

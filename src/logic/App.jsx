@@ -3,11 +3,10 @@
 //
 //
 import { useState } from "react";
-import { PRINT_nav } from "./1_Nav/Nav";
-import { GET_folderINFOS, GET_storedVocabs, STORE_vocabs } from "./4_General/general";
+import { Nav } from "./1_Nav/Nav";
+import { GET_folderINFOS, GET_storedVocabs, FILTER_bySearch, SORT_trIDs, STORE_vocabs } from "./4_General/general";
 import { Form } from "./3_Form/Form";
 import { dummyVOCABS } from "./vocabs";
-import { terminal } from "virtual:terminal";
 import { TranslationBoard } from "./2_Board/Board";
 
 export default function App() {
@@ -17,46 +16,36 @@ export default function App() {
   }
 
   const [vocabs, SET_vocabs] = useState(storedVOCABS || dummyVOCABS);
-
+  console.log();
+  const [ISformOpen, SET_form] = useState(false);
+  const [trEditID, SET_trEdit] = useState(undefined);
   const currFOLDER = vocabs.folders[vocabs.displayed];
   const availFOLDERS = GET_folderINFOS(vocabs);
 
+  const [searchTEXT, SET_searchText] = useState("");
+  const [sorting, SET_sorting] = useState("Random");
+  const [ALLOWsorting, SET_allowSorting] = useState(true);
+  const [savedIdORDER, SET_savedIdORDER] = useState(currFOLDER.translationIDs);
+
+  console.log("print");
+  const trIDs = (function ARRANGE_trIDs() {
+    let arrangedTrIDs = [...savedIdORDER];
+    if (ALLOWsorting) {
+      arrangedTrIDs = SORT_trIDs(vocabs.translations, arrangedTrIDs, sorting);
+      SET_savedIdORDER(arrangedTrIDs);
+      SET_allowSorting(false);
+    }
+    if (searchTEXT !== "") {
+      arrangedTrIDs = FILTER_bySearch(vocabs.translations, arrangedTrIDs, searchTEXT);
+    }
+    return arrangedTrIDs;
+  })();
+
   function CHANGE_folder(folderID) {
-    // display changes saved to localstorage
-    SET_vocabs({ ...GET_storedVocabs(), displayed: folderID });
+    SET_vocabs({ ...vocabs, displayed: folderID });
+    SET_savedIdORDER(vocabs.folders[folderID].translationIDs);
+    SET_allowSorting(true);
   }
-
-  function DELETE_tr(trID) {
-    console.log("Delete" + trID);
-    const ruleIDs = vocabs.translations[trID].ruleIDs;
-    const exIDs = ruleIDs.reduce((arr, ruleID) => {
-      for (let exID of vocabs.rules[ruleID].exampleIDs) {
-        arr.push(exID);
-      }
-      return arr;
-    }, []);
-    console.log(exIDs);
-    const newVOCABS = {
-      ...vocabs,
-      folders: {
-        ...vocabs.folders,
-        [vocabs.displayed]: {
-          ...vocabs.folders[vocabs.displayed],
-          translationIDs: [...vocabs.folders[vocabs.displayed].translationIDs].filter((tID) => tID !== trID),
-        },
-      },
-      translations: Object.fromEntries(Object.entries(vocabs.translations).filter(([tID, _]) => tID !== trID)),
-      rules: Object.fromEntries(Object.entries(vocabs.rules).filter(([rID, _]) => !ruleIDs.includes(rID))),
-      examples: Object.fromEntries(Object.entries(vocabs.examples).filter(([eID, _]) => !exIDs.includes(eID))),
-    };
-    SET_vocabs(newVOCABS);
-    STORE_vocabs(newVOCABS);
-    TOGGLE_form();
-  }
-
-  // should the form edit or add
-  const [ISformOpen, SET_form] = useState(false);
-  const [trEditID, SET_trEdit] = useState(undefined);
   function TOGGLE_form() {
     SET_form((ISopen) => {
       if (ISopen) SET_trEdit(() => undefined);
@@ -66,27 +55,26 @@ export default function App() {
 
   return (
     <>
-      <PRINT_nav
+      <Nav
         currFOLDER={{ id: currFOLDER.id, title: currFOLDER.title }}
         availFOLDERS={availFOLDERS}
         CHANGE_folder={CHANGE_folder}
         TOGGLE_form={TOGGLE_form}
+        sorting={sorting}
+        SET_sorting={SET_sorting}
+        SET_allowSorting={SET_allowSorting}
+        SET_searchText={SET_searchText}
       />
       <TranslationBoard
-        trIDs={currFOLDER.translationIDs}
+        trIDs={trIDs}
         vocabs={vocabs}
         SET_trEdit={SET_trEdit}
         TOGGLE_form={TOGGLE_form}
         SET_vocabs={SET_vocabs}
+        sorting={sorting}
       />
-      <div
-        className="button"
-        onClick={() => {
-          localStorage.clear();
-          location.reload();
-        }}
-      >
-        Reset
+      <div className="button boardBottom" onClick={() => TOGGLE_form()}>
+        + Add new
       </div>
       <Form
         ISopen={ISformOpen}
@@ -95,7 +83,8 @@ export default function App() {
         SET_vocabs={SET_vocabs}
         trEditID={trEditID}
         SET_trEdit={SET_trEdit}
-        DELETE_tr={DELETE_tr}
+        SET_allowSorting={SET_allowSorting}
+        SET_savedIdORDER={SET_savedIdORDER}
       />
     </>
   );

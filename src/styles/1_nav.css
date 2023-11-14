@@ -16,12 +16,15 @@ nav {
   display: flex;
   align-items: center;
   justify-content: center;
+  
   position: relative;
-
   padding: 0 3.2rem;
   border-right: var(--border_005);
 
   cursor: pointer;
+}
+.navBTN:last-child {
+  border: none;
 }
 .navBTN.addTR .xWRAP {
   rotate: 45deg;
@@ -30,7 +33,7 @@ nav {
   background-color: #AFFB6D;
 }
 
-.navFoldersWRAP {
+.navDROPDOWN {
   position: absolute;
   top: 110%;
 
@@ -49,13 +52,13 @@ nav {
   opacity: 0%;
 }
 
-.navFoldersWRAP[data-open="true"] {
+.navDROPDOWN[data-open="true"] {
   pointer-events: all;
   opacity: 100%;
 }
 
 
-.navFOLDER {
+.navDropdownITEM {
   padding: 2rem 0;
   width: 100%;
 
@@ -63,6 +66,16 @@ nav {
   align-items: center;
   justify-content: center;
 }
-.navFOLDER[data-current="true"] {
+.navDropdownITEM[data-current="true"] {
   background-color:var(--highlight);
+}
+
+input[type="search"] {
+  flex: 1;
+  padding: 0 2.4rem;
+  
+  font-weight: 300;
+  color: #fba2ff;
+  background-color: rgba(255, 255, 255, 0);
+  border-right: var(--border_005);
 }
