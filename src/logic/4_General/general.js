@@ -64,9 +64,31 @@ export function SORT_trIDs(TRs, trIDs, HOWtoSort) {
   console.error("ERROR with sorting function. Returning default");
   return trIDs;
 }
-export function FILTER_bySearch(TRs, trIDs, searchTEXT) {
+export function FILTER_bySearch(vocabs, trIDs, searchTEXT) {
   return trIDs.filter((trID) => {
-    const content = [TRs[trID].title.toLowerCase(), TRs[trID].translation.toLowerCase()];
+    const tr = vocabs.translations[trID];
+    const ruleIDs = tr.ruleIDs;
+
+    const eIDs = ruleIDs.reduce((exIDs, ruleID) => {
+      for (let exID of vocabs.rules[ruleID].exampleIDs) {
+        exIDs.push(exID);
+      }
+      return exIDs;
+    }, []);
+
+    console.log(eIDs);
+
+    // const exIDs = Object.values(vocabs.examples).filter(e => )-
+    const content = [
+      tr.title.toLowerCase(),
+      tr.translation.toLowerCase(),
+      ...Object.values(vocabs.rules)
+        .filter((rule) => ruleIDs.includes(rule.id))
+        .map((r) => r.title.toLowerCase()),
+      ...Object.values(vocabs.examples)
+        .filter((ex) => eIDs.includes(ex.id))
+        .map((e) => e.text.toLowerCase()),
+    ];
     if (content.some((text) => text.includes(searchTEXT))) {
       return true;
     }

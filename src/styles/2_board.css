@@ -24,6 +24,9 @@
   border-bottom: 2px solid rgba(0, 0, 0, 0);
   border-radius: 0 0 var(--radius_big) var(--radius_big);
 }
+.translation:only-child {
+  border-radius: var(--radius_big);
+}
 .translation > .top {
   padding: 2.8rem;
   cursor: pointer;

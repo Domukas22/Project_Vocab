@@ -36,7 +36,7 @@ export default function App() {
       SET_allowSorting(false);
     }
     if (searchTEXT !== "") {
-      arrangedTrIDs = FILTER_bySearch(vocabs.translations, arrangedTrIDs, searchTEXT);
+      arrangedTrIDs = FILTER_bySearch(vocabs, arrangedTrIDs, searchTEXT);
     }
     return arrangedTrIDs;
   })();

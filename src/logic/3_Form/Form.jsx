@@ -266,7 +266,9 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, SET_al
 
     SET_vocabs(cleanVOCABS);
     STORE_vocabs(cleanVOCABS);
-    SET_allowSorting(true);
+
+    SET_savedIdORDER((oldOrder) => [trOBJ.tr.id, ...oldOrder]);
+    SET_allowSorting(false);
     RESET_form();
   }
   function DELETE_tr(trID) {
@@ -296,7 +298,8 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, SET_al
     };
 
     SET_vocabs(newVOCABS);
-    SET_savedIdORDER(newVOCABS.folders[newVOCABS.displayed].translationIDs);
+    // SET_savedIdORDER(newVOCABS.folders[newVOCABS.displayed].translationIDs);
+    SET_savedIdORDER((oldOrder) => [...oldOrder].filter((id) => id !== trID));
     STORE_vocabs(newVOCABS);
     TOGGLE_form();
   }
