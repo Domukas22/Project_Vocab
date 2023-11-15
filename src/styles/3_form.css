@@ -29,11 +29,13 @@ h2.formSUBTITLE {
   z-index: 10;
 
   overflow-y: auto;
+  transition: 200ms;
 }
 .formWRAP[data-open="false"] {
   opacity: 0%;
   pointer-events: none;
 }
+
 
 form.bigForm {
   background-color: #2D2D2D;
@@ -45,9 +47,16 @@ form.bigForm {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-
+  
   border-radius: var(--radius_big);
+  transform: translateY(0rem);
+  transition: 200ms;
 }
+
+.formWRAP[data-open="false"] > form.bigForm {
+  transform: translateY(-2rem);
+}
+
 form.bigForm > * {
   padding: 4rem 4rem;
 }

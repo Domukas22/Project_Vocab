@@ -2,7 +2,7 @@
 //
 //
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { STORE_vocabs } from "../4_General/general";
 import { CLEAN_vocabs, POPULATE_selectedTr, SORT_examples, SORT_rules } from "./utils";
 import { GENERATE_emptyEx, GENERATE_emptyRule, GENERATE_emptyTr, GENERATE_emptyCleanupIDs } from "./generate";
@@ -128,24 +128,35 @@ function ADD_toCleanUp(oldCleanupOBJ, type, id, exIDs = null) {
 }
 
 export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFolderID }) {
-  const [trOBJ, SET_trObj] = useState(GENERATE_emptyTr());
-  const [cleanupIDs, SET_cleanupIDs] = useState(GENERATE_emptyCleanupIDs());
   const ISanEdit = trEditID !== undefined;
 
+  const [trOBJ, SET_trObj] = useState(GENERATE_emptyTr());
+  const [cleanupIDs, SET_cleanupIDs] = useState(GENERATE_emptyCleanupIDs());
+
+  console.log(ISanEdit);
+  // const UPDATE_trObj = useCallback(
+  //   (updateFunction) => {
+  //     SET_trObj((oldTR) => updateFunction(oldTR));
+  //   },
+  //   [SET_trObj],
+  // );
   useEffect(() => {
-    // insert tr info if it's an edit
-    if (ISanEdit) {
-      SET_trObj(POPULATE_selectedTr(trEditID, vocabs));
-    } else {
-      SET_trObj(GENERATE_emptyTr());
+    if (trEditID) SET_trObj(POPULATE_selectedTr(trEditID, vocabs));
+    console.log(ISopen);
+    if (ISopen && !trEditID) {
+      SET_trObj(() => GENERATE_emptyTr());
     }
-  }, [trEditID]);
+  }, [ISopen]);
+
+  const UPDATE_trObj = (updateFunction) => {
+    SET_trObj((oldTR) => updateFunction(oldTR));
+  };
 
   function ADD_rule() {
     const { newRuleID, newExampleID, newRuleOBJ, newExampleOBJ } = GENERATE_emptyRule();
 
     // add a new rule obj and it's ID to the parent translation
-    SET_trObj((oldTR) => {
+    UPDATE_trObj((oldTR) => {
       return {
         tr: { ...oldTR.tr, ruleIDs: [...oldTR.tr.ruleIDs, newRuleID] },
         rules: { ...oldTR.rules, [newRuleID]: newRuleOBJ },
@@ -156,7 +167,7 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
   function ADD_example(targetRuleID) {
     // add a new example obj and push it's ID to the respective rule
     const newExample = GENERATE_emptyEx();
-    SET_trObj((oldTR) => ({
+    UPDATE_trObj((oldTR) => ({
       tr: { ...oldTR.tr },
       rules: {
         ...oldTR.rules,
@@ -174,7 +185,7 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
     }
 
     // delete example obj and it's id from parent rule
-    SET_trObj((oldTR) => ({
+    UPDATE_trObj((oldTR) => ({
       tr: { ...oldTR.tr },
       rules: {
         ...oldTR.rules,
@@ -195,36 +206,38 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
     }
 
     // delete rule obj and it's example objs
-    SET_trObj((oldTR) => ({
+    UPDATE_trObj((oldTR) => ({
       tr: { ...oldTR.tr, ruleIDs: oldTR.tr.ruleIDs.filter((id) => id !== ruleID) },
       rules: toKeepRULES,
       examples: Object.fromEntries(Object.entries(oldTR.examples).filter(([exID, _]) => !toRemoveExIDs.includes(exID))),
     }));
   }
   function HANLDE_InputChange(e) {
-    const type = e.target.dataset.type;
-    const value = e.target.value;
+    const { value, dataset } = e.target;
 
-    if (type === "title") {
-      SET_trObj((oldTR) => ({ ...oldTR, tr: { ...oldTR.tr, title: value } }));
-    }
-    if (type === "translation") {
-      SET_trObj((oldTR) => ({ ...oldTR, tr: { ...oldTR.tr, translation: value } }));
-    }
-    if (type === "rule") {
-      const id = e.target.dataset.id;
-      SET_trObj((oldTR) => ({ ...oldTR, rules: { ...oldTR.rules, [id]: { ...oldTR.rules[id], title: value } } }));
-    }
-    if (type === "example") {
-      const id = e.target.dataset.id;
-      SET_trObj((oldTR) => ({
-        ...oldTR,
-        examples: { ...oldTR.examples, [id]: { ...oldTR.examples[id], text: value } },
-      }));
-    }
+    UPDATE_trObj((oldTR) => {
+      const newTR = { ...oldTR };
+      switch (dataset.type) {
+        case "title":
+          newTR.tr = { ...oldTR.tr, title: value };
+          break;
+        case "translation":
+          newTR.tr = { ...oldTR.tr, translation: value };
+          break;
+        case "rule":
+          newTR.rules[dataset.id] = { ...oldTR.rules[dataset.id], title: value };
+          break;
+        case "example":
+          newTR.examples[dataset.id] = { ...oldTR.examples[dataset.id], text: value };
+          break;
+        default:
+          console.error("ERROR with HANLDE_InputChange()");
+      }
+      return newTR;
+    });
   }
   function EDIT_color(color) {
-    SET_trObj((oldOBJ) => ({
+    UPDATE_trObj((oldOBJ) => ({
       ...oldOBJ,
       tr: {
         ...oldOBJ.tr,
@@ -234,10 +247,8 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
   }
 
   function RESET_form() {
-    SET_trObj(() => GENERATE_emptyTr());
     SET_cleanupIDs(() => GENERATE_emptyCleanupIDs());
-    TOGGLE_form();
-    document.querySelector(".formWRAP").scrollTop = 0;
+    TOGGLE_form(false);
   }
   function ADD_tr() {
     // push the new tr ID to the folder tr ID list
@@ -296,7 +307,7 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
 
     SET_vocabs(newVOCABS);
     STORE_vocabs(newVOCABS);
-    TOGGLE_form();
+    RESET_form();
   }
 
   return (

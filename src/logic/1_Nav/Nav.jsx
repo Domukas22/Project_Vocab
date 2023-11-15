@@ -19,9 +19,9 @@ export function Nav({ currFOLDER, availFOLDERS, SET_dispFolderID, TOGGLE_form, s
 
   return (
     <nav>
-      <div className="navBTN" onClick={() => TOGGLE_folders()}>
+      <div className="navBTN" onClick={() => TOGGLE_folders()} data-open={AREfoldersOpen}>
         {currFOLDER.title}
-        <div className="navDROPDOWN" data-open={AREfoldersOpen}>
+        <div className="navDROPDOWN">
           {availFOLDERS.map((folder) => {
             return (
               <div
@@ -45,9 +45,9 @@ export function Nav({ currFOLDER, availFOLDERS, SET_dispFolderID, TOGGLE_form, s
           SET_searchText(e.target.value.toLowerCase());
         }}
       />
-      <div className="navBTN" onClick={() => TOGGLE_filters()}>
+      <div className="navBTN" onClick={() => TOGGLE_filters()} data-open={ISsortOpen}>
         {sorting}
-        <div className="navDROPDOWN" data-open={ISsortOpen}>
+        <div className="navDROPDOWN">
           <div className="navDropdownITEM" data-current={sorting === "Random"} onClick={() => SET_sorting("Random")}>
             Random
           </div>
@@ -59,7 +59,7 @@ export function Nav({ currFOLDER, availFOLDERS, SET_dispFolderID, TOGGLE_form, s
           </div>
         </div>
       </div>
-      <div className="navBTN addTR" onClick={TOGGLE_form}>
+      <div className="navBTN addTR" onClick={() => TOGGLE_form(true)}>
         <div className="xWRAP">
           <div className="xLINE"></div>
           <div className="xLINE second"></div>

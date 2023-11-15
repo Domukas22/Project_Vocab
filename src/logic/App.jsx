@@ -2,26 +2,12 @@
 //
 //
 //
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Nav } from "./1_Nav/Nav";
 import { GET_folderINFOS, GET_storedVocabs, FILTER_bySearch, SORT_trIDs, STORE_vocabs } from "./4_General/general";
 import { Form } from "./3_Form/Form";
 import { dummyVOCABS } from "./vocabs";
 import { TranslationBoard } from "./2_Board/Board";
-
-function GET_placement(vocabs, dispFolderID) {
-  const TRs = vocabs.folders[dispFolderID].translationIDs
-    .map((trID) => {
-      return { id: trID, created: vocabs.translations[trID].created };
-    })
-    .sort((a, b) => a.created - b.created)
-    .reduce((finalOBJ, tr, index) => {
-      finalOBJ[tr.id] = index + 1;
-      return finalOBJ;
-    }, {});
-
-  return TRs;
-}
 
 export default function App() {
   // console.log("|---------- PRINT APP ----------|");
@@ -47,7 +33,7 @@ export default function App() {
   }, [vocabs, currFOLDER.translationIDs, sorting, searchTEXT]);
 
   const placementOBJ = useMemo(() => {
-    console.log("RUN");
+    console.log("GET_placement");
     return vocabs.folders[dispFolderID].translationIDs
       .map((trID) => {
         return { id: trID, created: vocabs.translations[trID].created };
@@ -60,12 +46,11 @@ export default function App() {
   }, [vocabs, dispFolderID]);
 
   const [ISformOpen, SET_form] = useState(false);
-  const [trEditID, SET_trEdit] = useState(undefined);
-  function TOGGLE_form() {
-    SET_form((ISopen) => {
-      if (ISopen) SET_trEdit(() => undefined);
-      return !ISopen;
-    });
+  const [trEditID, SET_trEditID] = useState(undefined);
+
+  function TOGGLE_form(SHOULDopen, editID = undefined) {
+    SET_form(SHOULDopen);
+    SET_trEditID(editID);
   }
 
   return (
@@ -82,22 +67,20 @@ export default function App() {
       <TranslationBoard
         trIDs={arrangedIDs}
         vocabs={vocabs}
-        SET_trEdit={SET_trEdit}
         TOGGLE_form={TOGGLE_form}
         SET_vocabs={SET_vocabs}
         sorting={sorting}
         placementOBJ={placementOBJ}
       />
-      <div className="button boardBottom" onClick={() => TOGGLE_form()}>
+      <div className="button boardBottom" onClick={() => TOGGLE_form(true)}>
         + Add new
       </div>
       <Form
         ISopen={ISformOpen}
         TOGGLE_form={TOGGLE_form}
+        trEditID={trEditID}
         vocabs={vocabs}
         SET_vocabs={SET_vocabs}
-        trEditID={trEditID}
-        SET_trEdit={SET_trEdit}
         dispFolderID={dispFolderID}
       />
     </>

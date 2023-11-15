@@ -37,6 +37,7 @@
   --bgFORM: #464646;
 
   --bg_main: #313131;
+  --bg_main_hover: #3b3b3b;
   --bg_open:rgb(54, 54, 54);
   
   --high: #ff9e9e;
@@ -104,6 +105,22 @@ li {
 
   border-radius: var(--radius_big);
   overflow: hidden;
+  transform: translateY(0rem);
+  transition: 100ms ease-in-out;
+}
+.button[data-type="chooseColor"][data-open="false"] > .chooseColorWRAP {
+  opacity: 0%;
+  pointer-events: none;
+  transform: translateY(1rem);
+}
+
+form .button[data-type="chooseColor"][data-open="false"] > .chooseColorWRAP {
+  opacity: 0%;
+  pointer-events: none;
+  transform: translateY(11.5rem);
+}
+form .chooseColorWRAP {
+  transform: translateY(12.5rem);
 }
 
 .xWRAP {

@@ -51,10 +51,7 @@ form.bigForm[data-color="high"] .button.color.high {
   background-color: var(--high_hover);
 }
 
-.button[data-type="chooseColor"][data-open="false"] > .chooseColorWRAP {
-  opacity: 0%;
-  pointer-events: none;
-}
+
 
 .button.textLeft {
   justify-content: start;

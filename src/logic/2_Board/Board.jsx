@@ -23,7 +23,7 @@ function Rule({ ruleTITLE, exIDs, vocabs }) {
     </div>
   );
 }
-function Translation({ tr, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs, sorting, placement }) {
+function Translation({ tr, vocabs, TOGGLE_form, SET_vocabs, sorting, placement }) {
   const { color, title, translation, ruleIDs } = tr;
   const [isOpen, setIsOpen] = useState(false);
 
@@ -69,8 +69,8 @@ function Translation({ tr, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs, sorting,
               className="button"
               style={{ flex: 1, textAlign: "center" }}
               onClick={() => {
-                SET_trEdit(tr.id);
-                TOGGLE_form();
+                // SET_trEdit(tr.id);
+                TOGGLE_form(true, tr.id);
               }}
             >
               Bearbeiten
@@ -89,7 +89,7 @@ function Translation({ tr, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs, sorting,
   );
 }
 
-export function TranslationBoard({ trIDs, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs, sorting, placementOBJ }) {
+export function TranslationBoard({ trIDs, vocabs, TOGGLE_form, SET_vocabs, sorting, placementOBJ }) {
   if (trIDs.length === 0) {
     return <h3 className="noTR">No translations</h3>;
   }
@@ -104,7 +104,7 @@ export function TranslationBoard({ trIDs, vocabs, SET_trEdit, TOGGLE_form, SET_v
             tr={tr}
             vocabs={vocabs}
             key={trID}
-            SET_trEdit={SET_trEdit}
+            // SET_trEdit={SET_trEdit}
             TOGGLE_form={TOGGLE_form}
             SET_vocabs={SET_vocabs}
             sorting={sorting}

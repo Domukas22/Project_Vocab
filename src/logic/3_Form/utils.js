@@ -24,7 +24,7 @@ export function POPULATE_selectedTr(trID, vocabs) {
   }, {});
 
   return {
-    tr: { ...vocabs.translations[trID] },
+    tr,
     rules: rulesOBJ,
     examples: examplesOBJ,
   };

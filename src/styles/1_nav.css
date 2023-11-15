@@ -7,10 +7,13 @@ nav {
   width: 100%;
   display: flex;
 
+  position: relative;
+  z-index: 10;
   margin-bottom: 3rem;
 
   border: var(--border_005);
   border-radius: var(--radius_big);
+  background-color: var(--bg_main);
 }
 .navBTN {
   display: flex;
@@ -22,10 +25,20 @@ nav {
   border-right: var(--border_005);
 
   cursor: pointer;
+  transition: 100ms ease-in-out;
 }
 .navBTN:last-child {
   border: none;
+  border-radius: 0 var(--radius_big) var(--radius_big) 0;
 }
+.navBTN:first-child {
+  border-radius:  var(--radius_big) 0 0 var(--radius_big) ;
+}
+.navBTN:hover,
+.navBTN[data-open="true"] {
+  background-color: var(--bg_main_hover);
+}
+
 .navBTN.addTR .xWRAP {
   rotate: 45deg;
 }
@@ -50,11 +63,15 @@ nav {
 
   pointer-events: none;
   opacity: 0%;
+  transition: 100ms ease-in-out;
+  transform: translateY(-2rem) scaleX(0.8);
 }
 
-.navDROPDOWN[data-open="true"] {
+.navBTN[data-open="true"] .navDROPDOWN{
   pointer-events: all;
   opacity: 100%;
+  transform-style: preserve-3d;
+  transform: translateY(0rem) scaleX(1);
 }
 
 
@@ -65,9 +82,11 @@ nav {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: 100ms ease-in-out;
 }
-.navDropdownITEM[data-current="true"] {
-  background-color:var(--highlight);
+.navDropdownITEM[data-current="true"],
+.navDropdownITEM:hover  {
+  background-color:var(--bg_main_hover);
 }
 
 input[type="search"] {
@@ -78,4 +97,10 @@ input[type="search"] {
   color: #fba2ff;
   background-color: rgba(255, 255, 255, 0);
   border-right: var(--border_005);
+  transition: 100ms ease-in-out;
+}
+
+input[type="search"]:hover,
+input[type="search"]:focus  {
+  background-color: var(--bg_main_hover);
 }
