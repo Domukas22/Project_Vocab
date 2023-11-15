@@ -23,7 +23,7 @@ function Rule({ ruleTITLE, exIDs, vocabs }) {
     </div>
   );
 }
-function Translation({ tr, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs, index, sorting }) {
+function Translation({ tr, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs, sorting, placement }) {
   const { color, title, translation, ruleIDs } = tr;
   const [isOpen, setIsOpen] = useState(false);
 
@@ -54,7 +54,8 @@ function Translation({ tr, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs, index, s
     <div className="translation" data-color={color} data-open={isOpen}>
       <div className="top" onClick={TOGGLE_open}>
         <h1 className="regularTEXT title">{title}</h1>
-        {sorting === "Date" && <p>{index}</p>}
+        {/* <p>{tr.id}</p> */}
+        {sorting === "Date" && <p>{placement}</p>}
       </div>
       <div className="bottom" ref={bottomRef}>
         <div className="contentWRAP" data-id={tr.id}>
@@ -88,13 +89,13 @@ function Translation({ tr, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs, index, s
   );
 }
 
-export function TranslationBoard({ trIDs, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs, sorting }) {
+export function TranslationBoard({ trIDs, vocabs, SET_trEdit, TOGGLE_form, SET_vocabs, sorting, placementOBJ }) {
   if (trIDs.length === 0) {
     return <h3 className="noTR">No translations</h3>;
   }
   return (
     <div className="translationBOARD">
-      {trIDs.map((trID, index) => {
+      {trIDs.map((trID) => {
         const tr = vocabs.translations[trID];
         // console.log("PRINT => " + trID);
 
@@ -106,8 +107,8 @@ export function TranslationBoard({ trIDs, vocabs, SET_trEdit, TOGGLE_form, SET_v
             SET_trEdit={SET_trEdit}
             TOGGLE_form={TOGGLE_form}
             SET_vocabs={SET_vocabs}
-            index={trIDs.length - index}
             sorting={sorting}
+            placement={placementOBJ[trID]}
           />
         );
       })}

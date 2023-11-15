@@ -7,7 +7,6 @@
 const date = +new Date();
 
 export const dummyVOCABS = {
-  displayed: "german",
   folders: {
     german: {
       id: "german",

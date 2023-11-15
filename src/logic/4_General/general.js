@@ -32,6 +32,7 @@ function SORT_randomly(trIDs) {
     let j = Math.floor(Math.random() * (i + 1));
     [sortedIDs[i], sortedIDs[j]] = [sortedIDs[j], sortedIDs[i]];
   }
+
   return sortedIDs;
 }
 function SORT_byColor(TRs, trIDs) {
@@ -46,52 +47,52 @@ function SORT_byColor(TRs, trIDs) {
   );
   return [...colorsOBJ.high, ...colorsOBJ.medium, ...colorsOBJ.low];
 }
-function SORT_byDate(TRs) {
+function SORT_byDate(TRs, idLIST) {
   return Object.values(TRs)
+    .filter((tr) => idLIST.includes(tr.id))
     .sort((a, b) => b.created - a.created)
     .map((tr) => tr.id);
 }
-export function SORT_trIDs(TRs, trIDs, HOWtoSort) {
+export function SORT_trIDs(TRs, idLIST, HOWtoSort) {
+  console.log("sort => " + HOWtoSort);
   if (HOWtoSort === "Random") {
-    return SORT_randomly([...trIDs]);
+    return SORT_randomly([...idLIST]);
   }
   if (HOWtoSort === "Color") {
-    return SORT_byColor(TRs, [...trIDs]);
+    return SORT_byColor(TRs, [...idLIST]);
   }
   if (HOWtoSort === "Date") {
-    return SORT_byDate(TRs);
+    return SORT_byDate(TRs, idLIST);
   }
   console.error("ERROR with sorting function. Returning default");
-  return trIDs;
+  return idLIST;
 }
-export function FILTER_bySearch(vocabs, trIDs, searchTEXT) {
-  return trIDs.filter((trID) => {
+export function FILTER_bySearch(vocabs, idLIST, searchTEXT) {
+  console.log("search => " + searchTEXT);
+  return idLIST.filter((trID) => {
     const tr = vocabs.translations[trID];
-    const ruleIDs = tr.ruleIDs;
 
-    const eIDs = ruleIDs.reduce((exIDs, ruleID) => {
-      for (let exID of vocabs.rules[ruleID].exampleIDs) {
-        exIDs.push(exID);
-      }
-      return exIDs;
-    }, []);
-
-    console.log(eIDs);
-
-    // const exIDs = Object.values(vocabs.examples).filter(e => )-
-    const content = [
-      tr.title.toLowerCase(),
-      tr.translation.toLowerCase(),
-      ...Object.values(vocabs.rules)
-        .filter((rule) => ruleIDs.includes(rule.id))
-        .map((r) => r.title.toLowerCase()),
-      ...Object.values(vocabs.examples)
-        .filter((ex) => eIDs.includes(ex.id))
-        .map((e) => e.text.toLowerCase()),
-    ];
-    if (content.some((text) => text.includes(searchTEXT))) {
+    // check tr title/translation
+    if (tr.title.toLowerCase().includes(searchTEXT) || tr.translation.toLowerCase().includes(searchTEXT)) {
       return true;
     }
+
+    for (let ruleID of tr.ruleIDs) {
+      // check each rule title + it's examples
+      const rule = vocabs.rules[ruleID];
+      if (rule.title.toLowerCase().includes(searchTEXT)) {
+        return true;
+      }
+
+      for (let exID of rule.exampleIDs) {
+        // check each ex text
+        const example = vocabs.examples[exID];
+        if (example && example.text.toLowerCase().includes(searchTEXT)) {
+          return true;
+        }
+      }
+    }
+
     return false;
   });
 }

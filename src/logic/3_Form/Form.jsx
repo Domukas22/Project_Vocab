@@ -127,7 +127,7 @@ function ADD_toCleanUp(oldCleanupOBJ, type, id, exIDs = null) {
   return newCleanupOBJ;
 }
 
-export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, SET_allowSorting, SET_savedIdORDER }) {
+export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFolderID }) {
   const [trOBJ, SET_trObj] = useState(GENERATE_emptyTr());
   const [cleanupIDs, SET_cleanupIDs] = useState(GENERATE_emptyCleanupIDs());
   const ISanEdit = trEditID !== undefined;
@@ -245,15 +245,15 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, SET_al
 
     // if its NOT an edit, insert new tr ID, otherwise keep the same ID list
     const newTrIDs = ISanEdit
-      ? [...vocabs.folders[vocabs.displayed].translationIDs]
-      : Array.from(new Set([trOBJ.tr.id, ...vocabs.folders[vocabs.displayed].translationIDs]));
+      ? [...vocabs.folders[dispFolderID].translationIDs]
+      : Array.from(new Set([trOBJ.tr.id, ...vocabs.folders[dispFolderID].translationIDs]));
 
     const newVOCABS = {
       ...vocabs,
       folders: {
         ...vocabs.folders,
-        [vocabs.displayed]: {
-          ...vocabs.folders[vocabs.displayed],
+        [dispFolderID]: {
+          ...vocabs.folders[dispFolderID],
           translationIDs: newTrIDs,
         },
       },
@@ -266,9 +266,6 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, SET_al
 
     SET_vocabs(cleanVOCABS);
     STORE_vocabs(cleanVOCABS);
-
-    SET_savedIdORDER((oldOrder) => [trOBJ.tr.id, ...oldOrder]);
-    SET_allowSorting(false);
     RESET_form();
   }
   function DELETE_tr(trID) {
@@ -287,9 +284,9 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, SET_al
       ...vocabs,
       folders: {
         ...vocabs.folders,
-        [vocabs.displayed]: {
-          ...vocabs.folders[vocabs.displayed],
-          translationIDs: [...vocabs.folders[vocabs.displayed].translationIDs].filter((tID) => tID !== trID),
+        [dispFolderID]: {
+          ...vocabs.folders[dispFolderID],
+          translationIDs: [...vocabs.folders[dispFolderID].translationIDs].filter((tID) => tID !== trID),
         },
       },
       translations: Object.fromEntries(Object.entries(vocabs.translations).filter(([tID, _]) => tID !== trID)),
@@ -298,8 +295,6 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, SET_al
     };
 
     SET_vocabs(newVOCABS);
-    // SET_savedIdORDER(newVOCABS.folders[newVOCABS.displayed].translationIDs);
-    SET_savedIdORDER((oldOrder) => [...oldOrder].filter((id) => id !== trID));
     STORE_vocabs(newVOCABS);
     TOGGLE_form();
   }

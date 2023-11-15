@@ -6,16 +6,7 @@
 import { useState } from "react";
 import { STORE_vocabs } from "../4_General/general";
 
-export function Nav({
-  currFOLDER,
-  availFOLDERS,
-  CHANGE_folder,
-  TOGGLE_form,
-  sorting,
-  SET_sorting,
-  SET_searchText,
-  SET_allowSorting,
-}) {
+export function Nav({ currFOLDER, availFOLDERS, SET_dispFolderID, TOGGLE_form, sorting, SET_sorting, SET_searchText }) {
   const [AREfoldersOpen, SET_foldersOpen] = useState(false);
   const [ISsortOpen, SET_sortOpen] = useState(false);
 
@@ -24,10 +15,6 @@ export function Nav({
   }
   function TOGGLE_filters() {
     SET_sortOpen((state) => !state);
-  }
-  function SORT_list(HOWtoSort) {
-    SET_allowSorting(true);
-    SET_sorting(HOWtoSort);
   }
 
   return (
@@ -41,7 +28,7 @@ export function Nav({
                 className="navDropdownITEM"
                 key={folder.id}
                 data-current={folder.id === currFOLDER.id}
-                onClick={() => CHANGE_folder(folder.id)}
+                onClick={() => SET_dispFolderID(folder.id)}
               >
                 {folder.title}
               </div>
@@ -61,13 +48,13 @@ export function Nav({
       <div className="navBTN" onClick={() => TOGGLE_filters()}>
         {sorting}
         <div className="navDROPDOWN" data-open={ISsortOpen}>
-          <div className="navDropdownITEM" data-current={sorting === "Random"} onClick={() => SORT_list("Random")}>
+          <div className="navDropdownITEM" data-current={sorting === "Random"} onClick={() => SET_sorting("Random")}>
             Random
           </div>
-          <div className="navDropdownITEM" data-current={sorting === "Color"} onClick={() => SORT_list("Color")}>
+          <div className="navDropdownITEM" data-current={sorting === "Color"} onClick={() => SET_sorting("Color")}>
             Color
           </div>
-          <div className="navDropdownITEM" data-current={sorting === "Date"} onClick={() => SORT_list("Date")}>
+          <div className="navDropdownITEM" data-current={sorting === "Date"} onClick={() => SET_sorting("Date")}>
             Date
           </div>
         </div>
