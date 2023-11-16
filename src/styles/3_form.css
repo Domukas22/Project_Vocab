@@ -25,7 +25,7 @@ h2.formSUBTITLE {
   display: flex;
   justify-content: center;
 
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.6);
   z-index: 10;
 
   overflow-y: auto;
@@ -42,7 +42,7 @@ form.bigForm {
   height: fit-content;
 
   width: 100%;
-  max-width: 80rem;
+  max-width: 64rem;;
   
   display: flex;
   flex-direction: column;
@@ -87,7 +87,7 @@ form > * {
 
 fieldset {
   width: 100%;
-  background-color: #373737;
+  background-color: var(--color_3);
   border-radius: var(--radius_big);
   margin-bottom: 3rem;
 }
@@ -137,24 +137,19 @@ label {
   font-weight: 300;
   letter-spacing: 0.03rem;
 }
-input[type="text"],
-textarea {
+
+.textEdit {
   padding: 1.6rem 1.8rem;
-  height: 11.5rem;
+  height: fit-content;
   background-color: var(--highlight);
   border-radius: var(--radius_medium);
   width: 100%;
-  resize: none
 }
-
-form.bigForm[data-color="medium"] textarea#title,
-form.bigForm[data-color="medium"] .titlePREVIEW {
-  color: var(--medium);
-}
-form.bigForm[data-color="high"] textarea#title,
-form.bigForm[data-color="high"] .titlePREVIEW {
-  color: var(--high);
-}
+.textEdit.notEdit {
+  padding: 0;
+  height: auto;
+  background-color: rgba(255, 255, 255, 0);
+} 
 
 fieldset {
   border: var(--border_005);

@@ -2,13 +2,22 @@
 //
 //
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { STORE_vocabs } from "../4_General/general";
 import { CLEAN_vocabs, POPULATE_selectedTr, SORT_examples, SORT_rules } from "./utils";
 import { GENERATE_emptyEx, GENERATE_emptyRule, GENERATE_emptyTr, GENERATE_emptyCleanupIDs } from "./generate";
 import { ChooseColorBox } from "../4_General/Comps_general";
 
-function FormTopFieldset({ HANLDE_InputChange, trTITLE, trTR }) {
+function FormTopFieldset({ HANLDE_InputChange, trTITLE, trTR, ISopen }) {
+  const title = useRef(null);
+  const tr = useRef(null);
+
+  useEffect(() => {
+    // insert tr title + translation only on load, NOT on onChange/onInput
+    title.current.innerHTML = trTITLE;
+    tr.current.innerHTML = trTR;
+  }, []);
+
   return (
     <fieldset>
       <div className="top">
@@ -18,44 +27,47 @@ function FormTopFieldset({ HANLDE_InputChange, trTITLE, trTR }) {
       <div className="inputs">
         <div className="inputWRAP">
           <label htmlFor="title">Titel</label>
-          <textarea
-            type="text"
-            name="title"
-            id="title"
-            placeholder="Titel eingeben..."
-            onChange={HANLDE_InputChange}
+          <div
+            className="textEdit"
+            contentEditable="true"
+            onInput={HANLDE_InputChange}
             data-type="title"
-            value={trTITLE}
-          />
+            ref={title}
+          ></div>
         </div>
         <div className="inputWRAP">
           <label htmlFor="translation">Übersetzung</label>
-          <textarea
-            type="text"
-            name="translation"
-            id="translation"
-            placeholder="Übersetzung eingeben..."
-            onChange={HANLDE_InputChange}
+          <div
             data-type="translation"
-            value={trTR}
-          />
+            className="textEdit"
+            contentEditable="true"
+            onInput={HANLDE_InputChange}
+            ref={tr}
+          ></div>
         </div>
       </div>
     </fieldset>
   );
 }
+
 function Example({ ex, onChangeFN, DELETE_example, parentRuleID }) {
+  const exText = useRef(null);
+  useEffect(() => {
+    // insert ex text only on load, NOT on onChange/onInput
+    if (ex.text !== null) exText.current.innerHTML = ex.text;
+  }, []);
+
   return (
     <div className="inputANDdeleteWRAP" key={ex.id}>
-      <textarea
-        type="text"
-        placeholder="Beispiel eingeben..."
-        data-id={ex.id}
+      <div
+        ref={exText}
+        className="textEdit"
         data-type="example"
-        onChange={onChangeFN}
-        value={ex.text}
-      />
-      <div className="button seeThrough" onClick={() => DELETE_example(parentRuleID, ex.id)}>
+        contentEditable="true"
+        onInput={onChangeFN}
+        data-id={ex.id}
+      ></div>
+      <div className="button seeThrough X" onClick={() => DELETE_example(parentRuleID, ex.id)}>
         <div className="xWRAP">
           <div className="xLINE"></div>
           <div className="xLINE second"></div>
@@ -65,12 +77,18 @@ function Example({ ex, onChangeFN, DELETE_example, parentRuleID }) {
   );
 }
 function Rule({ rule, exIDs, exOBJS, DELETE_rule, ADD_example, DELETE_example, onChangeFN }) {
+  const ruleTitle = useRef(null);
+  useEffect(() => {
+    // insert rule title only on load, NOT on onChange/onInput
+    if (rule.title !== null) ruleTitle.current.innerHTML = rule.title;
+  }, []);
+
   return (
     <fieldset>
       <div className="top">
         <legend>Verwendungsregel</legend>
         <div className="buttons">
-          <div className="button" onClick={() => DELETE_rule(rule.id)}>
+          <div className="button textOnly" onClick={() => DELETE_rule(rule.id)}>
             Löschen
           </div>
         </div>
@@ -78,14 +96,14 @@ function Rule({ rule, exIDs, exOBJS, DELETE_rule, ADD_example, DELETE_example, o
       <div className="inputs">
         <div className={`inputWRAP title ${exIDs.length === 0 ? "noMargin" : ""}`}>
           <label htmlFor={"explanation_title"}>Regeltitel</label>
-          <textarea
-            type="text"
-            placeholder={"Regel eingeben..."}
+          <div
             data-type="rule"
+            ref={ruleTitle}
+            className="textEdit"
+            contentEditable="true"
+            onInput={onChangeFN}
             data-id={rule.id}
-            onChange={onChangeFN}
-            value={rule.title}
-          />
+          ></div>
         </div>
         <div className="inputWRAP examples">
           {exIDs.length > 0 && <label>Beispiele</label>}
@@ -102,7 +120,7 @@ function Rule({ rule, exIDs, exOBJS, DELETE_rule, ADD_example, DELETE_example, o
           })}
         </div>
         <div
-          className="button textLeft seeThrough"
+          className="button textLeft seeThrough add"
           onClick={() => {
             ADD_example(rule.id);
           }}
@@ -133,21 +151,17 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
   const [trOBJ, SET_trObj] = useState(GENERATE_emptyTr());
   const [cleanupIDs, SET_cleanupIDs] = useState(GENERATE_emptyCleanupIDs());
 
-  console.log(ISanEdit);
-  // const UPDATE_trObj = useCallback(
-  //   (updateFunction) => {
-  //     SET_trObj((oldTR) => updateFunction(oldTR));
-  //   },
-  //   [SET_trObj],
-  // );
+  // generate a new "FormTopFieldset" key on each toggle
+  // so that the inputs get refreshed
+  const [topKEY, SET_topKey] = useState(Math.random());
+
   useEffect(() => {
     if (trEditID) SET_trObj(POPULATE_selectedTr(trEditID, vocabs));
-    console.log(ISopen);
     if (ISopen && !trEditID) {
       SET_trObj(() => GENERATE_emptyTr());
     }
+    SET_topKey(Math.random());
   }, [ISopen]);
-
   const UPDATE_trObj = (updateFunction) => {
     SET_trObj((oldTR) => updateFunction(oldTR));
   };
@@ -213,26 +227,28 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
     }));
   }
   function HANLDE_InputChange(e) {
-    const { value, dataset } = e.target;
+    const { dataset, innerHTML } = e.target;
+    console.log(e.target.innerHTML);
 
     UPDATE_trObj((oldTR) => {
       const newTR = { ...oldTR };
       switch (dataset.type) {
         case "title":
-          newTR.tr = { ...oldTR.tr, title: value };
+          newTR.tr = { ...oldTR.tr, title: innerHTML };
           break;
         case "translation":
-          newTR.tr = { ...oldTR.tr, translation: value };
+          newTR.tr = { ...oldTR.tr, translation: innerHTML };
           break;
         case "rule":
-          newTR.rules[dataset.id] = { ...oldTR.rules[dataset.id], title: value };
+          newTR.rules[dataset.id] = { ...oldTR.rules[dataset.id], title: innerHTML };
           break;
         case "example":
-          newTR.examples[dataset.id] = { ...oldTR.examples[dataset.id], text: value };
+          newTR.examples[dataset.id] = { ...oldTR.examples[dataset.id], text: innerHTML };
           break;
         default:
           console.error("ERROR with HANLDE_InputChange()");
       }
+      // console.log(newTR.tr.title);
       return newTR;
     });
   }
@@ -316,11 +332,11 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
         <div className="top">
           <div className="textWRAP">
             <h1 className="formTITLE">Übersetzung {ISanEdit ? "bearbeiten" : "hinfügen"}</h1>
-            {ISanEdit && <p className="titlePREVIEW">{trOBJ.tr.title}</p>}
+            {ISanEdit && <p className="textEdit notEdit" dangerouslySetInnerHTML={{ __html: trOBJ.tr.title }}></p>}
           </div>
           <div className="btnWRAP">
             <ChooseColorBox UPDATE_color={EDIT_color} optionalCLASS={" seeThrough"} />
-            <div className="button seeThrough" onClick={RESET_form}>
+            <div className="button seeThrough X" onClick={RESET_form}>
               <div className="xWRAP">
                 <div className="xLINE"></div>
                 <div className="xLINE second"></div>
@@ -330,10 +346,15 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
         </div>
         <div className="content">
           <FormTopFieldset
+            // place random key so that it rerenders each time
+            // so that the tr.title and tr.translation get refreshed
+            key={topKEY}
             HANLDE_InputChange={HANLDE_InputChange}
             trTITLE={trOBJ.tr.title}
             trTR={trOBJ.tr.translation}
+            ISopen={ISopen}
           />
+
           {SORT_rules(trOBJ.rules).map((rule) => {
             return (
               <Rule
@@ -348,20 +369,20 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
               />
             );
           })}
-          <div className="button textLeft seeThrough" onClick={ADD_rule}>
+          <div className="button textLeft seeThrough add" onClick={ADD_rule}>
             + Neuer Regel
           </div>
         </div>
         <div className="formEndBtnWRAP">
           {ISanEdit && (
-            <button className="button" onClick={() => DELETE_tr(trEditID)} type="button" style={{ color: "#ff9292" }}>
+            <div className="button delete" onClick={() => DELETE_tr(trEditID)}>
               Delete
-            </button>
+            </div>
           )}
-          <div className="button" onClick={RESET_form} type="button">
+          <div className="button cancel" onClick={RESET_form}>
             Abbrechen
           </div>
-          <div className="button" onClick={() => ADD_tr()} type="button" style={{ color: "#AFFB6D" }}>
+          <div className="button done" onClick={() => ADD_tr()}>
             {ISanEdit ? "Speichern" : "Hinfügen"}
           </div>
         </div>

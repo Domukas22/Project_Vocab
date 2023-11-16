@@ -8,16 +8,16 @@ import { ChooseColorBox } from "../4_General/Comps_general";
 import { STORE_vocabs } from "../4_General/general";
 import { terminal } from "virtual:terminal";
 
-function Example({ id, text }) {
-  return <li key={id}>{text}</li>;
+function Example({ text }) {
+  return <li className="boardTEXT ex" dangerouslySetInnerHTML={{ __html: text }}></li>;
 }
 function Rule({ ruleTITLE, exIDs, vocabs }) {
   return (
     <div className="rule">
-      <h3>{ruleTITLE}</h3>
+      <h3 className="boardTEXT rule" dangerouslySetInnerHTML={{ __html: ruleTITLE }}></h3>
       <ul>
         {exIDs.map((exID) => {
-          return <Example id={exID} text={vocabs.examples[exID].text} key={exID} />;
+          return <Example text={vocabs.examples[exID].text} key={exID} />;
         })}
       </ul>
     </div>
@@ -53,13 +53,12 @@ function Translation({ tr, vocabs, TOGGLE_form, SET_vocabs, sorting, placement }
   return (
     <div className="translation" data-color={color} data-open={isOpen}>
       <div className="top" onClick={TOGGLE_open}>
-        <h1 className="regularTEXT title">{title}</h1>
-        {/* <p>{tr.id}</p> */}
+        <h1 className="boardTEXT" dangerouslySetInnerHTML={{ __html: title }}></h1>
         {sorting === "Date" && <p>{placement}</p>}
       </div>
       <div className="bottom" ref={bottomRef}>
         <div className="contentWRAP" data-id={tr.id}>
-          <h2 className="translatedTEXT">→ {translation}</h2>
+          <div className="boardTEXT tr" dangerouslySetInnerHTML={{ __html: `-> ${translation}` }}></div>
           {ruleIDs.map((ruleID) => {
             const rule = vocabs.rules[ruleID];
             return <Rule ruleTITLE={rule.title} exIDs={rule.exampleIDs} vocabs={vocabs} key={ruleID} />;
@@ -97,8 +96,6 @@ export function TranslationBoard({ trIDs, vocabs, TOGGLE_form, SET_vocabs, sorti
     <div className="translationBOARD">
       {trIDs.map((trID) => {
         const tr = vocabs.translations[trID];
-        // console.log("PRINT => " + trID);
-
         return (
           <Translation
             tr={tr}

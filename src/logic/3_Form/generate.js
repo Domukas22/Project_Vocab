@@ -32,9 +32,6 @@ export function GENERATE_emptyRule() {
   };
 }
 export function GENERATE_emptyTr() {
-  // const initialRuleID = GENERATE_id("rule");
-  // const initialExampleID = GENERATE_id("ex");
-
   return {
     tr: {
       id: GENERATE_id("tr"),
@@ -44,21 +41,8 @@ export function GENERATE_emptyTr() {
       ruleIDs: [],
       created: +new Date(),
     },
-    rules: {
-      // [initialRuleID]: {
-      //   id: initialRuleID,
-      //   title: "",
-      //   exampleIDs: [initialExampleID],
-      //   created: +new Date(),
-      // },
-    },
-    examples: {
-      // [initialExampleID]: {
-      //   id: initialExampleID,
-      //   text: "",
-      //   created: +new Date(),
-      // },
-    },
+    rules: {},
+    examples: {},
   };
 }
 export function GENERATE_emptyCleanupIDs() {

@@ -39,14 +39,21 @@
   --bg_main: #313131;
   --bg_main_hover: #3b3b3b;
   --bg_open:rgb(54, 54, 54);
-  
+
+  --color_3: #373737;
+  --color_4: #3f3f3f;
+  --color_5: #4b4b4b;
+
+  --red: #ff9e9e;
+  --green: #AFFB6D;
+
   --high: #ff9e9e;
   --medium: #fff1b5;
   --low: #6A6A6A;
 
-  --high_hover: #ff9e9e30;
+  --high_hover: #ff9e9e2a;
   --medium_hover: #66624c;
-  --low_hover: #414141;
+  --low_hover: #4b4b4b;
 
   --white_003: rgba(255, 255, 255, 0.03);
   --white_005: rgba(255, 255, 255, 0.05);
@@ -82,7 +89,8 @@ body {
 }
 h1, h2, h3, h4, h5, p, li{
   font-weight: 300;
-  color: var(--white_095);
+  color: var(--white_085);
+  letter-spacing: 0.05px;
 }
 li {
   list-style: disc;
@@ -107,6 +115,9 @@ li {
   overflow: hidden;
   transform: translateY(0rem);
   transition: 100ms ease-in-out;
+}
+.button[data-type="chooseColor"][data-open="true"] {
+  background-color:var(--color_5);
 }
 .button[data-type="chooseColor"][data-open="false"] > .chooseColorWRAP {
   opacity: 0%;
@@ -155,7 +166,7 @@ form .chooseColorWRAP {
   height: 1.4rem;
   width: 0.4rem;
   border-radius: 10px;
-  background: #AFFB6D;
+  background: var(--green);
 
   position: absolute;
   transform: rotate(-38deg) translateX(-0.7rem);
