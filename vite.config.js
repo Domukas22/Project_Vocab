@@ -7,4 +7,5 @@ export default defineConfig({
   plugins: [react(), Terminal()],
   logLevel: "info",
   clearScreen: true,
+  base: "/Project_Vocab/",
 });
