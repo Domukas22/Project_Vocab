@@ -34,7 +34,8 @@ form.bigForm .textEdit u::selection {
 }
 form.bigForm .textEdit,
 form.bigForm .textEdit i,
-form.bigForm .textEdit u {
+form.bigForm .textEdit u,
+.translation .boardTEXT i {
   font-style: normal !important;
   font-weight: 300;
 }

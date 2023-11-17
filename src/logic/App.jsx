@@ -2,12 +2,20 @@
 //
 //
 //
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo } from "react";
 import { Nav } from "./1_Nav/Nav";
-import { GET_folderINFOS, GET_storedVocabs, FILTER_bySearch, SORT_trIDs, STORE_vocabs } from "./4_General/general";
+import {
+  GET_folderINFOS,
+  GET_storedVocabs,
+  FILTER_bySearch,
+  SORT_trIDs,
+  STORE_vocabs,
+  SCROLL_top,
+} from "./4_General/general";
 import { Form } from "./3_Form/Form";
 import { dummyVOCABS } from "./vocabs";
 import { TranslationBoard } from "./2_Board/Board";
+import { BTNscrollTop } from "./4_General/Comps_general";
 
 export default function App() {
   // console.log("|---------- PRINT APP ----------|");
@@ -72,9 +80,6 @@ export default function App() {
         sorting={sorting}
         placementOBJ={placementOBJ}
       />
-      <div className="button boardBottom" onClick={() => TOGGLE_form(true)}>
-        + Add new
-      </div>
       <Form
         ISopen={ISformOpen}
         TOGGLE_form={TOGGLE_form}
@@ -83,6 +88,10 @@ export default function App() {
         SET_vocabs={SET_vocabs}
         dispFolderID={dispFolderID}
       />
+      <BTNscrollTop />
+      <div className="button boardBottom" onClick={() => TOGGLE_form(true)}>
+        + Add new
+      </div>
     </>
   );
 }

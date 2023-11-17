@@ -4,7 +4,6 @@
 //
 //
 import { useState } from "react";
-import { STORE_vocabs } from "../4_General/general";
 
 export function Nav({ currFOLDER, availFOLDERS, SET_dispFolderID, TOGGLE_form, sorting, SET_sorting, SET_searchText }) {
   const [AREfoldersOpen, SET_foldersOpen] = useState(false);

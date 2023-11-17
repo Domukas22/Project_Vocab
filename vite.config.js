@@ -8,4 +8,9 @@ export default defineConfig({
   logLevel: "info",
   clearScreen: true,
   base: "/Project_Vocab/",
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: "./tests/setup.js",
+  },
 });

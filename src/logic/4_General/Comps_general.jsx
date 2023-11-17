@@ -3,7 +3,8 @@
 //
 //
 //
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { SCROLL_top } from "./general";
 
 export function ChooseColorBox({ UPDATE_color, optionalCLASS = "" }) {
   const [colorChoiceOpen, setColorChoiceOpen] = useState(false);
@@ -50,6 +51,24 @@ export function ChooseColorBox({ UPDATE_color, optionalCLASS = "" }) {
           <div className="colorCIRCLE"></div>
         </div>
       </div>
+    </div>
+  );
+}
+export function BTNscrollTop() {
+  const [showBtn, SET_showBtn] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      SET_showBtn(window.scrollY > 100);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+  return (
+    <div className="button boardBottom scrollTOP" onClick={SCROLL_top} data-show={showBtn}>
+      ↑
     </div>
   );
 }

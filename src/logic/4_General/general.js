@@ -3,6 +3,13 @@
 //
 //
 
+export function SCROLL_top() {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "smooth",
+  });
+}
 export function GENERATE_id(prefix) {
   return prefix + Math.floor(100000 + Math.random() * 9000000);
 }
