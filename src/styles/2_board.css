@@ -29,8 +29,8 @@
 }
 
 .translation > .top {
-  height: 8rem;
-  padding: 0 2.8rem;
+  min-height: 8rem;
+  padding: 2rem 2.8rem;
   
   display: flex;
   justify-content: space-between;

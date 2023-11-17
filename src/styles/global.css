@@ -201,5 +201,11 @@ form .chooseColorWRAP {
   border: 0px solid #ffffff;
 }
 
-
+@media screen and (max-width: 48rem) {
+  body {
+    background-color: var(--bgBODY);
+    padding: 6rem 4vmin;
+    overflow-y: scroll;
+  }
+}
 
