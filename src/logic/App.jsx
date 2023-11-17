@@ -7,10 +7,10 @@ import { Nav } from "./1_Nav/Nav";
 import {
   GET_folderINFOS,
   GET_storedVocabs,
-  FILTER_bySearch,
-  SORT_trIDs,
   STORE_vocabs,
-  SCROLL_top,
+  SORT_trIDs,
+  FILTER_bySearch,
+  GET_trPlacement,
 } from "./4_General/general";
 import { Form } from "./3_Form/Form";
 import { dummyVOCABS } from "./vocabs";
@@ -30,32 +30,25 @@ export default function App() {
   const availFOLDERS = GET_folderINFOS(vocabs);
 
   const [searchTEXT, SET_searchText] = useState("");
-  const [sorting, SET_sorting] = useState("Random");
+  const [sorting, SET_sorting] = useState("Shuffle");
+
+  const sortedIDs = useMemo(() => {
+    return SORT_trIDs(vocabs.translations, currFOLDER.translationIDs, sorting);
+  }, [vocabs.translations, currFOLDER.translationIDs, sorting]);
 
   const arrangedIDs = useMemo(() => {
-    const sorted = SORT_trIDs(vocabs.translations, currFOLDER.translationIDs, sorting);
     if (searchTEXT !== "") {
-      return FILTER_bySearch(vocabs, sorted, searchTEXT);
+      return FILTER_bySearch(vocabs, sortedIDs, searchTEXT);
     }
-    return sorted;
-  }, [vocabs, currFOLDER.translationIDs, sorting, searchTEXT]);
+    return sortedIDs;
+  }, [vocabs, sortedIDs, searchTEXT]);
 
   const placementOBJ = useMemo(() => {
-    console.log("GET_placement");
-    return vocabs.folders[dispFolderID].translationIDs
-      .map((trID) => {
-        return { id: trID, created: vocabs.translations[trID].created };
-      })
-      .sort((a, b) => a.created - b.created)
-      .reduce((finalOBJ, tr, index) => {
-        finalOBJ[tr.id] = index + 1;
-        return finalOBJ;
-      }, {});
-  }, [vocabs, dispFolderID]);
+    return GET_trPlacement(vocabs.translations, currFOLDER);
+  }, [vocabs.translations, currFOLDER]);
 
   const [ISformOpen, SET_form] = useState(false);
   const [trEditID, SET_trEditID] = useState(undefined);
-
   function TOGGLE_form(SHOULDopen, editID = undefined) {
     SET_form(SHOULDopen);
     SET_trEditID(editID);

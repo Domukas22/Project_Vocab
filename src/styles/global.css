@@ -87,6 +87,10 @@ body {
   width: 100%;
   max-width: var(--container_width);
   margin: auto;
+  
+  display: flex;
+  flex-direction: column;
+  row-gap: 3rem;
 }
 h1, h2, h3, h4, h5, p, li{
   font-weight: 300;
@@ -163,7 +167,7 @@ form .chooseColorWRAP {
 }
 .checkLINE {
   height: 1.4rem;
-  width: 0.4rem;
+  width: 0.3rem;
   border-radius: 10px;
   background: var(--green);
 

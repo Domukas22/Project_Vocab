@@ -18,7 +18,7 @@ export function Nav({ currFOLDER, availFOLDERS, SET_dispFolderID, TOGGLE_form, s
 
   return (
     <nav>
-      <div className="navBTN" onClick={() => TOGGLE_folders()} data-open={AREfoldersOpen}>
+      <div className="navBTN chooseFolder" onClick={() => TOGGLE_folders()} data-open={AREfoldersOpen}>
         {currFOLDER.title}
         <div className="navDROPDOWN">
           {availFOLDERS.map((folder) => {
@@ -44,11 +44,11 @@ export function Nav({ currFOLDER, availFOLDERS, SET_dispFolderID, TOGGLE_form, s
           SET_searchText(e.target.value.toLowerCase());
         }}
       />
-      <div className="navBTN" onClick={() => TOGGLE_filters()} data-open={ISsortOpen}>
+      <div className="navBTN sort" onClick={() => TOGGLE_filters()} data-open={ISsortOpen}>
         {sorting}
         <div className="navDROPDOWN">
-          <div className="navDropdownITEM" data-current={sorting === "Random"} onClick={() => SET_sorting("Random")}>
-            Random
+          <div className="navDropdownITEM" data-current={sorting === "Shuffle"} onClick={() => SET_sorting("Shuffle")}>
+            Shuffle
           </div>
           <div className="navDropdownITEM" data-current={sorting === "Color"} onClick={() => SET_sorting("Color")}>
             Color

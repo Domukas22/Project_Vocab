@@ -87,6 +87,7 @@ form.bigForm[data-color="high"] .button.color.high {
 }
 .button.boardBottom:hover {
   background-color: var(--color_3);
+  color: var(--green);
 }
 .button.boardBottom.scrollTOP {
   position: fixed;

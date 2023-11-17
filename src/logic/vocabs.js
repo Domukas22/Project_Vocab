@@ -43,9 +43,9 @@ export const dummyVOCABS = {
   translations: {
     t111: {
       id: "t111",
-      title: "Jemandes Freiheit einschränken",
+      title: "Jemandes Freiheit <u>einschränken</u>",
       translation: "Restrict someone's freedom",
-      color: "low",
+      color: "high",
       ruleIDs: ["r222", "r444"],
       created: date + 3,
     },

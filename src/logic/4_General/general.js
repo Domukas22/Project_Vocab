@@ -61,8 +61,8 @@ function SORT_byDate(TRs, idLIST) {
     .map((tr) => tr.id);
 }
 export function SORT_trIDs(TRs, idLIST, HOWtoSort) {
-  console.log("sort => " + HOWtoSort);
-  if (HOWtoSort === "Random") {
+  console.log(`sort --> ${HOWtoSort}`);
+  if (HOWtoSort === "Shuffle") {
     return SORT_randomly([...idLIST]);
   }
   if (HOWtoSort === "Color") {
@@ -75,7 +75,7 @@ export function SORT_trIDs(TRs, idLIST, HOWtoSort) {
   return idLIST;
 }
 export function FILTER_bySearch(vocabs, idLIST, searchTEXT) {
-  console.log("search => " + searchTEXT);
+  console.log(`search --> ${searchTEXT}`);
   return idLIST.filter((trID) => {
     const tr = vocabs.translations[trID];
 
@@ -102,4 +102,18 @@ export function FILTER_bySearch(vocabs, idLIST, searchTEXT) {
 
     return false;
   });
+}
+
+/////////////////
+
+export function GET_trPlacement(allTRs, currFOLDER) {
+  return currFOLDER.translationIDs
+    .map((trID) => {
+      return { id: trID, created: allTRs[trID].created };
+    })
+    .sort((a, b) => a.created - b.created)
+    .reduce((finalOBJ, tr, index) => {
+      finalOBJ[tr.id] = index + 1;
+      return finalOBJ;
+    }, {});
 }

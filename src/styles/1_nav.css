@@ -9,7 +9,6 @@ nav {
 
   position: relative;
   z-index: 10;
-  margin-bottom: 2.8rem;
 
   border: var(--border_005);
   border-radius: var(--radius_big);
@@ -28,6 +27,14 @@ nav {
 
   cursor: pointer;
   transition: 100ms ease-in-out;
+}
+.navBTN.chooseFolder {
+  padding: 0;
+  width: 14rem;
+}
+.navBTN.sort {
+  padding: 0;
+  width: 12rem;
 }
 .navBTN:last-child {
   border: none;
