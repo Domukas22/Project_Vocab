@@ -173,10 +173,11 @@ form.bigForm[data-color="high"] .colorCIRCLE {
 
 @media screen and (max-width: 48rem) {
   .formWRAP {
-    padding: 4vmin;
+    padding: 4vmin 4vmin 6rem;
   }
   form.bigForm > .top {
     padding: 4vmin;
+    flex-direction: column;
   }
   form > * {
     padding: 4vmin !important;
@@ -184,5 +185,10 @@ form.bigForm[data-color="high"] .colorCIRCLE {
   fieldset {
     margin-bottom: 2rem;
   }
+  .formEndBtnWRAP {
+    flex-direction: column-reverse;
+    row-gap: 1rem;
+  }
+  
   
 }
