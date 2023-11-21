@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import { ChooseColorBox } from "../4_General/Comps_general";
 import { STORE_vocabs } from "../4_General/general";
 import { terminal } from "virtual:terminal";
+import PropTypes from "prop-types";
 
 function Example({ text }) {
   return <li className="boardTEXT ex" dangerouslySetInnerHTML={{ __html: text }}></li>;
@@ -112,3 +113,28 @@ export function TranslationBoard({ trIDs, vocabs, TOGGLE_form, SET_vocabs, sorti
     </div>
   );
 }
+
+Example.propTypes = {
+  text: PropTypes.string.isRequired,
+};
+Rule.propTypes = {
+  ruleTITLE: PropTypes.string.isRequired,
+  exIDs: PropTypes.array.isRequired,
+  vocabs: PropTypes.object.isRequired,
+};
+Translation.propTypes = {
+  tr: PropTypes.object.isRequired,
+  vocabs: PropTypes.object.isRequired,
+  TOGGLE_form: PropTypes.func.isRequired,
+  SET_vocabs: PropTypes.func.isRequired,
+  sorting: PropTypes.string.isRequired,
+  placement: PropTypes.string.isRequired,
+};
+TranslationBoard.propTypes = {
+  trIDs: PropTypes.array.isRequired,
+  vocabs: PropTypes.array.isRequired,
+  TOGGLE_form: PropTypes.func.isRequired,
+  SET_vocabs: PropTypes.func.isRequired,
+  sorting: PropTypes.string.isRequired,
+  placementOBJ: PropTypes.object.isRequired,
+};

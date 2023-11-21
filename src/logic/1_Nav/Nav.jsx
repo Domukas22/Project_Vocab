@@ -4,6 +4,7 @@
 //
 //
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 export function Nav({ currFOLDER, availFOLDERS, SET_dispFolderID, TOGGLE_form, sorting, SET_sorting, SET_searchText }) {
   const [AREfoldersOpen, SET_foldersOpen] = useState(false);
@@ -85,3 +86,13 @@ export function Nav({ currFOLDER, availFOLDERS, SET_dispFolderID, TOGGLE_form, s
     </nav>
   );
 }
+
+Nav.propTypes = {
+  currFOLDER: PropTypes.object.isRequired,
+  availFOLDERS: PropTypes.array.isRequired,
+  SET_dispFolderID: PropTypes.func.isRequired,
+  TOGGLE_form: PropTypes.func.isRequired,
+  sorting: PropTypes.string.isRequired,
+  SET_sorting: PropTypes.func.isRequired,
+  SET_searchText: PropTypes.func.isRequired,
+};

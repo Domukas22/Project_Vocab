@@ -5,8 +5,9 @@
 //
 import { useState, useEffect } from "react";
 import { SCROLL_top } from "./general";
+import PropTypes from "prop-types";
 
-export function ChooseColorBox({ UPDATE_color, optionalCLASS = "" }) {
+export function ChooseColorBox({ UPDATE_color, optionalCLASS }) {
   const [colorChoiceOpen, setColorChoiceOpen] = useState(false);
   const TOGGLE_colorChoiceBox = () => {
     setColorChoiceOpen((c) => !c);
@@ -72,3 +73,11 @@ export function BTNscrollTop() {
     </div>
   );
 }
+
+ChooseColorBox.propTypes = {
+  UPDATE_color: PropTypes.func.isRequired,
+  optionalCLASS: PropTypes.string,
+};
+ChooseColorBox.defaultProps = {
+  optionalCLASS: "",
+};

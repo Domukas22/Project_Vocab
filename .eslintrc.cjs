@@ -14,7 +14,13 @@ module.exports = {
   plugins: ["react-refresh"],
   rules: {
     "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
-    "quote-props": ["error", "consistent-as-needed"],
+    // "quote-props": ["error", "consistent-as-needed"],
+    "jest/no-large-snapshots": [
+      "warn",
+      {
+        maxSize: 15,
+      },
+    ],
   },
   globals: {
     PropTypes: "readonly",
@@ -23,7 +29,7 @@ module.exports = {
     {
       files: ["*.jsx"],
       rules: {
-        "react/prop-types": "off",
+        // "react/prop-types": "off",
       },
     },
   ],

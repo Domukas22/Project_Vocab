@@ -37,7 +37,7 @@ export function GENERATE_emptyTr() {
       id: GENERATE_id("tr"),
       title: "",
       translation: "",
-      color: "low",
+      color: "high",
       ruleIDs: [],
       created: +new Date(),
     },

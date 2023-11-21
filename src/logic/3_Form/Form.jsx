@@ -2,13 +2,14 @@
 //
 //
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { STORE_vocabs } from "../4_General/general";
 import { CLEAN_vocabs, POPULATE_selectedTr, SORT_examples, SORT_rules } from "./utils";
 import { GENERATE_emptyEx, GENERATE_emptyRule, GENERATE_emptyTr, GENERATE_emptyCleanupIDs } from "./generate";
 import { ChooseColorBox } from "../4_General/Comps_general";
+import PropTypes from "prop-types";
 
-function FormTopFieldset({ HANLDE_InputChange, trTITLE, trTR, ISopen }) {
+function FormTopFieldset({ HANLDE_InputChange, trTITLE, trTR }) {
   const title = useRef(null);
   const tr = useRef(null);
 
@@ -391,5 +392,31 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
   );
 }
 
-// generate apropriate ids
-// ===> ids not attach to reeact components ------------------------------------------------->
+FormTopFieldset.propTypes = {
+  HANLDE_InputChange: PropTypes.func.isRequired,
+  trTITLE: PropTypes.string.isRequired,
+  trTR: PropTypes.string.isRequired,
+};
+Example.propTypes = {
+  ex: PropTypes.object.isRequired,
+  onChangeFN: PropTypes.func.isRequired,
+  DELETE_example: PropTypes.func.isRequired,
+  parentRuleID: PropTypes.string.isRequired,
+};
+Rule.propTypes = {
+  rule: PropTypes.object.isRequired,
+  exIDs: PropTypes.array.isRequired,
+  exOBJS: PropTypes.object.isRequired,
+  DELETE_rule: PropTypes.func.isRequired,
+  ADD_example: PropTypes.func.isRequired,
+  DELETE_example: PropTypes.func.isRequired,
+  onChangeFN: PropTypes.func.isRequired,
+};
+Form.propTypes = {
+  ISopen: PropTypes.bool.isRequired,
+  TOGGLE_form: PropTypes.func.isRequired,
+  vocabs: PropTypes.object.isRequired,
+  SET_vocabs: PropTypes.func.isRequired,
+  trEditID: PropTypes.string,
+  dispFolderID: PropTypes.string.isRequired,
+};
