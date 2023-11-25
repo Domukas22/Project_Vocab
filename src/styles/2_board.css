@@ -29,8 +29,7 @@
 }
 
 .translation > .top {
-  min-height: 8rem;
-  padding: 2rem 2.8rem;
+  padding: 2.6rem 2.8rem;
   
   display: flex;
   justify-content: space-between;
@@ -44,6 +43,8 @@
   margin-left: 2rem;
   font-size: 1.5rem;
   font-weight: 500;
+  line-height: inherit;
+  margin-top: 0.1rem;
 }
 .translation .contentWRAP {
   transform: translateY(-1rem);
@@ -138,3 +139,8 @@ h3.noTR {
   border: var(--border_005);
 }
 
+@media screen and (max-width: 48rem) {
+  .translation[data-open="false"]:hover {
+    background-color: inherit;
+  }
+}

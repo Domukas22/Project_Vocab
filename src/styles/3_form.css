@@ -177,7 +177,6 @@ form.bigForm[data-color="high"] .colorCIRCLE {
   }
   form.bigForm > .top {
     padding: 4vmin;
-    flex-direction: column;
   }
   form > * {
     padding: 4vmin !important;

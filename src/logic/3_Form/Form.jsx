@@ -10,13 +10,35 @@ import { ChooseColorBox } from "../4_General/Comps_general";
 import PropTypes from "prop-types";
 
 function FormTopFieldset({ HANLDE_InputChange, trTITLE, trTR }) {
-  const title = useRef(null);
-  const tr = useRef(null);
+  const titleTEXT = useRef(null);
+  const translationTEXT = useRef(null);
 
+  function paste(e) {
+    e.preventDefault();
+    let text = e.clipboardData ? e.clipboardData.getData("text/plain") : "";
+
+    if (document.getSelection) {
+      const selection = document.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        console.log(range);
+        range.deleteContents();
+
+        const textNode = document.createTextNode(text);
+        range.insertNode(textNode);
+
+        // Move the cursor to the end of the inserted text
+        range.selectNodeContents(textNode);
+        range.collapse(false); // false collapses the range to the end point
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
+  }
   useEffect(() => {
     // insert tr title + translation only on load, NOT on onChange/onInput
-    title.current.innerHTML = trTITLE;
-    tr.current.innerHTML = trTR;
+    titleTEXT.current.innerHTML = trTITLE;
+    translationTEXT.current.innerHTML = trTR;
   }, []);
 
   return (
@@ -33,7 +55,8 @@ function FormTopFieldset({ HANLDE_InputChange, trTITLE, trTR }) {
             contentEditable="true"
             onInput={HANLDE_InputChange}
             data-type="title"
-            ref={title}
+            ref={titleTEXT}
+            onPaste={paste}
           ></div>
         </div>
         <div className="inputWRAP">
@@ -43,14 +66,13 @@ function FormTopFieldset({ HANLDE_InputChange, trTITLE, trTR }) {
             className="textEdit"
             contentEditable="true"
             onInput={HANLDE_InputChange}
-            ref={tr}
+            ref={translationTEXT}
           ></div>
         </div>
       </div>
     </fieldset>
   );
 }
-
 function Example({ ex, onChangeFN, DELETE_example, parentRuleID }) {
   const exText = useRef(null);
   useEffect(() => {
@@ -149,20 +171,9 @@ function ADD_toCleanUp(oldCleanupOBJ, type, id, exIDs = null) {
 export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFolderID }) {
   const ISanEdit = trEditID !== undefined;
 
-  const [trOBJ, SET_trObj] = useState(GENERATE_emptyTr());
+  const [trOBJ, SET_trObj] = useState(ISanEdit ? POPULATE_selectedTr(trEditID, vocabs) : GENERATE_emptyTr());
   const [cleanupIDs, SET_cleanupIDs] = useState(GENERATE_emptyCleanupIDs());
 
-  // generate a new "FormTopFieldset" key on each toggle
-  // so that the inputs get refreshed
-  const [topKEY, SET_topKey] = useState(Math.random());
-
-  useEffect(() => {
-    if (trEditID) SET_trObj(POPULATE_selectedTr(trEditID, vocabs));
-    if (ISopen && !trEditID) {
-      SET_trObj(() => GENERATE_emptyTr());
-    }
-    SET_topKey(Math.random());
-  }, [ISopen]);
   const UPDATE_trObj = (updateFunction) => {
     SET_trObj((oldTR) => updateFunction(oldTR));
   };
@@ -332,7 +343,7 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
       <form action="submit" className="bigForm" data-color={trOBJ.tr.color}>
         <div className="top">
           <div className="textWRAP">
-            <h1 className="formTITLE">Übersetzung {ISanEdit ? "bearbeiten" : "hinfügen"}</h1>
+            <h1 className="formTITLE">{ISanEdit ? "Bearbeiten" : "Hinfügen"}</h1>
             {ISanEdit && <p className="textEdit notEdit" dangerouslySetInnerHTML={{ __html: trOBJ.tr.title }}></p>}
           </div>
           <div className="btnWRAP">
@@ -347,13 +358,9 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
         </div>
         <div className="content">
           <FormTopFieldset
-            // place random key so that it rerenders each time
-            // so that the tr.title and tr.translation get refreshed
-            key={topKEY}
             HANLDE_InputChange={HANLDE_InputChange}
             trTITLE={trOBJ.tr.title}
             trTR={trOBJ.tr.translation}
-            ISopen={ISopen}
           />
 
           {SORT_rules(trOBJ.rules).map((rule) => {
@@ -386,6 +393,40 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
           <div className="button done" onClick={() => ADD_tr()}>
             {ISanEdit ? "Speichern" : "Hinfügen"}
           </div>
+        </div>
+      </form>
+    </div>
+  );
+}
+// ======> finish adding "Add Folder" functionality
+export function FolderForm({ TOGGLE_folderForm, SET_vocabs, SET_dispFolderID }) {
+  return (
+    <div className="formWRAP" data-open={ISopen}>
+      <form action="submit" className="bigForm" data-color={trOBJ.tr.color}>
+        <div className="top">
+          <div className="textWRAP">
+            <h1 className="formTITLE">{ISanEdit ? "Bearbeiten" : "Hinfügen"}</h1>
+            {ISanEdit && <p className="textEdit notEdit" dangerouslySetInnerHTML={{ __html: trOBJ.tr.title }}></p>}
+          </div>
+          <div className="btnWRAP">
+            <div className="button seeThrough X" onClick={RESET_form}>
+              <div className="xWRAP">
+                <div className="xLINE"></div>
+                <div className="xLINE second"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="inputWRAP">
+          <label htmlFor="title">Titel</label>
+          <div
+            className="textEdit"
+            contentEditable="true"
+            onInput={HANLDE_InputChange}
+            data-type="title"
+            ref={titleTEXT}
+            onPaste={paste}
+          ></div>
         </div>
       </form>
     </div>

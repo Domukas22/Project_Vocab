@@ -6,6 +6,9 @@
 .translation[data-color="low"] .boardTEXT {
   transition: 100ms;
 }
+.translation .boardTEXT span {
+  color: var(--white_07);
+}
 .translation[data-color="low"] .boardTEXT u {
   color: var(--white_085);
 }

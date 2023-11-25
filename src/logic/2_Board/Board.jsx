@@ -55,7 +55,7 @@ function Translation({ tr, vocabs, TOGGLE_form, SET_vocabs, sorting, placement }
     <div className="translation" data-color={color} data-open={isOpen}>
       <div className="top" onClick={TOGGLE_open}>
         <h1 className="boardTEXT" dangerouslySetInnerHTML={{ __html: title }}></h1>
-        {sorting === "Date" && <p>{placement}</p>}
+        {sorting === "Date" && <p style={{ marginBottom: "auto" }}>{placement}</p>}
       </div>
       <div className="bottom" ref={bottomRef}>
         <div className="contentWRAP" data-id={tr.id}>
@@ -102,7 +102,6 @@ export function TranslationBoard({ trIDs, vocabs, TOGGLE_form, SET_vocabs, sorti
             tr={tr}
             vocabs={vocabs}
             key={trID}
-            // SET_trEdit={SET_trEdit}
             TOGGLE_form={TOGGLE_form}
             SET_vocabs={SET_vocabs}
             sorting={sorting}
@@ -128,11 +127,11 @@ Translation.propTypes = {
   TOGGLE_form: PropTypes.func.isRequired,
   SET_vocabs: PropTypes.func.isRequired,
   sorting: PropTypes.string.isRequired,
-  placement: PropTypes.string.isRequired,
+  placement: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 TranslationBoard.propTypes = {
   trIDs: PropTypes.array.isRequired,
-  vocabs: PropTypes.array.isRequired,
+  vocabs: PropTypes.object.isRequired,
   TOGGLE_form: PropTypes.func.isRequired,
   SET_vocabs: PropTypes.func.isRequired,
   sorting: PropTypes.string.isRequired,

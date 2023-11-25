@@ -2,7 +2,7 @@
 //
 //
 //
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Nav } from "./1_Nav/Nav";
 import {
   GET_folderINFOS,
@@ -32,16 +32,22 @@ export default function App() {
   const [searchTEXT, SET_searchText] = useState("");
   const [sorting, SET_sorting] = useState("Shuffle");
 
+  const [loading, setLoading] = useState(false);
+  const [asyncSortedIDs, setAsyncSortedIDs] = useState([]);
+  const [asyncArrangedIDs, setAsyncArrangedIDs] = useState([]);
+
   const sortedIDs = useMemo(() => {
     return SORT_trIDs(vocabs.translations, currFOLDER.translationIDs, sorting);
-  }, [vocabs.translations, currFOLDER.translationIDs, sorting]);
+  }, [sorting, currFOLDER.title]);
 
   const arrangedIDs = useMemo(() => {
     if (searchTEXT !== "") {
       return FILTER_bySearch(vocabs, sortedIDs, searchTEXT);
     }
     return sortedIDs;
-  }, [vocabs, sortedIDs, searchTEXT]);
+  }, [sortedIDs, searchTEXT]);
+
+  useEffect(() => {}, []);
 
   const placementOBJ = useMemo(() => {
     return GET_trPlacement(vocabs.translations, currFOLDER);
@@ -65,22 +71,28 @@ export default function App() {
         SET_sorting={SET_sorting}
         SET_searchText={SET_searchText}
       />
-      <TranslationBoard
-        trIDs={arrangedIDs}
-        vocabs={vocabs}
-        TOGGLE_form={TOGGLE_form}
-        SET_vocabs={SET_vocabs}
-        sorting={sorting}
-        placementOBJ={placementOBJ}
-      />
-      <Form
-        ISopen={ISformOpen}
-        TOGGLE_form={TOGGLE_form}
-        trEditID={trEditID}
-        vocabs={vocabs}
-        SET_vocabs={SET_vocabs}
-        dispFolderID={dispFolderID}
-      />
+      {loading ? (
+        <div>Loading...</div> // Replace with your loader component
+      ) : (
+        <TranslationBoard
+          trIDs={arrangedIDs}
+          vocabs={vocabs}
+          TOGGLE_form={TOGGLE_form}
+          SET_vocabs={SET_vocabs}
+          sorting={sorting}
+          placementOBJ={placementOBJ}
+        />
+      )}
+      {ISformOpen && (
+        <Form
+          ISopen={ISformOpen}
+          TOGGLE_form={TOGGLE_form}
+          trEditID={trEditID}
+          vocabs={vocabs}
+          SET_vocabs={SET_vocabs}
+          dispFolderID={dispFolderID}
+        />
+      )}
       <BTNscrollTop />
       <div className="button boardBottom" onClick={() => TOGGLE_form(true)}>
         + Add new

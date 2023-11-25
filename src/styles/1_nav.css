@@ -39,11 +39,11 @@ nav .contentWRAP.mobile {
   
 } 
 .navBTN.chooseFolder {
-  padding: 0;
+  /* padding: 0; */
   width: 14rem;
 }
 .navBTN.sort {
-  padding: 0;
+  /* padding: 0; */
   width: 12rem;
 }
 .navBTN:last-child {
@@ -111,6 +111,7 @@ nav .contentWRAP.mobile {
 input[type="search"] {
   flex: 1;
   padding: 0 2.4rem;
+  min-width: 20rem;
   
   font-weight: 300;
   color: #fba2ff;

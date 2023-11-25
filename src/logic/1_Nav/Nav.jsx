@@ -65,7 +65,7 @@ export function Nav({ currFOLDER, availFOLDERS, SET_dispFolderID, TOGGLE_form, s
             </div>
           </div>
         </div>
-        <div className="navBTN addTR" onClick={() => TOGGLE_form(true)}>
+        <div className="navBTN addTR" title="Add translation" onClick={() => TOGGLE_form(true)}>
           <div className="xWRAP">
             <div className="xLINE"></div>
             <div className="xLINE second"></div>
