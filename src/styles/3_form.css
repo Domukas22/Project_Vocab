@@ -29,13 +29,22 @@ h2.formSUBTITLE {
   z-index: 10;
 
   overflow-y: auto;
-  transition: 200ms;
+  transition: 150ms;
+  opacity: 50%;
+  animation: formOpen 150ms ease-out forwards;
 }
 .formWRAP[data-open="false"] {
-  opacity: 0%;
-  pointer-events: none;
+  animation: formClose 150ms ease-out forwards;
+  /* pointer-events: none; */
 }
-
+@keyframes formOpen {
+  from { opacity: 0; pointer-events: none }
+  to { opacity: 1; pointer-events: all }
+}
+@keyframes formClose{
+  from { opacity: 1; pointer-events: none}
+  to { opacity: 0;}
+}
 
 form.bigForm {
   background-color: #2D2D2D;

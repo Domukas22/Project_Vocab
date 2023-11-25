@@ -8,6 +8,23 @@
   background-color:var(--bg_main);
   border-radius: var(--radius_big);
   overflow: hidden;
+  position: relative;
+}
+.translationBOARD[data-loading="true"] {
+  pointer-events: none;
+  z-index: 3;
+}
+.loadingOVERLAY {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background-color: rgb(0 0 0 / 15%);
+  backdrop-filter: blur(3px);
+  opacity: 0%;
+  transition: 200ms;
+}
+.translationBOARD[data-loading="true"] .loadingOVERLAY {
+  opacity: 100%;
 }
 
 .translation {
@@ -137,6 +154,11 @@ h3.noTR {
 
   border-radius: var(--radius_big);
   border: var(--border_005);
+  transition: 200ms;
+}
+h3.noTR[data-loading="true"] {
+  color: white;
+  background-color: #00000017;
 }
 
 @media screen and (max-width: 48rem) {

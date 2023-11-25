@@ -348,7 +348,14 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
           </div>
           <div className="btnWRAP">
             <ChooseColorBox UPDATE_color={EDIT_color} optionalCLASS={" seeThrough"} />
-            <div className="button seeThrough X" onClick={RESET_form}>
+            <div
+              className="button seeThrough X"
+              onClick={() => {
+                setTimeout(() => {
+                  RESET_form();
+                }, 150);
+              }}
+            >
               <div className="xWRAP">
                 <div className="xLINE"></div>
                 <div className="xLINE second"></div>

@@ -89,12 +89,16 @@ function Translation({ tr, vocabs, TOGGLE_form, SET_vocabs, sorting, placement }
   );
 }
 
-export function TranslationBoard({ trIDs, vocabs, TOGGLE_form, SET_vocabs, sorting, placementOBJ }) {
+export function TranslationBoard({ ISloading, trIDs, vocabs, TOGGLE_form, SET_vocabs, sorting, placementOBJ }) {
   if (trIDs.length === 0) {
-    return <h3 className="noTR">No translations</h3>;
+    return (
+      <h3 className="noTR" data-loading={ISloading}>
+        {ISloading ? "Loading" : "No translations"}
+      </h3>
+    );
   }
   return (
-    <div className="translationBOARD">
+    <div className="translationBOARD" data-loading={ISloading}>
       {trIDs.map((trID) => {
         const tr = vocabs.translations[trID];
         return (
@@ -109,6 +113,7 @@ export function TranslationBoard({ trIDs, vocabs, TOGGLE_form, SET_vocabs, sorti
           />
         );
       })}
+      <div className="loadingOVERLAY"></div>
     </div>
   );
 }
@@ -130,6 +135,7 @@ Translation.propTypes = {
   placement: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 TranslationBoard.propTypes = {
+  ISloading: PropTypes.bool.isRequired,
   trIDs: PropTypes.array.isRequired,
   vocabs: PropTypes.object.isRequired,
   TOGGLE_form: PropTypes.func.isRequired,
