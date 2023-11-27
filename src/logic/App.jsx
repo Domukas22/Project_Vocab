@@ -16,6 +16,7 @@ import { Form } from "./3_Form/Form";
 import { dummyVOCABS } from "./vocabs";
 import { TranslationBoard } from "./2_Board/Board";
 import { BTNscrollTop } from "./4_General/Comps_general";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function App() {
   // console.log("|---------- PRINT APP ----------|");
@@ -105,16 +106,26 @@ export default function App() {
         placementOBJ={placementOBJ}
         ISloading={loading}
       />
-      {ISformOpen && (
-        <Form
-          ISopen={ISformOpen}
-          TOGGLE_form={TOGGLE_form}
-          trEditID={trEditID}
-          vocabs={vocabs}
-          SET_vocabs={SET_vocabs}
-          dispFolderID={dispFolderID}
-        />
-      )}
+      <AnimatePresence>
+        {ISformOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ ease: "linear", duration: 0.1 }}
+            style={{ zIndex: 10 }}
+          >
+            <Form
+              ISopen={ISformOpen}
+              TOGGLE_form={TOGGLE_form}
+              trEditID={trEditID}
+              vocabs={vocabs}
+              SET_vocabs={SET_vocabs}
+              dispFolderID={dispFolderID}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <BTNscrollTop />
       <div className="button boardBottom" onClick={() => TOGGLE_form(true)}>
         + Add new

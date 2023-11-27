@@ -82,19 +82,21 @@ function Example({ ex, onChangeFN, DELETE_example, parentRuleID }) {
   }, []);
 
   return (
-    <div className="inputANDdeleteWRAP" key={ex.id}>
-      <div
-        ref={exText}
-        className="textEdit"
-        data-type="example"
-        contentEditable="true"
-        onInput={onChangeFN}
-        data-id={ex.id}
-      ></div>
-      <div className="button seeThrough X" onClick={() => DELETE_example(parentRuleID, ex.id)}>
-        <div className="xWRAP">
-          <div className="xLINE"></div>
-          <div className="xLINE second"></div>
+    <div className="exampleWRAP">
+      <div className="inputANDdeleteWRAP" key={ex.id}>
+        <div
+          ref={exText}
+          className="textEdit"
+          data-type="example"
+          contentEditable="true"
+          onInput={onChangeFN}
+          data-id={ex.id}
+        ></div>
+        <div className="button seeThrough X" onClick={() => DELETE_example(parentRuleID, ex.id)}>
+          <div className="xWRAP">
+            <div className="xLINE"></div>
+            <div className="xLINE second"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -108,51 +110,64 @@ function Rule({ rule, exIDs, exOBJS, DELETE_rule, ADD_example, DELETE_example, o
   }, []);
 
   return (
-    <fieldset>
-      <div className="top">
-        <legend>Verwendungsregel</legend>
-        <div className="buttons">
-          <div className="button textOnly" onClick={() => DELETE_rule(rule.id)}>
-            Löschen
+    <div className="fieldsetWRAP">
+      <fieldset>
+        <div className="top">
+          <legend>Verwendungsregel</legend>
+          <div className="buttons">
+            <div className="button textOnly" onClick={() => DELETE_rule(rule.id)}>
+              Löschen
+            </div>
           </div>
         </div>
-      </div>
-      <div className="inputs">
-        <div className={`inputWRAP title ${exIDs.length === 0 ? "noMargin" : ""}`}>
-          <label htmlFor={"explanation_title"}>Regeltitel</label>
+        <div className="inputs">
+          <div className={`inputWRAP title ${exIDs.length === 0 ? "noMargin" : ""}`}>
+            <label htmlFor={"explanation_title"}>Regeltitel</label>
+            <div
+              data-type="rule"
+              ref={ruleTitle}
+              className="textEdit"
+              contentEditable="true"
+              onInput={onChangeFN}
+              data-id={rule.id}
+            ></div>
+          </div>
+          <div className="inputWRAP examples">
+            {exIDs.length > 0 && <label>Beispiele</label>}
+            <AnimatePresence>
+              {SORT_examples(exIDs, exOBJS).map((ex) => {
+                return (
+                  <motion.div
+                    className="examplePREWRAP"
+                    key={ex.id}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0, pointerEvents: "none" }}
+                    transition={{ ease: "easeIn", duration: 0.2 }}
+                  >
+                    <Example
+                      ex={ex}
+                      onChangeFN={onChangeFN}
+                      DELETE_example={DELETE_example}
+                      parentRuleID={rule.id}
+                      key={ex.id}
+                    />
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
           <div
-            data-type="rule"
-            ref={ruleTitle}
-            className="textEdit"
-            contentEditable="true"
-            onInput={onChangeFN}
-            data-id={rule.id}
-          ></div>
+            className="button textLeft seeThrough add"
+            onClick={() => {
+              ADD_example(rule.id);
+            }}
+          >
+            + Beispiel hinfügen
+          </div>
         </div>
-        <div className="inputWRAP examples">
-          {exIDs.length > 0 && <label>Beispiele</label>}
-          {SORT_examples(exIDs, exOBJS).map((ex) => {
-            return (
-              <Example
-                ex={ex}
-                onChangeFN={onChangeFN}
-                DELETE_example={DELETE_example}
-                parentRuleID={rule.id}
-                key={ex.id}
-              />
-            );
-          })}
-        </div>
-        <div
-          className="button textLeft seeThrough add"
-          onClick={() => {
-            ADD_example(rule.id);
-          }}
-        >
-          + Beispiel hinfügen
-        </div>
-      </div>
-    </fieldset>
+      </fieldset>
+    </div>
   );
 }
 
@@ -340,72 +355,74 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
   }
 
   return (
-    <AnimatePresence>
-      <motion.div className="formWRAP" data-open={ISopen}>
-        <form action="submit" className="bigForm" data-color={trOBJ.tr.color}>
-          <div className="top">
-            <div className="textWRAP">
-              <h1 className="formTITLE">{ISanEdit ? "Bearbeiten" : "Hinfügen"}</h1>
-              {ISanEdit && <p className="textEdit notEdit" dangerouslySetInnerHTML={{ __html: trOBJ.tr.title }}></p>}
-            </div>
-            <div className="btnWRAP">
-              <ChooseColorBox UPDATE_color={EDIT_color} optionalCLASS={" seeThrough"} />
-              <div
-                className="button seeThrough X"
-                onClick={() => {
-                  setTimeout(() => {
-                    RESET_form();
-                  }, 150);
-                }}
-              >
-                <div className="xWRAP">
-                  <div className="xLINE"></div>
-                  <div className="xLINE second"></div>
-                </div>
+    <div className="formWRAP" data-open={ISopen}>
+      <form action="submit" className="bigForm" data-color={trOBJ.tr.color}>
+        <div className="top">
+          <div className="textWRAP">
+            <h1 className="formTITLE">{ISanEdit ? "Bearbeiten" : "Hinfügen"}</h1>
+            {ISanEdit && <p className="textEdit notEdit" dangerouslySetInnerHTML={{ __html: trOBJ.tr.title }}></p>}
+          </div>
+          <div className="btnWRAP">
+            <ChooseColorBox UPDATE_color={EDIT_color} optionalCLASS={" seeThrough"} />
+            <div className="button seeThrough X" onClick={RESET_form}>
+              <div className="xWRAP">
+                <div className="xLINE"></div>
+                <div className="xLINE second"></div>
               </div>
             </div>
           </div>
-          <div className="content">
-            <FormTopFieldset
-              HANLDE_InputChange={HANLDE_InputChange}
-              trTITLE={trOBJ.tr.title}
-              trTR={trOBJ.tr.translation}
-            />
-
+        </div>
+        <div className="content">
+          <FormTopFieldset
+            HANLDE_InputChange={HANLDE_InputChange}
+            trTITLE={trOBJ.tr.title}
+            trTR={trOBJ.tr.translation}
+          />
+          <AnimatePresence>
             {SORT_rules(trOBJ.rules).map((rule) => {
               return (
-                <Rule
+                <motion.div
                   key={rule.id}
-                  rule={rule}
-                  exIDs={rule.exampleIDs}
-                  exOBJS={trOBJ.examples}
-                  DELETE_rule={DELETE_rule}
-                  ADD_example={ADD_example}
-                  DELETE_example={DELETE_example}
-                  onChangeFN={HANLDE_InputChange}
-                />
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0, pointerEvents: "none" }}
+                  transition={{ ease: "easeIn", duration: 0.2 }}
+                >
+                  <Rule
+                    key={rule.id}
+                    rule={rule}
+                    exIDs={rule.exampleIDs}
+                    exOBJS={trOBJ.examples}
+                    DELETE_rule={DELETE_rule}
+                    ADD_example={ADD_example}
+                    DELETE_example={DELETE_example}
+                    onChangeFN={HANLDE_InputChange}
+                  />
+                </motion.div>
               );
             })}
-            <div className="button textLeft seeThrough add" onClick={ADD_rule}>
-              + Neuer Regel
-            </div>
+          </AnimatePresence>
+        </div>
+        <div className="newRulePREWRAP">
+          <div className="button textLeft seeThrough add" onClick={ADD_rule}>
+            + Neuer Regel
           </div>
-          <div className="formEndBtnWRAP">
-            {ISanEdit && (
-              <div className="button delete" onClick={() => DELETE_tr(trEditID)}>
-                Delete
-              </div>
-            )}
-            <div className="button cancel" onClick={RESET_form}>
-              Abbrechen
+        </div>
+        <div className="formEndBtnWRAP">
+          {ISanEdit && (
+            <div className="button delete" onClick={() => DELETE_tr(trEditID)}>
+              Delete
             </div>
-            <div className="button done" onClick={() => ADD_tr()}>
-              {ISanEdit ? "Speichern" : "Hinfügen"}
-            </div>
+          )}
+          <div className="button cancel" onClick={RESET_form}>
+            Abbrechen
           </div>
-        </form>
-      </motion.div>
-    </AnimatePresence>
+          <div className="button done" onClick={() => ADD_tr()}>
+            {ISanEdit ? "Speichern" : "Hinfügen"}
+          </div>
+        </div>
+      </form>
+    </div>
   );
 }
 // ======> finish adding "Add Folder" functionality

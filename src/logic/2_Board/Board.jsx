@@ -99,6 +99,7 @@ export function TranslationBoard({ ISloading, trIDs, vocabs, TOGGLE_form, SET_vo
   }
   return (
     <div className="translationBOARD" data-loading={ISloading}>
+      <div className="loadingOVERLAY"></div>
       {trIDs.map((trID) => {
         const tr = vocabs.translations[trID];
         return (
@@ -113,7 +114,6 @@ export function TranslationBoard({ ISloading, trIDs, vocabs, TOGGLE_form, SET_vo
           />
         );
       })}
-      <div className="loadingOVERLAY"></div>
     </div>
   );
 }
