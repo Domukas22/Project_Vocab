@@ -30,12 +30,6 @@ h2.formSUBTITLE {
 
   overflow-y: auto;
   transition: 150ms;
-  opacity: 50%;
-  animation: formOpen 150ms ease-out forwards;
-}
-.formWRAP[data-open="false"] {
-  animation: formClose 150ms ease-out forwards;
-  /* pointer-events: none; */
 }
 @keyframes formOpen {
   from { opacity: 0; pointer-events: none }

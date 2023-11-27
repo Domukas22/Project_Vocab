@@ -8,6 +8,7 @@ import { CLEAN_vocabs, POPULATE_selectedTr, SORT_examples, SORT_rules } from "./
 import { GENERATE_emptyEx, GENERATE_emptyRule, GENERATE_emptyTr, GENERATE_emptyCleanupIDs } from "./generate";
 import { ChooseColorBox } from "../4_General/Comps_general";
 import PropTypes from "prop-types";
+import { motion, AnimatePresence } from "framer-motion";
 
 function FormTopFieldset({ HANLDE_InputChange, trTITLE, trTR }) {
   const titleTEXT = useRef(null);
@@ -339,70 +340,72 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
   }
 
   return (
-    <div className="formWRAP" data-open={ISopen}>
-      <form action="submit" className="bigForm" data-color={trOBJ.tr.color}>
-        <div className="top">
-          <div className="textWRAP">
-            <h1 className="formTITLE">{ISanEdit ? "Bearbeiten" : "Hinfügen"}</h1>
-            {ISanEdit && <p className="textEdit notEdit" dangerouslySetInnerHTML={{ __html: trOBJ.tr.title }}></p>}
-          </div>
-          <div className="btnWRAP">
-            <ChooseColorBox UPDATE_color={EDIT_color} optionalCLASS={" seeThrough"} />
-            <div
-              className="button seeThrough X"
-              onClick={() => {
-                setTimeout(() => {
-                  RESET_form();
-                }, 150);
-              }}
-            >
-              <div className="xWRAP">
-                <div className="xLINE"></div>
-                <div className="xLINE second"></div>
+    <AnimatePresence>
+      <motion.div className="formWRAP" data-open={ISopen}>
+        <form action="submit" className="bigForm" data-color={trOBJ.tr.color}>
+          <div className="top">
+            <div className="textWRAP">
+              <h1 className="formTITLE">{ISanEdit ? "Bearbeiten" : "Hinfügen"}</h1>
+              {ISanEdit && <p className="textEdit notEdit" dangerouslySetInnerHTML={{ __html: trOBJ.tr.title }}></p>}
+            </div>
+            <div className="btnWRAP">
+              <ChooseColorBox UPDATE_color={EDIT_color} optionalCLASS={" seeThrough"} />
+              <div
+                className="button seeThrough X"
+                onClick={() => {
+                  setTimeout(() => {
+                    RESET_form();
+                  }, 150);
+                }}
+              >
+                <div className="xWRAP">
+                  <div className="xLINE"></div>
+                  <div className="xLINE second"></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="content">
-          <FormTopFieldset
-            HANLDE_InputChange={HANLDE_InputChange}
-            trTITLE={trOBJ.tr.title}
-            trTR={trOBJ.tr.translation}
-          />
+          <div className="content">
+            <FormTopFieldset
+              HANLDE_InputChange={HANLDE_InputChange}
+              trTITLE={trOBJ.tr.title}
+              trTR={trOBJ.tr.translation}
+            />
 
-          {SORT_rules(trOBJ.rules).map((rule) => {
-            return (
-              <Rule
-                key={rule.id}
-                rule={rule}
-                exIDs={rule.exampleIDs}
-                exOBJS={trOBJ.examples}
-                DELETE_rule={DELETE_rule}
-                ADD_example={ADD_example}
-                DELETE_example={DELETE_example}
-                onChangeFN={HANLDE_InputChange}
-              />
-            );
-          })}
-          <div className="button textLeft seeThrough add" onClick={ADD_rule}>
-            + Neuer Regel
-          </div>
-        </div>
-        <div className="formEndBtnWRAP">
-          {ISanEdit && (
-            <div className="button delete" onClick={() => DELETE_tr(trEditID)}>
-              Delete
+            {SORT_rules(trOBJ.rules).map((rule) => {
+              return (
+                <Rule
+                  key={rule.id}
+                  rule={rule}
+                  exIDs={rule.exampleIDs}
+                  exOBJS={trOBJ.examples}
+                  DELETE_rule={DELETE_rule}
+                  ADD_example={ADD_example}
+                  DELETE_example={DELETE_example}
+                  onChangeFN={HANLDE_InputChange}
+                />
+              );
+            })}
+            <div className="button textLeft seeThrough add" onClick={ADD_rule}>
+              + Neuer Regel
             </div>
-          )}
-          <div className="button cancel" onClick={RESET_form}>
-            Abbrechen
           </div>
-          <div className="button done" onClick={() => ADD_tr()}>
-            {ISanEdit ? "Speichern" : "Hinfügen"}
+          <div className="formEndBtnWRAP">
+            {ISanEdit && (
+              <div className="button delete" onClick={() => DELETE_tr(trEditID)}>
+                Delete
+              </div>
+            )}
+            <div className="button cancel" onClick={RESET_form}>
+              Abbrechen
+            </div>
+            <div className="button done" onClick={() => ADD_tr()}>
+              {ISanEdit ? "Speichern" : "Hinfügen"}
+            </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 // ======> finish adding "Add Folder" functionality
