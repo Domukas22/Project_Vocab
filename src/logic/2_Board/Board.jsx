@@ -3,7 +3,7 @@
 //
 //
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { ChooseColorBox } from "../4_General/Comps_general";
 import { FILTER_bySearch, SORT_trIDs, STORE_vocabs } from "../4_General/general";
 import { terminal } from "virtual:terminal";
@@ -24,7 +24,7 @@ function Rule({ ruleTITLE, exIDs, vocabs }) {
     </div>
   );
 }
-function Translation({ tr, vocabs, TOGGLE_form, SET_vocabs, sorting, placement }) {
+function Translation({ tr, vocabs, TOGGLE_form, SET_vocabs, sorting, placement, loading }) {
   const { color, title, translation, ruleIDs } = tr;
   const [isOpen, setIsOpen] = useState(false);
 
@@ -56,7 +56,6 @@ function Translation({ tr, vocabs, TOGGLE_form, SET_vocabs, sorting, placement }
       <div className="top" onClick={TOGGLE_open}>
         <h1 className="boardTEXT" dangerouslySetInnerHTML={{ __html: title }}></h1>
         {sorting === "Date" && <p style={{ marginBottom: "auto" }}>{placement}</p>}
-        {tr.id}
       </div>
       <div className="bottom" ref={bottomRef}>
         <div className="contentWRAP" data-id={tr.id}>
@@ -104,36 +103,27 @@ export function TranslationBoard({
   const [asyncSortedIDs, SET_asyncSortedIDs] = useState([]);
   const [asyncArrangedIDs, SET_asyncArrangedIDs] = useState([]);
 
+  const results = useMemo(() => {
+    return asyncArrangedIDs;
+  }, [asyncArrangedIDs]);
+
   useEffect(() => {
-    // sort trs
-    console.log("called");
     let isCancelled = false;
     SET_loading(true);
 
     (async () => {
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate async operation
       if (isCancelled) return;
+
+      // Perform sorting
       const newSortedIDs = SORT_trIDs(vocabs.translations, trIDs, sorting);
-      SET_asyncSortedIDs(newSortedIDs);
-    })();
 
-    return () => {
-      isCancelled = true;
-    };
-  }, [sorting, trIDs, vocabs]);
-  //currFOLDER.title
-  useEffect(() => {
-    // filter trs
-    let isCancelled = false;
-    if (!loading) SET_loading(true);
-
-    (async () => {
-      let newArrangedIDs = asyncSortedIDs;
+      // Perform filtering
+      let newArrangedIDs = newSortedIDs;
       if (searchTEXT !== "") {
-        // await new Promise((resolve) => setTimeout(resolve, 1000));
-        if (isCancelled) return;
-        newArrangedIDs = FILTER_bySearch(vocabs, asyncSortedIDs, searchTEXT);
+        newArrangedIDs = FILTER_bySearch(vocabs, newSortedIDs, searchTEXT);
       }
+
       SET_asyncArrangedIDs(newArrangedIDs);
       SET_loading(false);
     })();
@@ -141,25 +131,24 @@ export function TranslationBoard({
     return () => {
       isCancelled = true;
     };
-  }, [asyncSortedIDs, searchTEXT, loading, vocabs]);
+  }, [trIDs, sorting, searchTEXT, vocabs]);
 
-  console.log(loading);
-  console.log(asyncArrangedIDs);
-
-  if (trIDs.length === 0) {
+  if (asyncArrangedIDs.length === 0) {
     return (
-      <h3 className="noTR" data-loading={ISloading}>
-        {ISloading ? "Loading" : "No translations"}
+      <h3 className="noTR" data-loading={loading}>
+        {loading ? "Loading" : "No translations"}
       </h3>
     );
   }
   return (
-    <div className="translationBOARD" data-loading={ISloading}>
+    <div className="translationBOARD" data-loading={loading}>
       <div className="loadingOVERLAY"></div>
-      {trIDs.map((trID) => {
+      {asyncArrangedIDs.map((trID) => {
         const tr = vocabs.translations[trID];
         if (tr === undefined) {
+          // in case the async hasnt finished loading yet
           console.log(trID + " is undefined");
+          return null;
         }
         return (
           <Translation
@@ -170,6 +159,7 @@ export function TranslationBoard({
             SET_vocabs={SET_vocabs}
             sorting={sorting}
             placement={placementOBJ[trID]}
+            loading={loading}
           />
         );
       })}
