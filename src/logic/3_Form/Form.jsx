@@ -113,7 +113,7 @@ function Rule({ rule, exIDs, exOBJS, DELETE_rule, ADD_example, DELETE_example, o
     <div className="fieldsetWRAP">
       <fieldset>
         <div className="top">
-          <legend>Verwendungsregel</legend>
+          <legend>Regel</legend>
           <div className="buttons">
             <div className="button textOnly" onClick={() => DELETE_rule(rule.id)}>
               Löschen
@@ -404,8 +404,8 @@ export function Form({ ISopen, TOGGLE_form, vocabs, SET_vocabs, trEditID, dispFo
           </AnimatePresence>
         </div>
         <div className="newRulePREWRAP">
-          <div className="button textLeft seeThrough add" onClick={ADD_rule}>
-            + Neuer Regel
+          <div className="button textLeft seeThrough add" onClick={ADD_rule} style={{ padding: "4rem 2.4rem" }}>
+            + Regel hinfügen
           </div>
         </div>
         <div className="formEndBtnWRAP">

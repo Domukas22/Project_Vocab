@@ -26,54 +26,13 @@ export default function App() {
   }
 
   const [vocabs, SET_vocabs] = useState(storedVOCABS || dummyVOCABS);
+
   const [dispFolderID, SET_dispFolderID] = useState("german");
   const currFOLDER = vocabs.folders[dispFolderID];
   const availFOLDERS = GET_folderINFOS(vocabs);
 
   const [searchTEXT, SET_searchText] = useState("");
   const [sorting, SET_sorting] = useState("Shuffle");
-
-  const [loading, SET_loading] = useState(false);
-  const [asyncSortedIDs, SET_asyncSortedIDs] = useState([]);
-  const [asyncArrangedIDs, SET_asyncArrangedIDs] = useState([]);
-
-  useEffect(() => {
-    // sort trs
-    let isCancelled = false;
-    SET_loading(true);
-
-    (async () => {
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
-      if (isCancelled) return;
-      const newSortedIDs = SORT_trIDs(vocabs.translations, currFOLDER.translationIDs, sorting);
-      SET_asyncSortedIDs(newSortedIDs);
-    })();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [sorting, currFOLDER.title]);
-
-  useEffect(() => {
-    // filer trs
-    let isCancelled = false;
-    if (!loading) SET_loading(true);
-
-    (async () => {
-      let newArrangedIDs = asyncSortedIDs;
-      if (searchTEXT !== "") {
-        // await new Promise((resolve) => setTimeout(resolve, 1000));
-        if (isCancelled) return;
-        newArrangedIDs = FILTER_bySearch(vocabs, asyncSortedIDs, searchTEXT);
-      }
-      SET_asyncArrangedIDs(newArrangedIDs);
-      SET_loading(false);
-    })();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [asyncSortedIDs, searchTEXT]);
 
   const placementOBJ = useMemo(() => {
     return GET_trPlacement(vocabs.translations, currFOLDER);
@@ -85,7 +44,6 @@ export default function App() {
     SET_form(SHOULDopen);
     SET_trEditID(editID);
   }
-
   return (
     <>
       <Nav
@@ -98,13 +56,13 @@ export default function App() {
         SET_searchText={SET_searchText}
       />
       <TranslationBoard
-        trIDs={asyncArrangedIDs}
+        trIDs={currFOLDER.translationIDs}
         vocabs={vocabs}
         TOGGLE_form={TOGGLE_form}
         SET_vocabs={SET_vocabs}
         sorting={sorting}
         placementOBJ={placementOBJ}
-        ISloading={loading}
+        searchTEXT={searchTEXT}
       />
       <AnimatePresence>
         {ISformOpen && (

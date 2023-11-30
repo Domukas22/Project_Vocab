@@ -199,9 +199,6 @@ form.bigForm[data-color="high"] .colorCIRCLE {
   form > * {
     padding: 4vmin !important;
   }
-  fieldset {
-    margin-bottom: 2rem;
-  }
   .formEndBtnWRAP {
     flex-direction: column-reverse;
     row-gap: 1rem;

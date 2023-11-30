@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ChooseColorBox } from "../4_General/Comps_general";
-import { STORE_vocabs } from "../4_General/general";
+import { FILTER_bySearch, SORT_trIDs, STORE_vocabs } from "../4_General/general";
 import { terminal } from "virtual:terminal";
 import PropTypes from "prop-types";
 
@@ -56,6 +56,7 @@ function Translation({ tr, vocabs, TOGGLE_form, SET_vocabs, sorting, placement }
       <div className="top" onClick={TOGGLE_open}>
         <h1 className="boardTEXT" dangerouslySetInnerHTML={{ __html: title }}></h1>
         {sorting === "Date" && <p style={{ marginBottom: "auto" }}>{placement}</p>}
+        {tr.id}
       </div>
       <div className="bottom" ref={bottomRef}>
         <div className="contentWRAP" data-id={tr.id}>
@@ -89,7 +90,62 @@ function Translation({ tr, vocabs, TOGGLE_form, SET_vocabs, sorting, placement }
   );
 }
 
-export function TranslationBoard({ ISloading, trIDs, vocabs, TOGGLE_form, SET_vocabs, sorting, placementOBJ }) {
+export function TranslationBoard({
+  ISloading,
+  trIDs,
+  vocabs,
+  TOGGLE_form,
+  SET_vocabs,
+  sorting,
+  placementOBJ,
+  searchTEXT,
+}) {
+  const [loading, SET_loading] = useState(false);
+  const [asyncSortedIDs, SET_asyncSortedIDs] = useState([]);
+  const [asyncArrangedIDs, SET_asyncArrangedIDs] = useState([]);
+
+  useEffect(() => {
+    // sort trs
+    console.log("called");
+    let isCancelled = false;
+    SET_loading(true);
+
+    (async () => {
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (isCancelled) return;
+      const newSortedIDs = SORT_trIDs(vocabs.translations, trIDs, sorting);
+      SET_asyncSortedIDs(newSortedIDs);
+    })();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [sorting, trIDs, vocabs]);
+  //currFOLDER.title
+  useEffect(() => {
+    // filter trs
+    let isCancelled = false;
+    if (!loading) SET_loading(true);
+
+    (async () => {
+      let newArrangedIDs = asyncSortedIDs;
+      if (searchTEXT !== "") {
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
+        if (isCancelled) return;
+        newArrangedIDs = FILTER_bySearch(vocabs, asyncSortedIDs, searchTEXT);
+      }
+      SET_asyncArrangedIDs(newArrangedIDs);
+      SET_loading(false);
+    })();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [asyncSortedIDs, searchTEXT, loading, vocabs]);
+
+  console.log(loading);
+  console.log(asyncArrangedIDs);
+
   if (trIDs.length === 0) {
     return (
       <h3 className="noTR" data-loading={ISloading}>
@@ -102,6 +158,9 @@ export function TranslationBoard({ ISloading, trIDs, vocabs, TOGGLE_form, SET_vo
       <div className="loadingOVERLAY"></div>
       {trIDs.map((trID) => {
         const tr = vocabs.translations[trID];
+        if (tr === undefined) {
+          console.log(trID + " is undefined");
+        }
         return (
           <Translation
             tr={tr}
