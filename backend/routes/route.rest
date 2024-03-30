@@ -1,0 +1,40 @@
+// create a germanVocab docuemtn absed on this model. MAke it different each time.
+
+const germanVocab_SCHEMA = new Schema({
+  title: { type: String, required: true },
+  translation: { type: String, required: true },
+  explanation: { type: String, required: true },
+  priority: { type: Number, required: true },
+});
+
+###
+POST  http://localhost:3001/de
+Content-Type: application/json
+
+{
+  "title": "der Schmetterling",
+  "translation": "butterfly",
+  "explanation": "a flying insect with a small body and large, often brightly colored wings",
+  "priority": 1
+}
+
+
+
+###
+
+PUT  http://localhost:3001/de/6606cc8cb7d062cecac359df
+Content-Type: application/json
+
+{
+  "title": "DER Schmetterling",
+  "translation": "butterfly",
+  "explanation": "a flying insect with a small body and large, often brightly colored wings",
+  "priority": 1
+}
+
+###
+
+DELETE  http://localhost:3001/de/6606cb15d068e69e70ac5b66
+###
+
+

@@ -1,0 +1,124 @@
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+.button {
+  padding: 2rem 2.4rem;
+  background-color:var(--color_4);
+  border-radius: var(--radius_medium);
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 100ms;
+  opacity: 100%;
+}
+.button:hover {
+  background-color:var(--color_5);
+}
+.button[data-type="chooseColor"] {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.button[data-type="chooseColor"][data-open="true"] {
+  background-color:var(--color_5);
+}
+.chooseColorWRAP .button {
+  border-radius: 0px;
+  background-color: #ffffff00;
+}
+.button.color.low > .colorCIRCLE{
+  background-color: var(--low);
+}
+.button.color.medium > .colorCIRCLE{
+  background-color: var(--medium);
+}
+.button.color.high > .colorCIRCLE{
+  background-color: var(--high);
+}
+
+.button.color.low:hover {
+  background-color: var(--low_hover);
+}
+.button.color.medium:hover {
+  background-color: var(--medium_hover);
+}
+.button.color.high:hover {
+  background-color: var(--high_hover);
+}
+
+.translation[data-color="3"] .button.color.low,
+form.bigForm[data-color="low"] .button.color.low {
+  background-color: var(--low_hover);
+}
+.translation[data-color="2"] .button.color.medium,
+form.bigForm[data-color="medium"] .button.color.medium {
+  background-color: var(--medium_hover);
+}
+.translation[data-color="1"] .button.color.high,
+form.bigForm[data-color="high"] .button.color.high {
+  background-color: var(--high_hover);
+}
+
+
+.button.textLeft {
+  justify-content: start;
+}
+.button.seeThrough {
+  background-color: #ffffff00;
+  border: var(--border_005);
+  color: var(--white_08);
+  font-weight: 300;
+}
+.button.seeThrough:hover {
+  background-color:var(--color_4);
+}
+.button.wAbsolutes {
+  padding: 0 3.2rem;
+}
+
+.button.boardBottom {
+  background-color: var(--bg_main);
+  border: var(--border_005);
+}
+.button.boardBottom:hover {
+  background-color: var(--color_3);
+  color: var(--green);
+}
+.button.boardBottom.scrollTOP {
+  position: fixed;
+  top: 4rem;
+  right: 4rem;
+  transition: 300ms;
+}
+.button.boardBottom.scrollTOP[data-show="false"] {
+  pointer-events: none;
+  opacity: 0%;
+}
+
+form .btnWRAP .button[data-open="true"] {
+  background-color: var(--color_4);
+}
+.formEndBtnWRAP .button.delete {
+  color: #ff9292
+}
+.formEndBtnWRAP .button.cancel {
+  
+}
+.formEndBtnWRAP .button.done {
+  color: #AFFB6D
+}
+
+.button.textOnly:hover {
+  color:var(--red);
+}
+.button.X:hover .xLINE  {
+  background-color: var(--red);
+}
+.button.add:hover {
+  color: var(--green);
+}

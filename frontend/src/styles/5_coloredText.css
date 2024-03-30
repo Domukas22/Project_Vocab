@@ -1,0 +1,61 @@
+/*  */
+/*  */
+/*  */
+/*  */
+/*  */
+.translation[data-color="1"] .boardTEXT {
+  transition: 100ms;
+}
+.translation .boardTEXT span {
+  color: var(--white_07);
+}
+.translation[data-color="3"] .boardTEXT u {
+  color: var(--white_085);
+}
+.translation[data-color="2"] .boardTEXT u {
+  color: var(--medium);
+  font-weight: 400;
+  text-decoration: none;
+}
+.translation[data-color="1"] .boardTEXT u {
+  color: var(--high);
+  font-weight: 400;
+  text-decoration: none;
+}
+
+
+form.bigForm[data-color="2"] .titlePREVIEW {
+  color: var(--medium);
+}
+form.bigForm[data-color="1"] .titlePREVIEW {
+  color: var(--high);
+}
+form.bigForm .textEdit::selection,
+form.bigForm .textEdit i::selection,
+form.bigForm .textEdit u::selection {
+  background: rgb(90, 90, 90) !important;
+}
+form.bigForm .textEdit,
+form.bigForm .textEdit i,
+form.bigForm .textEdit u,
+.translation .boardTEXT i {
+  font-style: normal !important;
+  font-weight: 300;
+}
+form.bigForm .textEdit i {
+  color: white;
+  
+}
+form.bigForm[data-color="3"] .textEdit u {
+  /* text-decoration: underline; */
+}
+form.bigForm[data-color="2"] .textEdit u {
+  color: var(--medium);
+  font-weight: 400 !important;
+  text-decoration: none;
+}
+form.bigForm[data-color="1"] .textEdit u {
+  color: var(--high);
+  font-weight: 400 !important;
+  text-decoration: none;
+}
