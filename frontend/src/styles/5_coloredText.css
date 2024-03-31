@@ -3,21 +3,21 @@
 /*  */
 /*  */
 /*  */
-.translation[data-color="1"] .boardTEXT {
+.vocab[data-color="1"] .vocab_TEXT {
   transition: 100ms;
 }
-.translation .boardTEXT span {
+.vocab .vocab_TEXT span {
   color: var(--white_07);
 }
-.translation[data-color="3"] .boardTEXT u {
+.vocab[data-color="3"] .vocab_TEXT u {
   color: var(--white_085);
 }
-.translation[data-color="2"] .boardTEXT u {
+.vocab[data-color="2"] .vocab_TEXT u {
   color: var(--medium);
   font-weight: 400;
   text-decoration: none;
 }
-.translation[data-color="1"] .boardTEXT u {
+.vocab[data-color="1"] .vocab_TEXT u {
   color: var(--high);
   font-weight: 400;
   text-decoration: none;
@@ -38,7 +38,7 @@ form.bigForm .textEdit u::selection {
 form.bigForm .textEdit,
 form.bigForm .textEdit i,
 form.bigForm .textEdit u,
-.translation .boardTEXT i {
+.vocab .vocab_TEXT i {
   font-style: normal !important;
   font-weight: 300;
 }

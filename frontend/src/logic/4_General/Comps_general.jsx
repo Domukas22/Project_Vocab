@@ -73,6 +73,9 @@ export function BtnScrollTop() {
     </div>
   );
 }
+export function Alert({ text }) {
+  return <div className="alert">✅ {text}</div>;
+}
 
 ChooseColorBox.propTypes = {
   UPDATE_color: PropTypes.func.isRequired,

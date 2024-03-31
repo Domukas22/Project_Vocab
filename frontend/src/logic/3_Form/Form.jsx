@@ -8,9 +8,9 @@ import { ChooseColorBox } from "../4_General/Comps_general";
 import { FIND_vocab, UPDATE_vocab, CREATE_vocab, DELETE_vocab } from "../DB";
 
 function Form_CONTENT({ HANDLE_inputChange, vocab }) {
-  const titleTEXT = useRef(null);
-  const translationTEXT = useRef(null);
-  const explanation_TEXT = useRef(null);
+  const vocab_TITLE = useRef(null);
+  const vocab_TRANSLATION = useRef(null);
+  const vocab_EXPLANATION = useRef(null);
 
   function paste(e) {
     e.preventDefault();
@@ -35,10 +35,10 @@ function Form_CONTENT({ HANDLE_inputChange, vocab }) {
     }
   }
   useEffect(() => {
-    // insert tr title + translation only on load, NOT on onChange/onInput
-    titleTEXT.current.innerHTML = vocab.title;
-    translationTEXT.current.innerHTML = vocab.translation;
-    explanation_TEXT.current.innerHTML = vocab.explanation;
+    // insert vocab title + translation only on load, NOT on onChange/onInput
+    vocab_TITLE.current.innerHTML = vocab.title;
+    vocab_TRANSLATION.current.innerHTML = vocab.translation;
+    vocab_EXPLANATION.current.innerHTML = vocab.explanation;
   }, []);
 
   return (
@@ -55,7 +55,7 @@ function Form_CONTENT({ HANDLE_inputChange, vocab }) {
             contentEditable="true"
             onInput={HANDLE_inputChange}
             data-type="title"
-            ref={titleTEXT}
+            ref={vocab_TITLE}
             onPaste={paste}
           ></div>
         </div>
@@ -66,7 +66,7 @@ function Form_CONTENT({ HANDLE_inputChange, vocab }) {
             className="textEdit"
             contentEditable="true"
             onInput={HANDLE_inputChange}
-            ref={translationTEXT}
+            ref={vocab_TRANSLATION}
           ></div>
         </div>
         <div className="inputWRAP">
@@ -76,7 +76,7 @@ function Form_CONTENT({ HANDLE_inputChange, vocab }) {
             className="textEdit"
             contentEditable="true"
             onInput={HANDLE_inputChange}
-            ref={explanation_TEXT}
+            ref={vocab_EXPLANATION}
           ></div>
         </div>
       </div>
@@ -84,9 +84,18 @@ function Form_CONTENT({ HANDLE_inputChange, vocab }) {
   );
 }
 
-export function Form({ ISopen, TOGGLE_form, trEditID: vocabEdit_ID, SET_vocabs }) {
+export function Form({
+  ISopen,
+  TOGGLE_form,
+  trEditID: vocabEdit_ID,
+  SET_vocabs,
+  SET_alertMSG,
+  SET_showAlert,
+  currLIST,
+}) {
   const IS_anEdit = vocabEdit_ID !== undefined;
   const [vocab, SET_vocab] = useState({
+    list: currLIST,
     title: "",
     translation: "",
     explanation: "",
@@ -133,6 +142,11 @@ export function Form({ ISopen, TOGGLE_form, trEditID: vocabEdit_ID, SET_vocabs }
     }));
   }
 
+  function HANDLE_alert({ text }) {
+    SET_alertMSG(text);
+    SET_showAlert(true);
+  }
+
   const SUBMIT_form = async (event) => {
     event.preventDefault();
 
@@ -143,6 +157,7 @@ export function Form({ ISopen, TOGGLE_form, trEditID: vocabEdit_ID, SET_vocabs }
         SET_vocabs((currentVocabs) =>
           currentVocabs.map((vocab) => (vocab._id === updatedVocab._id ? updatedVocab : vocab)),
         );
+        HANDLE_alert({ text: `Updated "${updatedVocab.title}"` });
         RESET_form();
       } catch (error) {
         console.error("Error updating vocab:", error);
@@ -152,6 +167,7 @@ export function Form({ ISopen, TOGGLE_form, trEditID: vocabEdit_ID, SET_vocabs }
         const createdVocab = await CREATE_vocab(vocab);
         console.log("Vocab created:", createdVocab);
         SET_vocabs((currentVocabs) => [createdVocab, ...currentVocabs]);
+        HANDLE_alert({ text: `Created "${createdVocab.title}"` });
         RESET_form();
       } catch (error) {
         console.error("Error creating vocab:", error);
@@ -174,6 +190,7 @@ export function Form({ ISopen, TOGGLE_form, trEditID: vocabEdit_ID, SET_vocabs }
       const deleted = await DELETE_vocab(vocab._id);
       console.log("Deleted:", deleted);
       SET_vocabs((currentVocabs) => currentVocabs.filter((x) => x._id !== vocab._id));
+      HANDLE_alert({ text: `Deleted "${vocab.title}"` });
       RESET_form();
     } catch (error) {
       console.error("Error deleting vocab:", error);

@@ -2,18 +2,30 @@
 /*  */
 /*  */
 /*  */
-/*  */
-.translationBOARD {
+/* Create a list of unsue styles */
+
+
+
+.vocabBOARD {
   border: var(--border_005);
   background-color:var(--bg_main);
   border-radius: var(--radius_big);
   overflow: hidden;
   position: relative;
 }
-.translationBOARD[data-loading="true"] {
+.vocabBOARD[data-loading="true"] {
   pointer-events: none;
   z-index: 3;
 }
+
+.vocabBOARD[data-show_order_nr="true"] .order_NR {
+  opacity: 100%;
+}
+
+.order_NR {
+  opacity: 0%;
+}
+
 .loadingOVERLAY {
   pointer-events: none;
   position: absolute;
@@ -23,29 +35,29 @@
   opacity: 0%;
   transition: 200ms;
 }
-.translationBOARD[data-loading="true"] .loadingOVERLAY {
+.vocabBOARD[data-loading="true"] .loadingOVERLAY {
   opacity: 100%;
 }
 
-.translation {
+.vocab {
   overflow: hidden;
   border: 2px solid rgba(0, 0, 0, 0);
   border-bottom: var(--border_005);
   transition: 200ms ease-in-out;
 }
 
-.translation:first-child {
+.vocab:first-child {
   border-radius: var(--radius_big) var(--radius_big) 0 0;
 }
-.translation:last-child {
+.vocab:last-child {
   border-bottom: 2px solid rgba(0, 0, 0, 0);
   border-radius: 0 0 var(--radius_big) var(--radius_big);
 }
-.translation:only-child {
+.vocab:only-child {
   border-radius: var(--radius_big);
 }
 
-.translation > .top {
+.vocab > .top {
   padding: 2.6rem 2.8rem;
   
   display: flex;
@@ -55,7 +67,7 @@
   transition: 200ms ease-in-out;
   cursor: pointer;
 }
-.translation > .top > p {
+.vocab > .top > p {
   color: var(--low);
   margin-left: 2rem;
   font-size: 1.5rem;
@@ -63,11 +75,11 @@
   line-height: inherit;
   margin-top: 0.1rem;
 }
-.translation .contentWRAP {
+.vocab .contentWRAP {
   transform: translateY(-1rem);
   transition: 200ms ease-in-out;
 }
-.translation > .bottom {
+.vocab > .bottom {
   border-top: var(--border_005);
   transition: 200ms ease-in-out;
   height: 0px;
@@ -76,66 +88,51 @@
 
 
 
-.translation[data-open="true"] {
+.vocab[data-open="true"] {
   background-color: var(--bg_open);
 }
-.translation[data-open="true"] .contentWRAP {
+.vocab[data-open="true"] .contentWRAP {
   transform: translateY(0rem);
 }
-.translation[data-open="false"]:hover {
+.vocab[data-open="false"]:hover {
   background-color: var(--bg_main_hover);
 }
-.translation[data-color="3"][data-open="true"] {
+.vocab[data-color="3"][data-open="true"] {
   border: 2px solid rgba(255, 255, 255, 0.8);
 }
-.translation[data-color="2"][data-open="true"] {
+.vocab[data-color="2"][data-open="true"] {
   border: 2px solid var(--medium);
 }
-.translation[data-color="1"][data-open="true"] {
+.vocab[data-color="1"][data-open="true"] {
   border: 2px solid var(--high);
 }
-.translation[data-open="false"] > .bottom {
+.vocab[data-open="false"] > .bottom {
   border-top: 0px solid rgba(255, 255, 255, 0);
   opacity: 0%;
 }
 
-.translation[data-color="3"] .colorCIRCLE {
+.vocab[data-color="3"] .colorCIRCLE {
   background-color: var(--low);
 }
-.translation[data-color="2"] .colorCIRCLE {
+.vocab[data-color="2"] .colorCIRCLE {
   background-color: var(--medium);
 }
-.translation[data-color="1"] .colorCIRCLE {
+.vocab[data-color="1"] .colorCIRCLE {
   background-color: var(--high);
 }
 
-.translatedTEXT {
-  background-color: var(--highlight);
-  color: var(--white_095);
-  padding: 2.2rem 2.8rem;
-}
-.contentWRAP > .rule {
-  border-bottom: var(--border_005);
-  padding: 2.4rem 2.8rem;
-}
-.contentWRAP > .rule:last-child {
-  border-bottom: none;
-}
 
-.boardTEXT.tr {
+.vocab_TEXT.tr {
   background-color: var(--highlight);
   color: var(--white_095);
   padding: 2.2rem 2.8rem;
 }
-.boardTEXT.rule {
-  margin-bottom: 1.2rem;
-  font-weight: 400;
-}
-.boardTEXT.ex{
+.vocab_TEXT.ex, .vocab_TEXT.ex * {
   color: var(--white_07);
+  font-weight: 300;
 }
 
-.translationBtnWRAP {
+.vocabBtnWRAP {
   padding: 2.4rem 2.8rem;
   display: flex;
   column-gap: 0.8rem;
@@ -161,8 +158,10 @@ h3.noTR[data-loading="true"] {
   background-color: #00000017;
 }
 
+
+
 @media screen and (max-width: 48rem) {
-  .translation[data-open="false"]:hover {
+  .vocab[data-open="false"]:hover {
     background-color: inherit;
   }
 }

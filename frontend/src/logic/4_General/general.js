@@ -27,7 +27,8 @@ export function SORT_vocabs(vocabs, sorting) {
       return priorities[a.priority] - priorities[b.priority];
     });
   } else if (sorting === "Date") {
-    sortedVocabs.sort((a, b) => b.created - a.created);
+    sortedVocabs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    console.log(sortedVocabs);
   }
 
   return sortedVocabs;

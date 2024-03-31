@@ -62,7 +62,7 @@ export function Nav({ TOGGLE_form, sorting, SET_sorting, SET_searchText }) {
             </div>
           </div>
         </div>
-        <div className="navBTN addTR" title="Add translation" onClick={() => TOGGLE_form(true)}>
+        <div className="navBTN addTR" title="Add vocab" onClick={() => TOGGLE_form(true)}>
           <div className="xWRAP">
             <div className="xLINE"></div>
             <div className="xLINE second"></div>

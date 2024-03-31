@@ -179,6 +179,17 @@ form .chooseColorWRAP {
   transform: rotate(30deg) translateX(0.25rem) translateY(-0.2rem);
 }
 
+.alert {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  padding: 2rem 2.8rem;
+  background-color: var(--bgFORM);
+  border-radius: var(--radius_medium);
+  transition: 150ms;
+
+  background-color: rgb(59, 73, 59);
+}
 
 /* Firefox */
 * {
