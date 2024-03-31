@@ -55,7 +55,7 @@ export function ChooseColorBox({ UPDATE_color, optionalCLASS }) {
     </div>
   );
 }
-export function BTNscrollTop() {
+export function BtnScrollTop() {
   const [showBtn, SET_showBtn] = useState(false);
 
   useEffect(() => {

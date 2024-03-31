@@ -1,26 +1,23 @@
 //
-//
-//
-//
-//
-import { useState } from "react";
-import PropTypes from "prop-types";
 
-export function Nav({ currFOLDER, availFOLDERS, SET_dispFolderID, TOGGLE_form, sorting, SET_sorting, SET_searchText }) {
-  const [AREfoldersOpen, SET_foldersOpen] = useState(false);
+import { useState } from "react";
+//import PropTypes from "prop-types";
+
+export function Nav({ TOGGLE_form, sorting, SET_sorting, SET_searchText }) {
+  //const [AREfoldersOpen, SET_foldersOpen] = useState(false);
   const [ISsortOpen, SET_sortOpen] = useState(false);
 
-  function TOGGLE_folders() {
-    SET_foldersOpen((state) => !state);
-  }
-  function TOGGLE_filters() {
+  // function TOGGLE_folders() {
+  //   SET_foldersOpen((state) => !state);
+  // }
+  function TOGGLE_sortBox() {
     SET_sortOpen((state) => !state);
   }
 
   return (
     <nav>
       <div className="contentWRAP">
-        <div className="navBTN chooseFolder" onClick={() => TOGGLE_folders()} data-open={AREfoldersOpen}>
+        {/* <div className="navBTN chooseFolder" onClick={() => TOGGLE_folders()} data-open={AREfoldersOpen}>
           {currFOLDER.title}
           <div className="navDROPDOWN">
             {availFOLDERS.map((folder) => {
@@ -36,7 +33,7 @@ export function Nav({ currFOLDER, availFOLDERS, SET_dispFolderID, TOGGLE_form, s
               );
             })}
           </div>
-        </div>
+        </div> */}
         <input
           className="inputDesktop"
           type="search"
@@ -47,7 +44,7 @@ export function Nav({ currFOLDER, availFOLDERS, SET_dispFolderID, TOGGLE_form, s
             SET_searchText(e.target.value.toLowerCase());
           }}
         />
-        <div className="navBTN sort" onClick={() => TOGGLE_filters()} data-open={ISsortOpen}>
+        <div className="navBTN sort" onClick={() => TOGGLE_sortBox()} data-open={ISsortOpen}>
           {sorting}
           <div className="navDROPDOWN">
             <div
@@ -86,13 +83,3 @@ export function Nav({ currFOLDER, availFOLDERS, SET_dispFolderID, TOGGLE_form, s
     </nav>
   );
 }
-
-Nav.propTypes = {
-  currFOLDER: PropTypes.object.isRequired,
-  availFOLDERS: PropTypes.array.isRequired,
-  SET_dispFolderID: PropTypes.func.isRequired,
-  TOGGLE_form: PropTypes.func.isRequired,
-  sorting: PropTypes.string.isRequired,
-  SET_sorting: PropTypes.func.isRequired,
-  SET_searchText: PropTypes.func.isRequired,
-};

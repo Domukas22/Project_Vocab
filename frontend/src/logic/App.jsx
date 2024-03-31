@@ -2,11 +2,11 @@
 //
 import { useState, useEffect, useMemo } from "react";
 
-import { Form } from "./3_Form/FormNew";
-import { BoardNew } from "./2_Board/BoardNew";
-import { BTNscrollTop } from "./4_General/Comps_general";
+import { Form } from "./3_Form/Form";
+import { Board } from "./2_Board/Board";
+import { BtnScrollTop } from "./4_General/Comps_general";
 import { motion, AnimatePresence } from "framer-motion";
-import { NavNew } from "./1_Nav/NavNew";
+import { Nav } from "./1_Nav/Nav";
 import { LIST_vocabs } from "./DB";
 import { SORT_vocabs, FILTER_vocabs } from "./4_General/general";
 
@@ -57,8 +57,8 @@ export default function App() {
 
   return (
     <>
-      <NavNew TOGGLE_form={TOGGLE_form} sorting={sorting} SET_sorting={SET_sorting} SET_searchText={SET_searchText} />
-      <BoardNew TOGGLE_form={TOGGLE_form} vocabs={arranged_VOCABS} loading={loading} SET_vocabs={SET_vocabs} />
+      <Nav TOGGLE_form={TOGGLE_form} sorting={sorting} SET_sorting={SET_sorting} SET_searchText={SET_searchText} />
+      <Board TOGGLE_form={TOGGLE_form} vocabs={arranged_VOCABS} loading={loading} SET_vocabs={SET_vocabs} />
 
       <AnimatePresence>
         {ISformOpen && (
@@ -67,13 +67,13 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ ease: "linear", duration: 0.1 }}
-            style={{ zIndex: 10 }}
+            style={{ zIndex: 10, position: "absolute" }}
           >
             <Form ISopen={ISformOpen} TOGGLE_form={TOGGLE_form} trEditID={trEditID} SET_vocabs={SET_vocabs} />
           </motion.div>
         )}
       </AnimatePresence>
-      <BTNscrollTop />
+      <BtnScrollTop />
       <div className="button boardBottom" onClick={() => TOGGLE_form(true)}>
         + Add new
       </div>

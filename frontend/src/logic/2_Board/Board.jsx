@@ -1,32 +1,12 @@
 //
-//
-//
-//
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChooseColorBox } from "../4_General/Comps_general";
-import { FILTER_bySearch, SORT_trIDs, STORE_vocabs } from "../4_General/general";
-import { terminal } from "virtual:terminal";
-import PropTypes from "prop-types";
+//import PropTypes from "prop-types";
+import { UPDATE_vocab } from "../DB";
 
-function Example({ text }) {
-  return <li className="boardTEXT ex" dangerouslySetInnerHTML={{ __html: text }}></li>;
-}
-function Rule({ ruleTITLE, exIDs, vocabs }) {
-  return (
-    <div className="rule">
-      <h3 className="boardTEXT rule" dangerouslySetInnerHTML={{ __html: ruleTITLE }}></h3>
-      <ul>
-        {exIDs.map((exID) => {
-          return <Example text={vocabs.examples[exID].text} key={exID} />;
-        })}
-      </ul>
-    </div>
-  );
-}
-function Translation({ tr, vocabs, TOGGLE_form, SET_vocabs, sorting, placement, loading }) {
-  const { color, title, translation, ruleIDs } = tr;
-  const [isOpen, setIsOpen] = useState(false);
+function Vocab({ vocab, TOGGLE_form, HANDLE_vocabUpdate }) {
+  const [isOpen, SET_isOpen] = useState(false);
 
   const bottomRef = useRef(null);
 
@@ -36,41 +16,43 @@ function Translation({ tr, vocabs, TOGGLE_form, SET_vocabs, sorting, placement, 
     } else if (bottomRef.current) {
       bottomRef.current.style.height = "0px";
     }
-  }, [isOpen, vocabs]);
+  }, [isOpen]);
 
   function TOGGLE_open() {
-    setIsOpen((state) => !state);
+    SET_isOpen((state) => !state);
   }
 
-  function UPDATE_color(color) {
-    const newVOCABS = {
-      ...vocabs,
-      translations: { ...vocabs.translations, [tr.id]: { ...vocabs.translations[tr.id], color } },
-    };
-    SET_vocabs(newVOCABS);
-    STORE_vocabs(newVOCABS);
+  async function UPDATE_color(color) {
+    try {
+      const updatedVocab = await UPDATE_vocab(vocab._id, { ...vocab, priority: color });
+      console.log("Vocab updated:", updatedVocab);
+      HANDLE_vocabUpdate(updatedVocab);
+    } catch (error) {
+      console.error("Error updating vocab:", error);
+    }
   }
 
   return (
-    <div className="translation" data-color={color} data-open={isOpen}>
+    <div className="translation" data-color={vocab.priority} data-open={isOpen}>
       <div className="top" onClick={TOGGLE_open}>
-        <h1 className="boardTEXT" dangerouslySetInnerHTML={{ __html: title }}></h1>
-        {sorting === "Date" && <p style={{ marginBottom: "auto" }}>{placement}</p>}
+        <h1 className="boardTEXT" dangerouslySetInnerHTML={{ __html: vocab.title }}></h1>
+        {/*sorting === "Date" && <p style={{ marginBottom: "auto" }}>{placement}</p>*/}
       </div>
       <div className="bottom" ref={bottomRef}>
-        <div className="contentWRAP" data-id={tr.id}>
-          <div className="boardTEXT tr" dangerouslySetInnerHTML={{ __html: `-> ${translation}` }}></div>
-          {ruleIDs.map((ruleID) => {
-            const rule = vocabs.rules[ruleID];
-            return <Rule ruleTITLE={rule.title} exIDs={rule.exampleIDs} vocabs={vocabs} key={ruleID} />;
-          })}
+        <div className="contentWRAP" data-id={vocab.id}>
+          <div className="boardTEXT tr" dangerouslySetInnerHTML={{ __html: vocab.translation }}></div>
+          <div
+            className="boardTEXT"
+            style={{ padding: "2rem 2.8rem" }}
+            dangerouslySetInnerHTML={{ __html: vocab.explanation }}
+          ></div>
           <div className="translationBtnWRAP">
             <div
               className="button"
               style={{ flex: 1, textAlign: "center" }}
               onClick={() => {
                 // SET_trEdit(tr.id);
-                TOGGLE_form(true, tr.id);
+                TOGGLE_form(true, vocab._id);
               }}
             >
               Bearbeiten
@@ -89,106 +71,41 @@ function Translation({ tr, vocabs, TOGGLE_form, SET_vocabs, sorting, placement, 
   );
 }
 
-export function TranslationBoard({
-  ISloading,
-  trIDs,
-  vocabs,
-  TOGGLE_form,
-  SET_vocabs,
-  sorting,
-  placementOBJ,
-  searchTEXT,
-}) {
-  const [loading, SET_loading] = useState(false);
-  const [asyncSortedIDs, SET_asyncSortedIDs] = useState([]);
-  const [asyncArrangedIDs, SET_asyncArrangedIDs] = useState([]);
-
-  const results = useMemo(() => {
-    return asyncArrangedIDs;
-  }, [asyncArrangedIDs]);
-
-  useEffect(() => {
-    let isCancelled = false;
-    SET_loading(true);
-
-    (async () => {
-      await new Promise((resolve) => setTimeout(resolve, 300)); // Simulate async operation
-      if (isCancelled) return;
-
-      // Perform sorting
-      const newSortedIDs = SORT_trIDs(vocabs.translations, trIDs, sorting);
-
-      // Perform filtering
-      let newArrangedIDs = newSortedIDs;
-      if (searchTEXT !== "") {
-        newArrangedIDs = FILTER_bySearch(vocabs, newSortedIDs, searchTEXT);
-      }
-
-      SET_asyncArrangedIDs(newArrangedIDs);
-      SET_loading(false);
-    })();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [trIDs, sorting, searchTEXT, vocabs]);
-
-  if (asyncArrangedIDs.length === 0) {
-    return (
-      <h3 className="noTR" data-loading={loading}>
-        {loading ? "Loading" : "No translations"}
-      </h3>
+export function Board({ TOGGLE_form, loading, vocabs, SET_vocabs }) {
+  const HANDLE_vocabUpdate = (updatedVocab) => {
+    SET_vocabs((currentVocabs) =>
+      currentVocabs.map((vocab) => (vocab._id === updatedVocab._id ? updatedVocab : vocab)),
     );
+  };
+
+  console.log(vocabs);
+
+  if (loading) {
+    return <h3 className="loading">Loading...</h3>;
   }
+
+  if (!vocabs || vocabs.length === 0) {
+    return <h3 className="noTR">No translations</h3>;
+  }
+
   return (
     <div className="translationBOARD" data-loading={loading}>
       <div className="loadingOVERLAY"></div>
-      {asyncArrangedIDs.map((trID) => {
-        const tr = vocabs.translations[trID];
-        if (tr === undefined) {
-          // in case the async hasnt finished loading yet
-          console.log(trID + " is undefined");
-          return null;
-        }
+      {vocabs.map((vocab) => {
         return (
-          <Translation
-            tr={tr}
-            vocabs={vocabs}
-            key={trID}
-            TOGGLE_form={TOGGLE_form}
-            SET_vocabs={SET_vocabs}
-            sorting={sorting}
-            placement={placementOBJ[trID]}
-            loading={loading}
-          />
+          <Vocab key={vocab._id} vocab={vocab} TOGGLE_form={TOGGLE_form} HANDLE_vocabUpdate={HANDLE_vocabUpdate} />
         );
       })}
     </div>
   );
 }
 
-Example.propTypes = {
-  text: PropTypes.string.isRequired,
-};
-Rule.propTypes = {
-  ruleTITLE: PropTypes.string.isRequired,
-  exIDs: PropTypes.array.isRequired,
-  vocabs: PropTypes.object.isRequired,
-};
-Translation.propTypes = {
-  tr: PropTypes.object.isRequired,
-  vocabs: PropTypes.object.isRequired,
-  TOGGLE_form: PropTypes.func.isRequired,
-  SET_vocabs: PropTypes.func.isRequired,
-  sorting: PropTypes.string.isRequired,
-  placement: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-};
-TranslationBoard.propTypes = {
-  ISloading: PropTypes.bool.isRequired,
-  trIDs: PropTypes.array.isRequired,
-  vocabs: PropTypes.object.isRequired,
-  TOGGLE_form: PropTypes.func.isRequired,
-  SET_vocabs: PropTypes.func.isRequired,
-  sorting: PropTypes.string.isRequired,
-  placementOBJ: PropTypes.object.isRequired,
-};
+// BoardNew.propTypes = {
+//   ISloading: PropTypes.bool.isRequired,
+//   trIDs: PropTypes.array.isRequired,
+//   vocabs: PropTypes.object.isRequired,
+//   TOGGLE_form: PropTypes.func.isRequired,
+//   SET_vocabs: PropTypes.func.isRequired,
+//   sorting: PropTypes.string.isRequired,
+//   placementOBJ: PropTypes.object.isRequired,
+// };

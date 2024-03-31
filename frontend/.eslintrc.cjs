@@ -15,12 +15,6 @@ module.exports = {
   rules: {
     "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
     // "quote-props": ["error", "consistent-as-needed"],
-    "jest/no-large-snapshots": [
-      "warn",
-      {
-        maxSize: 15,
-      },
-    ],
   },
   globals: {
     PropTypes: "readonly",

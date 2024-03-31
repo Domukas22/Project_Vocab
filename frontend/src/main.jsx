@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./logic/App";
-
 import "./styles/reset.css";
 import "./styles/global.css";
 import "./styles/1_nav.css";
