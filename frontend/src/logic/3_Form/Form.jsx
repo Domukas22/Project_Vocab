@@ -5,7 +5,7 @@
 import { useEffect, useState, useRef } from "react";
 import { ChooseColorBox } from "../4_General/Comps_general";
 
-import { FIND_vocab, UPDATE_vocab, CREATE_vocab, DELETE_vocab } from "../DB";
+import { UPDATE_vocab, CREATE_vocab, DELETE_vocab } from "../DB";
 
 function Form_CONTENT({ HANDLE_inputChange, vocab }) {
   const vocab_TITLE = useRef(null);
@@ -87,56 +87,32 @@ function Form_CONTENT({ HANDLE_inputChange, vocab }) {
 export function Form({
   ISopen,
   TOGGLE_form,
-  trEditID: vocabEdit_ID,
+  toEdit_VOCAB,
+  SET_toEditVOCAB,
   SET_vocabs,
   SET_alertMSG,
   SET_showAlert,
-  currLIST,
+  curr_LIST,
 }) {
-  const IS_anEdit = vocabEdit_ID !== undefined;
-  const [vocab, SET_vocab] = useState({
-    list: currLIST,
-    title: "",
-    translation: "",
-    explanation: "",
-    priority: 3,
+  const IS_anEdit = toEdit_VOCAB._id !== undefined;
+
+  const [form_VOCAB, SET_formVocab] = useState({
+    list: curr_LIST,
+    title: IS_anEdit ? toEdit_VOCAB.title : "",
+    translation: IS_anEdit ? toEdit_VOCAB.translation : "",
+    explanation: IS_anEdit ? toEdit_VOCAB.explanation : "",
+    priority: IS_anEdit ? toEdit_VOCAB.priority : 1,
   });
-  const [loading, SET_loading] = useState(false);
-
-  useEffect(() => {
-    if (IS_anEdit) {
-      const fetchVocab = async () => {
-        SET_loading(true); // Start loading
-        try {
-          const fetchedVocab = await FIND_vocab(vocabEdit_ID);
-          SET_vocab(fetchedVocab); // Update state with fetched vocab
-        } catch (error) {
-          console.error(`Failed to fetch vocab with id ${vocabEdit_ID}`, error);
-          //SET_vocab(empty_VOCAB);
-        } finally {
-          SET_loading(false); // End loading
-        }
-      };
-      fetchVocab();
-    }
-  }, [IS_anEdit, vocabEdit_ID]);
-
-  if (loading) {
-    return <h3 className="loading">Loading...</h3>;
-  }
-
-  if (!vocab) {
-    return <h3 className="noTR">No vocabs</h3>;
-  }
 
   function RESET_form() {
     TOGGLE_form(false);
+    SET_toEditVOCAB(undefined);
   }
 
   function HANDLE_inputChange(e) {
     const dataType = e.target.getAttribute("data-type");
     const textContent = e.target.innerHTML;
-    SET_vocab((prevVocab) => ({
+    SET_formVocab((prevVocab) => ({
       ...prevVocab,
       [dataType]: textContent,
     }));
@@ -147,12 +123,12 @@ export function Form({
     SET_showAlert(true);
   }
 
-  const SUBMIT_form = async (event) => {
-    event.preventDefault();
-
+  const SUBMIT_form = async (e) => {
+    e.preventDefault();
+    console.log("Submitting form:", form_VOCAB);
     if (IS_anEdit) {
       try {
-        const updatedVocab = await UPDATE_vocab(vocabEdit_ID, vocab);
+        const updatedVocab = await UPDATE_vocab(toEdit_VOCAB._id, form_VOCAB);
         console.log("Vocab updated:", updatedVocab);
         SET_vocabs((currentVocabs) =>
           currentVocabs.map((vocab) => (vocab._id === updatedVocab._id ? updatedVocab : vocab)),
@@ -164,7 +140,7 @@ export function Form({
       }
     } else {
       try {
-        const createdVocab = await CREATE_vocab(vocab);
+        const createdVocab = await CREATE_vocab(form_VOCAB);
         console.log("Vocab created:", createdVocab);
         SET_vocabs((currentVocabs) => [createdVocab, ...currentVocabs]);
         HANDLE_alert({ text: `Created "${createdVocab.title}"` });
@@ -176,7 +152,7 @@ export function Form({
   };
 
   function EDIT_color(color) {
-    SET_vocab((oldVOCAB) => ({
+    SET_formVocab((oldVOCAB) => ({
       ...oldVOCAB,
       priority: color,
     }));
@@ -187,10 +163,10 @@ export function Form({
 
     if (!IS_anEdit) return console.error("No vocab to delete");
     try {
-      const deleted = await DELETE_vocab(vocab._id);
+      const deleted = await DELETE_vocab(toEdit_VOCAB._id);
       console.log("Deleted:", deleted);
-      SET_vocabs((currentVocabs) => currentVocabs.filter((x) => x._id !== vocab._id));
-      HANDLE_alert({ text: `Deleted "${vocab.title}"` });
+      SET_vocabs((currentVocabs) => currentVocabs.filter((x) => x._id !== toEdit_VOCAB._id));
+      HANDLE_alert({ text: `Deleted "${form_VOCAB.title}"` });
       RESET_form();
     } catch (error) {
       console.error("Error deleting vocab:", error);
@@ -199,11 +175,11 @@ export function Form({
 
   return (
     <div className="formWRAP" data-open={ISopen}>
-      <form action="submit" className="bigForm" data-color={vocab.priority}>
+      <form action="submit" className="bigForm" data-color={form_VOCAB.priority}>
         <div className="top">
           <div className="textWRAP">
             <h1 className="formTITLE">{IS_anEdit ? "Bearbeiten" : "Hinfügen"}</h1>
-            {IS_anEdit && <p className="textEdit notEdit" dangerouslySetInnerHTML={{ __html: vocab.title }}></p>}
+            {IS_anEdit && <p className="textEdit notEdit" dangerouslySetInnerHTML={{ __html: form_VOCAB.title }}></p>}
           </div>
           <div className="btnWRAP">
             <ChooseColorBox UPDATE_color={EDIT_color} optionalCLASS={" seeThrough"} />
@@ -216,7 +192,7 @@ export function Form({
           </div>
         </div>
         <div className="content">
-          <Form_CONTENT HANDLE_inputChange={HANDLE_inputChange} vocab={vocab} />
+          <Form_CONTENT HANDLE_inputChange={HANDLE_inputChange} vocab={form_VOCAB} />
         </div>
         <div className="formEndBtnWRAP">
           {IS_anEdit && (
@@ -227,7 +203,12 @@ export function Form({
           <div className="button cancel" onClick={RESET_form}>
             Abbrechen
           </div>
-          <div className="button done" onClick={(e) => SUBMIT_form(e)}>
+          <div
+            className="button done"
+            onClick={(e) => {
+              SUBMIT_form(e);
+            }}
+          >
             {IS_anEdit ? "Speichern" : "Hinfügen"}
           </div>
         </div>

@@ -74,7 +74,7 @@ export function BtnScrollTop() {
   );
 }
 export function Alert({ text }) {
-  return <div className="alert">✅ {text}</div>;
+  return <div className="alert" dangerouslySetInnerHTML={{ __html: "✅ " + text }}></div>;
 }
 
 ChooseColorBox.propTypes = {

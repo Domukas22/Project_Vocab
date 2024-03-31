@@ -1,20 +1,23 @@
-// write  a delet efunction
+// implement the revive fucntion here
 
 import { base_URL } from "./config";
 
-export async function LIST_vocabs() {
+export async function LIST_vocabs(list) {
+  const url = list === "German" ? base_URL : `${base_URL}/deleted`;
+
   try {
-    const response = await fetch(`${base_URL}`);
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error("Network response was not ok: " + response.statusText);
     }
     const data = await response.json();
-    return data; // This is now a regular JavaScript array (or object, depending on the API response) that you can use.
+    return data;
   } catch (error) {
     console.error("Error fetching data:", error);
-    return []; // Return an empty array in case of an error to ensure the function always returns an array.
+    return [];
   }
 }
+
 export async function FIND_vocab(id) {
   try {
     const response = await fetch(`${base_URL}/${id}`);
@@ -79,6 +82,20 @@ export async function DELETE_vocab(id) {
     return true;
   } catch (error) {
     console.error("Failed to delete vocab:", error);
+    throw error;
+  }
+}
+export async function REVIVE_deletedVocab(id) {
+  try {
+    const response = await fetch(`${base_URL}/deleted/revive/${id}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      throw new Error("Network response was not ok: " + response.statusText);
+    }
+    return true;
+  } catch (error) {
+    console.error("Failed to revive vocab:", error);
     throw error;
   }
 }
