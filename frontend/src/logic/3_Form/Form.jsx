@@ -102,6 +102,7 @@ export function Form({
   toEdit_VOCAB,
   SET_toEditVOCAB,
   SET_vocabs,
+  SET_displayedVOCABS,
   SET_alertMSG,
   SET_showAlert,
   curr_LIST,
@@ -146,6 +147,9 @@ export function Form({
         SET_vocabs((currentVocabs) =>
           currentVocabs.map((vocab) => (vocab._id === updatedVocab._id ? updatedVocab : vocab)),
         );
+        SET_displayedVOCABS((currentVocabs) =>
+          currentVocabs.map((vocab) => (vocab._id === updatedVocab._id ? updatedVocab : vocab)),
+        );
         HANDLE_alert({ text: `Updated "${updatedVocab.title}"` });
         RESET_form();
       } catch (error) {
@@ -156,6 +160,7 @@ export function Form({
         const createdVocab = await CREATE_vocab(form_VOCAB);
         console.log("Vocab created:", createdVocab);
         SET_vocabs((currentVocabs) => [createdVocab, ...currentVocabs]);
+        SET_displayedVOCABS((currentVocabs) => [createdVocab, ...currentVocabs]);
         HANDLE_alert({ text: `Created "${createdVocab.title}"` });
         RESET_form();
       } catch (error) {
@@ -179,6 +184,7 @@ export function Form({
       const deleted = await DELETE_vocab(toEdit_VOCAB._id);
       console.log("Deleted:", deleted);
       SET_vocabs((currentVocabs) => currentVocabs.filter((x) => x._id !== toEdit_VOCAB._id));
+      SET_displayedVOCABS((currentVocabs) => currentVocabs.filter((x) => x._id !== toEdit_VOCAB._id));
       HANDLE_alert({ text: `Deleted "${form_VOCAB.title}"` });
       RESET_form();
     } catch (error) {

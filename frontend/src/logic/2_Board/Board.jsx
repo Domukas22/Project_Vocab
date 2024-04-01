@@ -5,7 +5,7 @@ import { ChooseColorBox } from "../4_General/Comps_general";
 //import PropTypes from "prop-types";
 import { REVIVE_deletedVocab, UPDATE_vocab } from "../DB";
 
-function Vocab({ vocab, TOGGLE_form, SET_vocabs, index, currLIST, SET_alertMSG, SET_showAlert }) {
+function Vocab({ vocab, TOGGLE_form, SET_vocabs, index, currLIST, SET_alertMSG, SET_showAlert, SET_displayedVOCABS }) {
   const [isOpen, SET_isOpen] = useState(false);
 
   const bottomRef = useRef(null);
@@ -24,7 +24,11 @@ function Vocab({ vocab, TOGGLE_form, SET_vocabs, index, currLIST, SET_alertMSG, 
 
   const HANDLE_vocabUpdate = (updatedVocab) => {
     // only for color change
+
     SET_vocabs((currentVocabs) =>
+      currentVocabs.map((vocab) => (vocab._id === updatedVocab._id ? updatedVocab : vocab)),
+    );
+    SET_displayedVOCABS((currentVocabs) =>
       currentVocabs.map((vocab) => (vocab._id === updatedVocab._id ? updatedVocab : vocab)),
     );
     SET_alertMSG(`Updated "${updatedVocab.title}"`);
@@ -47,6 +51,7 @@ function Vocab({ vocab, TOGGLE_form, SET_vocabs, index, currLIST, SET_alertMSG, 
       await REVIVE_deletedVocab(vocab._id);
       console.log("Vocab revived:", vocab);
       SET_vocabs((currentVocabs) => currentVocabs.filter((v) => v._id !== vocab._id));
+      SET_displayedVOCABS((currentVocabs) => currentVocabs.filter((v) => v._id !== vocab._id));
       SET_alertMSG(`Revived "${vocab.title}"`);
       SET_showAlert(true);
     } catch (error) {
@@ -124,7 +129,17 @@ function Vocab({ vocab, TOGGLE_form, SET_vocabs, index, currLIST, SET_alertMSG, 
   );
 }
 
-export function Board({ TOGGLE_form, loading, vocabs, SET_vocabs, sorting, currLIST, SET_alertMSG, SET_showAlert }) {
+export function Board({
+  TOGGLE_form,
+  loading,
+  vocabs,
+  SET_vocabs,
+  sorting,
+  currLIST,
+  SET_alertMSG,
+  SET_showAlert,
+  SET_displayedVOCABS,
+}) {
   if (loading) {
     return <h3 className="loading">Loading...</h3>;
   }
@@ -144,6 +159,7 @@ export function Board({ TOGGLE_form, loading, vocabs, SET_vocabs, sorting, currL
             vocab={vocab}
             TOGGLE_form={TOGGLE_form}
             SET_vocabs={SET_vocabs}
+            SET_displayedVOCABS={SET_displayedVOCABS}
             index={vocabs.length - index}
             currLIST={currLIST}
             SET_alertMSG={SET_alertMSG}

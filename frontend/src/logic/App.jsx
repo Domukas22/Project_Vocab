@@ -13,7 +13,10 @@ import { Alert } from "./4_General/Comps_general";
 
 export default function App() {
   const [curr_LIST, SET_currLIST] = useState("German");
+
   const [vocabs, SET_vocabs] = useState([]);
+  const [displayed_VOCABS, SET_displayedVOCABS] = useState([]);
+  const [forSearch_VOCABS, SET_forSearchVocabs] = useState([]);
 
   const [toEdit_VOCAB, SET_toEditVOCAB] = useState(undefined);
   const [ISformOpen, SET_form] = useState(false);
@@ -25,15 +28,18 @@ export default function App() {
   const [sorting, SET_sorting] = useState("Shuffle");
 
   //////////////////////////////////////////////////////////////////////////////
+  /// stop here
+  /// herhehehr
 
   useEffect(() => {
     async function fetchVocabs() {
       SET_loading(true);
       try {
         const fetchedVocabs = await LIST_vocabs(curr_LIST);
-        // Apply initial sorting or filtering as needed or just set fetched vocabs
         const initialDisplay = sortAndFilterVocabs(fetchedVocabs, sorting, searchTEXT);
         SET_vocabs(initialDisplay);
+        SET_displayedVOCABS(initialDisplay);
+        SET_forSearchVocabs(initialDisplay);
       } catch (error) {
         console.error("Failed to fetch vocabs:", error);
       } finally {
@@ -52,16 +58,15 @@ export default function App() {
   // Handlers to trigger re-sorting or re-filtering
   const handleSortChange = (newSorting) => {
     SET_sorting(newSorting);
-    // Apply sorting directly
     const sortedVocabs = sortAndFilterVocabs(vocabs, newSorting, searchTEXT);
-    SET_vocabs(sortedVocabs);
+    SET_displayedVOCABS(sortedVocabs);
+    SET_forSearchVocabs(sortedVocabs);
   };
 
   const handleSearchChange = (newSearchText) => {
     SET_searchText(newSearchText);
-    // Apply filtering directly
-    const filteredVocabs = sortAndFilterVocabs(vocabs, sorting, newSearchText);
-    SET_vocabs(filteredVocabs);
+    const filteredVocabs = FILTER_vocabs(forSearch_VOCABS, newSearchText);
+    SET_displayedVOCABS(filteredVocabs);
   };
 
   //////////////////////////////////////////////////////////////////////////////
@@ -93,13 +98,14 @@ export default function App() {
       />
       <Board
         TOGGLE_form={toggleForm}
-        vocabs={vocabs}
+        vocabs={displayed_VOCABS}
         loading={loading}
         SET_vocabs={SET_vocabs}
         sorting={sorting}
         currLIST={curr_LIST}
         SET_alertMSG={SET_alertMSG}
         SET_showAlert={SET_showAlert}
+        SET_displayedVOCABS={SET_displayedVOCABS}
       />
 
       <AnimatePresence>
@@ -117,6 +123,7 @@ export default function App() {
               TOGGLE_form={toggleForm}
               toEdit_VOCAB={toEdit_VOCAB}
               SET_vocabs={SET_vocabs}
+              SET_displayedVOCABS={SET_displayedVOCABS}
               SET_alertMSG={SET_alertMSG}
               SET_showAlert={SET_showAlert}
               curr_LIST={curr_LIST}
