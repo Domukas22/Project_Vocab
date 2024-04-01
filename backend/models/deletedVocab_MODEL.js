@@ -9,6 +9,7 @@ const deletedVocab_SCHEMA = new Schema(
     title: { type: String, required: true },
     translation: { type: String, required: true },
     explanation: { type: String, required: true },
+    source: { type: String, required: true },
     priority: { type: Number, required: true },
   },
   { timestamps: true, collection: "deleted" }

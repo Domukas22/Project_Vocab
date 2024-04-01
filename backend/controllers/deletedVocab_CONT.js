@@ -29,8 +29,8 @@ exports.DELETE_deletedVocab = asyncHandler(async (req, res) => {
 exports.REVIVE_deletedVocab = asyncHandler(async (req, res) => {
   const deletedVocab = await deletedVocab_MODEL.findById(req.params.id).exec();
   if (deletedVocab) {
-    const { list, title, translation, explanation, priority } = deletedVocab;
-    const vocab = new vocab_MODEL({ list, title, translation, explanation, priority });
+    const { list, title, translation, explanation, source, priority } = deletedVocab;
+    const vocab = new vocab_MODEL({ list, title, translation, explanation, source, priority });
     await vocab.save();
     await deletedVocab_MODEL.findByIdAndDelete(req.params.id);
     res.json({ message: "Deleted vocab revived" });

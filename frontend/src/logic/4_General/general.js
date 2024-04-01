@@ -42,6 +42,7 @@ export function FILTER_vocabs(vocabs, searchText) {
     (vocab) =>
       vocab.title.toLowerCase().includes(lowerCaseSearchText) ||
       vocab.translation.toLowerCase().includes(lowerCaseSearchText) ||
-      vocab.explanation.toLowerCase().includes(lowerCaseSearchText),
+      vocab.explanation.toLowerCase().includes(lowerCaseSearchText) ||
+      vocab.source.toLowerCase().includes(lowerCaseSearchText),
   );
 }

@@ -10,6 +10,7 @@ exports.CREATE_vocab = asyncHandler(async (req, res) => {
     title: req.body.title,
     translation: req.body.translation,
     explanation: req.body.explanation,
+    source: req.body.source,
     priority: req.body.priority,
   });
 
@@ -40,6 +41,7 @@ exports.DELETE_vocab = asyncHandler(async (req, res) => {
       title: vocab.title,
       translation: vocab.translation,
       explanation: vocab.explanation,
+      source: vocab.source,
       priority: vocab.priority,
       createdAt: vocab.createdAt,
       updatedAt: vocab.updatedAt,
@@ -62,6 +64,7 @@ exports.UPDATE_vocab = asyncHandler(async (req, res) => {
     vocab.title = req.body.title;
     vocab.translation = req.body.translation;
     vocab.explanation = req.body.explanation;
+    vocab.source = req.body.source;
     vocab.priority = req.body.priority;
 
     const updatedVocab = await vocab.save();

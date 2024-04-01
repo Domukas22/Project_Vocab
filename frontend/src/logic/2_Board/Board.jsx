@@ -107,6 +107,11 @@ function Vocab({ vocab, TOGGLE_form, SET_vocabs, index, currLIST, SET_alertMSG, 
             style={{ padding: "2rem 2.8rem" }}
             dangerouslySetInnerHTML={{ __html: vocab.explanation }}
           ></div>
+          <div
+            className="vocab_TEXT ex"
+            style={{ padding: "2rem 2.8rem" }}
+            dangerouslySetInnerHTML={{ __html: vocab.source }}
+          ></div>
           <div className="vocabBtnWRAP">{RENDER_btns()}</div>
         </div>
       </div>

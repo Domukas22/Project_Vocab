@@ -11,6 +11,7 @@ function Form_CONTENT({ HANDLE_inputChange, vocab }) {
   const vocab_TITLE = useRef(null);
   const vocab_TRANSLATION = useRef(null);
   const vocab_EXPLANATION = useRef(null);
+  const vocab_SOURCE = useRef(null);
 
   function paste(e) {
     e.preventDefault();
@@ -39,6 +40,7 @@ function Form_CONTENT({ HANDLE_inputChange, vocab }) {
     vocab_TITLE.current.innerHTML = vocab.title;
     vocab_TRANSLATION.current.innerHTML = vocab.translation;
     vocab_EXPLANATION.current.innerHTML = vocab.explanation;
+    vocab_SOURCE.current.innerHTML = vocab.source;
   }, []);
 
   return (
@@ -79,6 +81,16 @@ function Form_CONTENT({ HANDLE_inputChange, vocab }) {
             ref={vocab_EXPLANATION}
           ></div>
         </div>
+        <div className="inputWRAP">
+          <label htmlFor="source">Source</label>
+          <div
+            data-type="source"
+            className="textEdit"
+            contentEditable="true"
+            onInput={HANDLE_inputChange}
+            ref={vocab_SOURCE}
+          ></div>
+        </div>
       </div>
     </fieldset>
   );
@@ -98,9 +110,10 @@ export function Form({
 
   const [form_VOCAB, SET_formVocab] = useState({
     list: curr_LIST,
-    title: IS_anEdit ? toEdit_VOCAB.title : "",
-    translation: IS_anEdit ? toEdit_VOCAB.translation : "",
-    explanation: IS_anEdit ? toEdit_VOCAB.explanation : "",
+    title: IS_anEdit ? toEdit_VOCAB.title : " ",
+    translation: IS_anEdit ? toEdit_VOCAB.translation : " ",
+    explanation: IS_anEdit ? toEdit_VOCAB.explanation : " ",
+    source: IS_anEdit ? toEdit_VOCAB.source : " ",
     priority: IS_anEdit ? toEdit_VOCAB.priority : 1,
   });
 
