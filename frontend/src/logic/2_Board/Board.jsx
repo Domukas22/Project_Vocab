@@ -102,16 +102,21 @@ function Vocab({ vocab, TOGGLE_form, SET_vocabs, index, currLIST, SET_alertMSG, 
       <div className="bottom" ref={bottomRef}>
         <div className="contentWRAP" data-id={vocab.id}>
           <div className="vocab_TEXT tr" dangerouslySetInnerHTML={{ __html: vocab.translation }}></div>
-          <div
-            className="vocab_TEXT ex"
-            style={{ padding: "2rem 2.8rem" }}
-            dangerouslySetInnerHTML={{ __html: vocab.explanation }}
-          ></div>
-          <div
-            className="vocab_TEXT ex"
-            style={{ padding: "2rem 2.8rem" }}
-            dangerouslySetInnerHTML={{ __html: vocab.source }}
-          ></div>
+
+          {vocab.explanation && (
+            <div
+              className="vocab_TEXT ex"
+              style={{ padding: "2rem 2.8rem" }}
+              dangerouslySetInnerHTML={{ __html: vocab.explanation }}
+            ></div>
+          )}
+          {vocab.source && (
+            <div
+              className="vocab_TEXT ex"
+              style={{ padding: "2rem 2.8rem" }}
+              dangerouslySetInnerHTML={{ __html: vocab.source }}
+            ></div>
+          )}
           <div className="vocabBtnWRAP">{RENDER_btns()}</div>
         </div>
       </div>

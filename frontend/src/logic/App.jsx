@@ -1,6 +1,6 @@
 //
 // re write the displayed_VOCABS to use useEffect
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { Form } from "./3_Form/Form";
 import { Board } from "./2_Board/Board";
@@ -24,12 +24,16 @@ export default function App() {
   const [searchTEXT, SET_searchText] = useState("");
   const [sorting, SET_sorting] = useState("Shuffle");
 
+  //////////////////////////////////////////////////////////////////////////////
+
   useEffect(() => {
     async function fetchVocabs() {
       SET_loading(true);
       try {
         const fetchedVocabs = await LIST_vocabs(curr_LIST);
-        SET_vocabs(fetchedVocabs);
+        // Apply initial sorting or filtering as needed or just set fetched vocabs
+        const initialDisplay = sortAndFilterVocabs(fetchedVocabs, sorting, searchTEXT);
+        SET_vocabs(initialDisplay);
       } catch (error) {
         console.error("Failed to fetch vocabs:", error);
       } finally {
@@ -39,14 +43,28 @@ export default function App() {
     fetchVocabs();
   }, [curr_LIST]);
 
-  const displayed_VOCABS = useMemo(() => {
-    let result = [...vocabs];
-    if (searchTEXT) {
-      result = FILTER_vocabs(result, searchTEXT);
-    }
-    result = SORT_vocabs(result, sorting);
-    return result;
-  }, [vocabs, searchTEXT, sorting]);
+  const sortAndFilterVocabs = (vocabs, sorting, searchText) => {
+    let filtered = searchText ? FILTER_vocabs(vocabs, searchText) : vocabs;
+    let sorted = SORT_vocabs(filtered, sorting);
+    return sorted;
+  };
+
+  // Handlers to trigger re-sorting or re-filtering
+  const handleSortChange = (newSorting) => {
+    SET_sorting(newSorting);
+    // Apply sorting directly
+    const sortedVocabs = sortAndFilterVocabs(vocabs, newSorting, searchTEXT);
+    SET_vocabs(sortedVocabs);
+  };
+
+  const handleSearchChange = (newSearchText) => {
+    SET_searchText(newSearchText);
+    // Apply filtering directly
+    const filteredVocabs = sortAndFilterVocabs(vocabs, sorting, newSearchText);
+    SET_vocabs(filteredVocabs);
+  };
+
+  //////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
     if (showAlert) {
@@ -70,10 +88,12 @@ export default function App() {
         SET_currLIST={SET_currLIST}
         SET_searchText={SET_searchText}
         SET_sorting={SET_sorting}
+        handleSortChange={handleSortChange}
+        handleSearchChange={handleSearchChange}
       />
       <Board
         TOGGLE_form={toggleForm}
-        vocabs={displayed_VOCABS}
+        vocabs={vocabs}
         loading={loading}
         SET_vocabs={SET_vocabs}
         sorting={sorting}

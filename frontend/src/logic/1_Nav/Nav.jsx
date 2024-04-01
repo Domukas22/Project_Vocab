@@ -3,7 +3,16 @@
 import { useState } from "react";
 //import PropTypes from "prop-types";
 
-export function Nav({ TOGGLE_form, sorting, SET_sorting, SET_searchText, currLIST, SET_currLIST }) {
+export function Nav({
+  TOGGLE_form,
+  sorting,
+  SET_sorting,
+  SET_searchText,
+  currLIST,
+  SET_currLIST,
+  handleSortChange,
+  handleSearchChange,
+}) {
   const [AREfoldersOpen, SET_foldersOpen] = useState(false);
   const [ISsortOpen, SET_sortOpen] = useState(false);
 
@@ -46,8 +55,7 @@ export function Nav({ TOGGLE_form, sorting, SET_sorting, SET_searchText, currLIS
           id=""
           placeholder="Search..."
           onChange={(e) => {
-            //SET_searchText(e.target.value.toLowerCase());
-            SET_searchText(e.target.value.toLowerCase());
+            handleSearchChange(e.target.value.toLowerCase());
           }}
         />
         <div className="navBTN sort" onClick={() => TOGGLE_sortBox()} data-open={ISsortOpen}>
@@ -56,14 +64,18 @@ export function Nav({ TOGGLE_form, sorting, SET_sorting, SET_searchText, currLIS
             <div
               className="navDropdownITEM"
               data-current={sorting === "Shuffle"}
-              onClick={() => SET_sorting("Shuffle")}
+              onClick={() => handleSortChange("Shuffle")}
             >
               Shuffle
             </div>
-            <div className="navDropdownITEM" data-current={sorting === "Color"} onClick={() => SET_sorting("Color")}>
+            <div
+              className="navDropdownITEM"
+              data-current={sorting === "Color"}
+              onClick={() => handleSortChange("Color")}
+            >
               Color
             </div>
-            <div className="navDropdownITEM" data-current={sorting === "Date"} onClick={() => SET_sorting("Date")}>
+            <div className="navDropdownITEM" data-current={sorting === "Date"} onClick={() => handleSortChange("Date")}>
               Date
             </div>
           </div>
@@ -82,7 +94,7 @@ export function Nav({ TOGGLE_form, sorting, SET_sorting, SET_searchText, currLIS
           id=""
           placeholder="Search..."
           onChange={(e) => {
-            SET_searchText(e.target.value.toLowerCase());
+            handleSearchChange(e.target.value.toLowerCase());
           }}
         />
       </div>
