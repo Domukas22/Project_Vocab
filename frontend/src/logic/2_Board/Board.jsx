@@ -141,7 +141,11 @@ export function Board({
   SET_displayedVOCABS,
 }) {
   if (loading) {
-    return <h3 className="loading">Loading...</h3>;
+    return (
+      <h3 className="noTR" data-loading="true">
+        Loading...
+      </h3>
+    );
   }
 
   if (!vocabs || vocabs.length === 0) {
