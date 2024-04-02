@@ -92,9 +92,6 @@ form > * {
 }
 fieldset {
   width: 100%;
-  background-color: var(--color_3);
-  border-radius: var(--radius_big);
-  border: var(--border_005);
 }
 
 fieldset > .top {
@@ -155,6 +152,7 @@ label {
   column-gap: 1rem;
   position: relative;
   z-index: 10;
+  padding-top: 0 !important;
 }
 .formEndBtnWRAP .button:last-child {
   flex: 1;
@@ -183,6 +181,7 @@ form.bigForm[data-color="1"] .colorCIRCLE {
   }
   .formEndBtnWRAP {
     flex-direction: column-reverse;
+    padding-top: 4vmin !important;
     row-gap: 1rem;
   }
   

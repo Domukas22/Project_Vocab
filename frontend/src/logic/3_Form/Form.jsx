@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { ChooseColorBox } from "../4_General/Comps_general";
 
 import { UPDATE_vocab, CREATE_vocab, DELETE_vocab } from "../DB";
+import { SCROLL_top } from "../4_General/general";
 
 function Form_CONTENT({ HANDLE_inputChange, vocab }) {
   const vocab_TITLE = useRef(null);
@@ -45,52 +46,46 @@ function Form_CONTENT({ HANDLE_inputChange, vocab }) {
 
   return (
     <fieldset>
-      <div className="top">
-        <legend>Titel / Übersetzung</legend>
-        <div className="buttons"></div>
+      <div className="inputWRAP">
+        <label htmlFor="title">Title</label>
+        <div
+          className="textEdit"
+          contentEditable="true"
+          onInput={HANDLE_inputChange}
+          data-type="title"
+          ref={vocab_TITLE}
+          onPaste={paste}
+        ></div>
       </div>
-      <div className="inputs">
-        <div className="inputWRAP">
-          <label htmlFor="title">Titel</label>
-          <div
-            className="textEdit"
-            contentEditable="true"
-            onInput={HANDLE_inputChange}
-            data-type="title"
-            ref={vocab_TITLE}
-            onPaste={paste}
-          ></div>
-        </div>
-        <div className="inputWRAP">
-          <label htmlFor="translation">Übersetzung</label>
-          <div
-            data-type="translation"
-            className="textEdit"
-            contentEditable="true"
-            onInput={HANDLE_inputChange}
-            ref={vocab_TRANSLATION}
-          ></div>
-        </div>
-        <div className="inputWRAP">
-          <label htmlFor="explanation">Explanation</label>
-          <div
-            data-type="explanation"
-            className="textEdit"
-            contentEditable="true"
-            onInput={HANDLE_inputChange}
-            ref={vocab_EXPLANATION}
-          ></div>
-        </div>
-        <div className="inputWRAP">
-          <label htmlFor="source">Source</label>
-          <div
-            data-type="source"
-            className="textEdit"
-            contentEditable="true"
-            onInput={HANDLE_inputChange}
-            ref={vocab_SOURCE}
-          ></div>
-        </div>
+      <div className="inputWRAP">
+        <label htmlFor="translation">Translation</label>
+        <div
+          data-type="translation"
+          className="textEdit"
+          contentEditable="true"
+          onInput={HANDLE_inputChange}
+          ref={vocab_TRANSLATION}
+        ></div>
+      </div>
+      <div className="inputWRAP">
+        <label htmlFor="explanation">Explanation</label>
+        <div
+          data-type="explanation"
+          className="textEdit"
+          contentEditable="true"
+          onInput={HANDLE_inputChange}
+          ref={vocab_EXPLANATION}
+        ></div>
+      </div>
+      <div className="inputWRAP">
+        <label htmlFor="source">Source</label>
+        <div
+          data-type="source"
+          className="textEdit"
+          contentEditable="true"
+          onInput={HANDLE_inputChange}
+          ref={vocab_SOURCE}
+        ></div>
       </div>
     </fieldset>
   );
@@ -106,6 +101,7 @@ export function Form({
   SET_alertMSG,
   SET_showAlert,
   curr_LIST,
+  SET_highlightedVocabID,
 }) {
   const IS_anEdit = toEdit_VOCAB._id !== undefined;
 
@@ -117,10 +113,14 @@ export function Form({
     source: IS_anEdit ? toEdit_VOCAB.source : " ",
     priority: IS_anEdit ? toEdit_VOCAB.priority : 1,
   });
+  const [IS_doneBtnLoading, SET_isDoneBtnLoading] = useState(false);
+  const [IS_deleteBtnLoading, SET_isDeleteBtnLoading] = useState(false);
 
   function RESET_form() {
     TOGGLE_form(false);
     SET_toEditVOCAB(undefined);
+    SET_isDoneBtnLoading(false);
+    SET_isDeleteBtnLoading(false);
   }
 
   function HANDLE_inputChange(e) {
@@ -139,8 +139,9 @@ export function Form({
 
   const SUBMIT_form = async (e) => {
     e.preventDefault();
-    console.log("Submitting form:", form_VOCAB);
+    SET_isDoneBtnLoading(true);
     if (IS_anEdit) {
+      // is editing an existing vocab
       try {
         const updatedVocab = await UPDATE_vocab(toEdit_VOCAB._id, form_VOCAB);
         console.log("Vocab updated:", updatedVocab);
@@ -152,10 +153,12 @@ export function Form({
         );
         HANDLE_alert({ text: `Updated "${updatedVocab.title}"` });
         RESET_form();
+        SET_highlightedVocabID(updatedVocab._id);
       } catch (error) {
         console.error("Error updating vocab:", error);
       }
     } else {
+      // if creating a new vocab
       try {
         const createdVocab = await CREATE_vocab(form_VOCAB);
         console.log("Vocab created:", createdVocab);
@@ -163,6 +166,8 @@ export function Form({
         SET_displayedVOCABS((currentVocabs) => [createdVocab, ...currentVocabs]);
         HANDLE_alert({ text: `Created "${createdVocab.title}"` });
         RESET_form();
+        SCROLL_top();
+        SET_highlightedVocabID(createdVocab._id);
       } catch (error) {
         console.error("Error creating vocab:", error);
       }
@@ -178,7 +183,7 @@ export function Form({
 
   async function DELETE_one() {
     // delete the vocab that's currently being edited
-
+    SET_isDeleteBtnLoading(true);
     if (!IS_anEdit) return console.error("No vocab to delete");
     try {
       const deleted = await DELETE_vocab(toEdit_VOCAB._id);
@@ -197,7 +202,7 @@ export function Form({
       <form action="submit" className="bigForm" data-color={form_VOCAB.priority}>
         <div className="top">
           <div className="textWRAP">
-            <h1 className="formTITLE">{IS_anEdit ? "Bearbeiten" : "Hinfügen"}</h1>
+            <h1 className="formTITLE">{IS_anEdit ? "Edit Vocab" : "Create Vocab"}</h1>
             {IS_anEdit && <p className="textEdit notEdit" dangerouslySetInnerHTML={{ __html: form_VOCAB.title }}></p>}
           </div>
           <div className="btnWRAP">
@@ -215,20 +220,29 @@ export function Form({
         </div>
         <div className="formEndBtnWRAP">
           {IS_anEdit && (
-            <div className="button delete" onClick={() => DELETE_one()}>
-              Delete
+            <div
+              className="button delete"
+              onClick={() => DELETE_one()}
+              data-loading={IS_deleteBtnLoading}
+              style={{ pointerEvents: IS_deleteBtnLoading ? "none" : "auto" }}
+            >
+              <p>Delete</p>
+              {IS_deleteBtnLoading && <div className="btn_SPINNER red"></div>}
             </div>
           )}
           <div className="button cancel" onClick={RESET_form}>
-            Abbrechen
+            Cancel
           </div>
           <div
             className="button done"
             onClick={(e) => {
               SUBMIT_form(e);
             }}
+            data-loading={IS_doneBtnLoading}
+            style={{ pointerEvents: IS_doneBtnLoading ? "none" : "auto" }}
           >
-            {IS_anEdit ? "Speichern" : "Hinfügen"}
+            <p>{IS_anEdit ? "Save" : "Create"}</p>
+            {IS_doneBtnLoading && <div className="btn_SPINNER green"></div>}
           </div>
         </div>
       </form>

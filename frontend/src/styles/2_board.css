@@ -34,6 +34,7 @@
   backdrop-filter: blur(3px);
   opacity: 0%;
   transition: 200ms;
+  z-index: 20;
 }
 .vocabBOARD[data-loading="true"] .loadingOVERLAY {
   opacity: 100%;
@@ -45,8 +46,11 @@
   border-bottom: var(--border_005);
   transition: 200ms ease-in-out;
 }
+.vocab[data-highlight="true"] {
+  border-color: var(--green) !important;
+}
 
-.vocab:first-child {
+.vocab:nth-child(2) {
   border-radius: var(--radius_big) var(--radius_big) 0 0;
 }
 .vocab:last-child {
@@ -127,16 +131,52 @@
   color: var(--white_095);
   padding: 2.2rem 2.8rem;
 }
-.vocab_TEXT.ex, .vocab_TEXT.ex * {
+.vocab_TEXT.ex, .vocab_TEXT.ex *, .vocab_TEXT.source, .vocab_TEXT.source * {
   color: var(--white_07);
   font-weight: 300;
 }
-
+.vocab_TEXT.source {
+  border-top: var(--border_005)
+}
 .vocabBtnWRAP {
   padding: 2.4rem 2.8rem;
   display: flex;
   column-gap: 0.8rem;
   border-top: var(--border_005);
+}
+.vocabColorBox_WRAP {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 0;
+}
+.vocabColorBox_WRAP > .button {
+  height: 100%;
+}
+.vocabColorSpinner_WRAP {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  background-color: var(--color_3);
+  border: var(--border_005);
+  border-radius: var(--radius_medium);
+}
+.vocabColorSpinner_WRAP > .btn_SPINNER {
+  opacity: 100%;
+}
+
+.vocabBtnWRAP .button.revive > p {
+  font-weight: 400;
+}
+.vocabBtnWRAP .button.revive[data-loading="true"] > p {
+  opacity: 0%;
 }
 h3.noTR {
   height: 8.4rem;

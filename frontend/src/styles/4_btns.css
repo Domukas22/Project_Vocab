@@ -4,7 +4,7 @@
 /*  */
 /*  */
 .button {
-  padding: 2rem 2.4rem;
+  padding: 2rem 2.4rem !important;
   background-color:var(--color_4);
   border-radius: var(--radius_medium);
   cursor: pointer;
@@ -94,7 +94,13 @@ form.bigForm[data-color="high"] .button.color.high {
   top: 4rem;
   right: 4rem;
   transition: 300ms;
+  z-index: 10;
+  font-size: 2.4rem;
+  padding: 0;
+  height: 7rem;
+  width: 6rem;
 }
+
 .button.boardBottom.scrollTOP[data-show="false"] {
   pointer-events: none;
   opacity: 0%;
@@ -103,15 +109,57 @@ form.bigForm[data-color="high"] .button.color.high {
 form .btnWRAP .button[data-open="true"] {
   background-color: var(--color_4);
 }
-.formEndBtnWRAP .button.delete {
-  color: #ff9292
+.formEndBtnWRAP .button.delete > p{
+  color: var(--red);
+  font-weight: 400;
+}
+.formEndBtnWRAP .button.delete[data-loading="true"] {
+  background-color: var(--red_bg);
 }
 .formEndBtnWRAP .button.cancel {
   
 }
-.formEndBtnWRAP .button.done {
-  color: #AFFB6D
+.formEndBtnWRAP .button.done > p{
+  color: var(--green);
+  font-weight: 400;
 }
+.formEndBtnWRAP .button.done[data-loading="true"] {
+  background-color: var(--green_bg);
+}
+.formEndBtnWRAP .button.done[data-loading="true"] > p {
+  opacity: 0%;
+}
+.formEndBtnWRAP .button.delete[data-loading="true"] > p {
+  opacity: 0%;
+}
+
+.btn_SPINNER {
+  width: 24px;
+  height: 24px;
+  border: 3.5px solid white;
+  border-bottom-color: transparent !important;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  position: absolute;
+}
+.btn_SPINNER.green {
+  border: 3.5px solid var(--green);
+}
+.btn_SPINNER.red {
+  border: 3.5px solid var(--red);
+}
+
+
+@keyframes rotation {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+  } 
 
 .button.textOnly:hover {
   color:var(--red);
@@ -122,3 +170,12 @@ form .btnWRAP .button[data-open="true"] {
 .button.add:hover {
   color: var(--green);
 }
+
+
+@media screen and (max-width: 48rem) {
+  .button.boardBottom.scrollTOP {
+    top: 4vmin;
+    right: 4vmin;
+  }
+}
+

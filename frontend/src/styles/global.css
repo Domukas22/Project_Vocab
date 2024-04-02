@@ -45,7 +45,9 @@
   --color_5: #4b4b4b;
 
   --red: #ff9e9e;
+  --red_bg: #3f3838;
   --green: #AFFB6D;
+  --green_bg: #404b40;
 
   --high: #ff9e9e;
   --medium: #fff1b5;
@@ -187,7 +189,6 @@ form .chooseColorWRAP {
   background-color: var(--bgFORM);
   border-radius: var(--radius_medium);
   transition: 150ms;
-
   background-color: rgb(59, 73, 59);
 }
 
@@ -213,10 +214,18 @@ form .chooseColorWRAP {
 }
 
 @media screen and (max-width: 48rem) {
+  #root {
+    row-gap: 4vmin;
+  }
   body {
     background-color: var(--bgBODY);
-    padding: 6rem 4vmin;
+    padding: 4vmin 4vmin 8rem;
     overflow-y: scroll;
+  }
+  .alert {
+    bottom: 2rem;
+    left: 2rem;
+    right: 2rem;
   }
 }
 

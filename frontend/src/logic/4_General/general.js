@@ -5,7 +5,7 @@
 
 export function SCROLL_top() {
   window.scrollTo({
-    top: 0,
+    top: -100,
     left: 0,
     behavior: "smooth",
   });
@@ -46,3 +46,8 @@ export function FILTER_vocabs(vocabs, searchText) {
       vocab.source.toLowerCase().includes(lowerCaseSearchText),
   );
 }
+
+export const emptyText_REGEX = /^(?! *$)(?!&nbsp;$).+/;
+// 1. ""
+// 2. " "
+// 3. &nbsp

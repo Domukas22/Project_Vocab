@@ -22,14 +22,13 @@ export default function App() {
   const [ISformOpen, SET_form] = useState(false);
   const [showAlert, SET_showAlert] = useState(false);
   const [alertMSG, SET_alertMSG] = useState("This is an alert text");
+  const [highlightedVocab_ID, SET_highlightedVocabID] = useState("");
 
   const [loading, SET_loading] = useState(false);
   const [searchTEXT, SET_searchText] = useState("");
   const [sorting, SET_sorting] = useState("Shuffle");
 
   //////////////////////////////////////////////////////////////////////////////
-  /// stop here
-  /// herhehehr
 
   useEffect(() => {
     async function fetchVocabs() {
@@ -57,16 +56,20 @@ export default function App() {
 
   // Handlers to trigger re-sorting or re-filtering
   const handleSortChange = (newSorting) => {
+    SET_loading(true); // currently not visible, because the loading is too fast and there aren't many vocabs
     SET_sorting(newSorting);
     const sortedVocabs = sortAndFilterVocabs(vocabs, newSorting, searchTEXT);
     SET_displayedVOCABS(sortedVocabs);
     SET_forSearchVocabs(sortedVocabs);
+    SET_loading(false);
   };
 
   const handleSearchChange = (newSearchText) => {
+    SET_loading(true); // currently not visible, because the loading is too fast and there aren't many vocabs
     SET_searchText(newSearchText);
     const filteredVocabs = FILTER_vocabs(forSearch_VOCABS, newSearchText);
     SET_displayedVOCABS(filteredVocabs);
+    SET_loading(false);
   };
 
   //////////////////////////////////////////////////////////////////////////////
@@ -76,6 +79,14 @@ export default function App() {
       setTimeout(() => {
         SET_showAlert(false);
       }, 5000);
+    }
+  }, [showAlert]);
+
+  useEffect(() => {
+    if (highlightedVocab_ID !== "") {
+      setTimeout(() => {
+        SET_highlightedVocabID("");
+      }, 1000);
     }
   }, [showAlert]);
 
@@ -91,10 +102,9 @@ export default function App() {
         sorting={sorting}
         currLIST={curr_LIST}
         SET_currLIST={SET_currLIST}
-        SET_searchText={SET_searchText}
-        SET_sorting={SET_sorting}
         handleSortChange={handleSortChange}
         handleSearchChange={handleSearchChange}
+        searchTEXT={searchTEXT}
       />
       <Board
         TOGGLE_form={toggleForm}
@@ -106,6 +116,7 @@ export default function App() {
         SET_alertMSG={SET_alertMSG}
         SET_showAlert={SET_showAlert}
         SET_displayedVOCABS={SET_displayedVOCABS}
+        highlightedVocab_ID={highlightedVocab_ID}
       />
 
       <AnimatePresence>
@@ -128,6 +139,7 @@ export default function App() {
               SET_showAlert={SET_showAlert}
               curr_LIST={curr_LIST}
               SET_toEditVOCAB={SET_toEditVOCAB}
+              SET_highlightedVocabID={SET_highlightedVocabID}
             />
           </motion.div>
         )}
