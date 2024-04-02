@@ -8,7 +8,7 @@ import { ChooseColorBox } from "../4_General/Comps_general";
 import { UPDATE_vocab, CREATE_vocab, DELETE_vocab } from "../DB";
 import { SCROLL_top } from "../4_General/general";
 
-function Form_CONTENT({ HANDLE_inputChange, vocab }) {
+function Form_CONTENT({ HANDLE_inputChange, vocab, EDIT_color, color }) {
   const vocab_TITLE = useRef(null);
   const vocab_TRANSLATION = useRef(null);
   const vocab_EXPLANATION = useRef(null);
@@ -86,6 +86,41 @@ function Form_CONTENT({ HANDLE_inputChange, vocab }) {
           onInput={HANDLE_inputChange}
           ref={vocab_SOURCE}
         ></div>
+      </div>
+      <div className="inputWRAP">
+        <label>Priority</label>
+        <div
+          className="chooseColorWRAP"
+          data-active={color === 3}
+          onClick={(e) => {
+            e.stopPropagation();
+            EDIT_color(3);
+          }}
+        >
+          <div className="button color low">
+            <div className="colorCIRCLE"></div>
+          </div>
+          <div
+            className="button color medium"
+            data-active={color === 2}
+            onClick={(e) => {
+              e.stopPropagation();
+              EDIT_color(2);
+            }}
+          >
+            <div className="colorCIRCLE"></div>
+          </div>
+          <div
+            className="button color high"
+            data-active={color === 1}
+            onClick={(e) => {
+              e.stopPropagation();
+              EDIT_color(1);
+            }}
+          >
+            <div className="colorCIRCLE"></div>
+          </div>
+        </div>
       </div>
     </fieldset>
   );
@@ -175,6 +210,7 @@ export function Form({
   };
 
   function EDIT_color(color) {
+    console.log("new color " + color);
     SET_formVocab((oldVOCAB) => ({
       ...oldVOCAB,
       priority: color,
@@ -203,11 +239,10 @@ export function Form({
         <div className="top">
           <div className="textWRAP">
             <h1 className="formTITLE">{IS_anEdit ? "Edit Vocab" : "Create Vocab"}</h1>
-            {IS_anEdit && <p className="textEdit notEdit" dangerouslySetInnerHTML={{ __html: form_VOCAB.title }}></p>}
           </div>
           <div className="btnWRAP">
-            <ChooseColorBox UPDATE_color={EDIT_color} optionalCLASS={" seeThrough"} />
-            <div className="button seeThrough X" onClick={RESET_form}>
+            {/* <ChooseColorBox UPDATE_color={EDIT_color} optionalCLASS={" seeThrough"} /> */}
+            <div className="button seeThrough X" onClick={RESET_form} style={{ padding: "3rem 3rem !important" }}>
               <div className="xWRAP">
                 <div className="xLINE"></div>
                 <div className="xLINE second"></div>
@@ -216,7 +251,12 @@ export function Form({
           </div>
         </div>
         <div className="content">
-          <Form_CONTENT HANDLE_inputChange={HANDLE_inputChange} vocab={form_VOCAB} />
+          <Form_CONTENT
+            HANDLE_inputChange={HANDLE_inputChange}
+            vocab={form_VOCAB}
+            EDIT_color={EDIT_color}
+            color={form_VOCAB.priority}
+          />
         </div>
         <div className="formEndBtnWRAP">
           {IS_anEdit && (

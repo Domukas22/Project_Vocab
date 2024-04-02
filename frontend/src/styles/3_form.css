@@ -68,7 +68,7 @@ form.bigForm > * {
 }
 form.bigForm > .top {
   display: flex;
-  padding: 2.6rem 4rem;
+  padding: 2rem 4rem;
 
   justify-content: space-between;
   align-items: center;
@@ -81,7 +81,9 @@ form.bigForm > .top > .btnWRAP {
   column-gap: 1.2rem;
   margin-left: 2rem;
 }
-
+form .button.seeThrough.X {
+  padding: 3rem 3rem !important;
+}
 
 
 form > * {
@@ -124,7 +126,15 @@ fieldset > .inputs {
 .inputWRAP.noMargin {
   margin-bottom: 0;
 }
-
+.inputWRAP .chooseColorWRAP {
+  position: static;
+  transform: translateY(0);
+  box-shadow: none;
+  border: var(--border_005);
+}
+.inputWRAP .chooseColorWRAP .button.color {
+  flex: 1;
+}
 
 label {
   margin-bottom: 0.6rem;
@@ -170,6 +180,10 @@ form.bigForm[data-color="1"] .colorCIRCLE {
 }
 
 @media screen and (max-width: 48rem) {
+  h1.formTITLE {
+    font-size: 3rem;
+    font-weight: 500;
+  }
   .formWRAP {
     padding: 4vmin 4vmin 6rem;
   }

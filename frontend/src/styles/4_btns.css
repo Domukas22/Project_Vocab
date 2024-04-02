@@ -41,26 +41,29 @@
   background-color: var(--high);
 }
 
-.button.color.low:hover {
+.button.color.low:hover,
+.button.color.low[data-active="true"] {
   background-color: var(--low_hover);
 }
-.button.color.medium:hover {
+.button.color.medium:hover,
+.button.color.medium[data-active="true"] {
   background-color: var(--medium_hover);
 }
-.button.color.high:hover {
+.button.color.high:hover,
+.button.color.high[data-active="true"] {
   background-color: var(--high_hover);
 }
 
 .vocab[data-color="3"] .button.color.low,
-form.bigForm[data-color="low"] .button.color.low {
+form.bigForm[data-color="3"] .button.color.low {
   background-color: var(--low_hover);
 }
 .vocab[data-color="2"] .button.color.medium,
-form.bigForm[data-color="medium"] .button.color.medium {
+form.bigForm[data-color="2"] .button.color.medium {
   background-color: var(--medium_hover);
 }
 .vocab[data-color="1"] .button.color.high,
-form.bigForm[data-color="high"] .button.color.high {
+form.bigForm[data-color="1"] .button.color.high {
   background-color: var(--high_hover);
 }
 
