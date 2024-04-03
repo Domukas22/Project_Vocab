@@ -89,7 +89,13 @@ nav .contentWRAP {
   transform-style: preserve-3d;
   transform: translateY(0rem) scaleX(1);
 }
-
+.navBTN.display_TOGGLE {
+  flex:1
+}
+.navBTN.display_TOGGLE[data-active="true"] {
+  background-color: var(--pink_bg);
+  color: var(--pink);
+}
 
 .navDropdownITEM {
   padding: 2rem 0;
@@ -102,7 +108,8 @@ nav .contentWRAP {
 }
 .navDropdownITEM[data-current="true"],
 .navDropdownITEM:hover  {
-  background-color:var(--bg_main_hover);
+  color: var(--pink);
+  background-color:var(--pink_bg);
 }
 
 .search_WRAP {
@@ -122,7 +129,7 @@ input[type="search"] {
   height: 100%;
 
   font-weight: 300;
-  color: #fba2ff;
+  color: var(--pink);
   background-color: rgba(255, 255, 255, 0);
   border-right: var(--border_005);
   transition: 100ms ease-in-out;

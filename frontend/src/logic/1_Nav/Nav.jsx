@@ -2,7 +2,7 @@
 
 import { func } from "prop-types";
 import { useState, useRef } from "react";
-//import PropTypes from "prop-types";
+// create a toggle which will toggle the SET_reverse function to true and false
 
 export function Nav({
   TOGGLE_form,
@@ -12,6 +12,8 @@ export function Nav({
   handleSortChange,
   handleSearchChange,
   searchTEXT,
+  reverse,
+  SET_reverse,
 }) {
   const [AREfoldersOpen, SET_foldersOpen] = useState(false);
   const [ISsortOpen, SET_sortOpen] = useState(false);
@@ -35,7 +37,7 @@ export function Nav({
 
   return (
     <nav>
-      <div className="contentWRAP">
+      <div className="contentWRAP" style={{ zIndex: "10" }}>
         <div className="navBTN chooseFolder" onClick={() => TOGGLE_folders()} data-open={AREfoldersOpen}>
           {currLIST}
           <div className="navDROPDOWN">
@@ -111,6 +113,26 @@ export function Nav({
             <div className="xLINE"></div>
             <div className="xLINE second"></div>
           </div>
+        </div>
+      </div>
+      <div className="contentWRAP">
+        <div
+          className="navBTN display_TOGGLE"
+          onClick={() => {
+            SET_reverse(false);
+          }}
+          data-active={reverse === false}
+        >
+          Title
+        </div>
+        <div
+          className="navBTN display_TOGGLE"
+          onClick={() => {
+            SET_reverse(true);
+          }}
+          data-active={reverse === true}
+        >
+          Traslation
         </div>
       </div>
       <div className="search_WRAP mobile">

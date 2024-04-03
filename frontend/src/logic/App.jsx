@@ -17,6 +17,7 @@ export default function App() {
   const [vocabs, SET_vocabs] = useState([]);
   const [displayed_VOCABS, SET_displayedVOCABS] = useState([]);
   const [forSearch_VOCABS, SET_forSearchVocabs] = useState([]);
+  const [reverse, SET_reverse] = useState(false);
 
   const [toEdit_VOCAB, SET_toEditVOCAB] = useState(undefined);
   const [ISformOpen, SET_form] = useState(false);
@@ -105,6 +106,8 @@ export default function App() {
         handleSortChange={handleSortChange}
         handleSearchChange={handleSearchChange}
         searchTEXT={searchTEXT}
+        reverse={reverse}
+        SET_reverse={SET_reverse}
       />
       <Board
         TOGGLE_form={toggleForm}
@@ -117,6 +120,7 @@ export default function App() {
         SET_showAlert={SET_showAlert}
         SET_displayedVOCABS={SET_displayedVOCABS}
         highlightedVocab_ID={highlightedVocab_ID}
+        reverse={reverse}
       />
 
       <AnimatePresence>

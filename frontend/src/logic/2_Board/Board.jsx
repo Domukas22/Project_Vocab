@@ -18,6 +18,7 @@ function Vocab({
   SET_showAlert,
   SET_displayedVOCABS,
   highlightedVocab_ID,
+  reverse,
 }) {
   const [isOpen, SET_isOpen] = useState(false);
   const bottomRef = useRef(null);
@@ -145,14 +146,17 @@ function Vocab({
       data-highlight={vocab._id === highlightedVocab_ID}
     >
       <div className="top" onClick={TOGGLE_open}>
-        <h1 className="vocab_TEXT" dangerouslySetInnerHTML={{ __html: vocab.title }}></h1>
+        <h1 className="vocab_TEXT" dangerouslySetInnerHTML={{ __html: reverse ? vocab.translation : vocab.title }}></h1>
         <p className="order_NR" style={{ marginBottom: "auto" }}>
           {index}
         </p>
       </div>
       <div className="bottom" ref={bottomRef}>
         <div className="contentWRAP" data-id={vocab.id}>
-          <div className="vocab_TEXT tr" dangerouslySetInnerHTML={{ __html: vocab.translation }}></div>
+          <div
+            className="vocab_TEXT tr"
+            dangerouslySetInnerHTML={{ __html: reverse ? vocab.title : vocab.translation }}
+          ></div>
 
           {emptyText_REGEX.test(vocab.explanation) && (
             <div
@@ -186,6 +190,7 @@ export function Board({
   SET_showAlert,
   SET_displayedVOCABS,
   highlightedVocab_ID,
+  reverse,
 }) {
   if (loading && vocabs.length === 0) {
     return (
@@ -216,6 +221,7 @@ export function Board({
             SET_alertMSG={SET_alertMSG}
             SET_showAlert={SET_showAlert}
             highlightedVocab_ID={highlightedVocab_ID}
+            reverse={reverse}
           />
         );
       })}
