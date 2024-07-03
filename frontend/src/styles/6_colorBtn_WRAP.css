@@ -1,0 +1,43 @@
+/*  */
+/*  */
+/*  */
+
+.ColorBtn_WRAP {
+  width: 100%;
+  display: flex;
+  gap: 0.8rem;
+}
+
+.Color_BTN {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  padding: 0 3.2rem;
+  background-color: var(--bg_main);
+  border: var(--border_005);
+  border-radius: 100px;
+  padding: 1.2rem 2rem;
+
+  width: fit-content;
+
+  cursor: pointer;
+  transition: 100ms ease-in-out;
+}
+.Color_BTN[data-active="true"] {
+  background-color: var(--pink_bg);
+  color: var(--pink);
+}
+.Color_BTN._1[data-active="true"] {
+  background-color: var(--high_hover);
+  color: var(--high);
+}
+.Color_BTN._2[data-active="true"] {
+  background-color: var(--medium_hover);
+  color: var(--medium);
+}
+.Color_BTN._3[data-active="true"] {
+  background-color: var(--low_hover);
+  color: white;
+}

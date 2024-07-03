@@ -10,6 +10,7 @@ import { Nav } from "./1_Nav/Nav";
 import { LIST_vocabs } from "./DB";
 import { SORT_vocabs, FILTER_vocabs } from "./4_General/general";
 import { Alert } from "./4_General/Comps_general";
+import ColorBtn_WRAP from "./5_colorBtn/ColorBtn_WRAP";
 
 export default function App() {
   const [curr_LIST, SET_currLIST] = useState("German");
@@ -24,6 +25,7 @@ export default function App() {
   const [showAlert, SET_showAlert] = useState(false);
   const [alertMSG, SET_alertMSG] = useState("This is an alert text");
   const [highlightedVocab_ID, SET_highlightedVocabID] = useState("");
+  const [active_COLOR, SET_activeColor] = useState("2");
 
   const [loading, SET_loading] = useState(false);
   const [searchTEXT, SET_searchText] = useState("");
@@ -73,7 +75,9 @@ export default function App() {
     SET_loading(false);
   };
 
-  const HANDLE_colorChange = (color) => {};
+  useEffect(() => {
+    if (active_COLOR === "All") return SET_displayedVOCABS(vocabs);
+  }, [active_COLOR]);
 
   //////////////////////////////////////////////////////////////////////////////
 
@@ -111,7 +115,7 @@ export default function App() {
         reverse={reverse}
         SET_reverse={SET_reverse}
       />
-
+      <ColorBtn_WRAP vocabs={vocabs} active_COLOR={active_COLOR} SET_activeColor={SET_activeColor} />
       <Board
         TOGGLE_form={toggleForm}
         vocabs={displayed_VOCABS}

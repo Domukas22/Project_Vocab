@@ -8,6 +8,7 @@ import "./styles/2_board.css";
 import "./styles/3_form.css";
 import "./styles/4_btns.css";
 import "./styles/5_coloredText.css";
+import "./styles/6_colorBtn_WRAP.css";
 
 // import { terminal } from "virtual:terminal";
 
