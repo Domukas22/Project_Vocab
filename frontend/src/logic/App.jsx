@@ -1,6 +1,6 @@
 //
 // re write the displayed_VOCABS to use useEffect
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 import { Form } from "./3_Form/Form";
 import { Board } from "./2_Board/Board";
@@ -73,6 +73,8 @@ export default function App() {
     SET_loading(false);
   };
 
+  const HANDLE_colorChange = (color) => {};
+
   //////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
@@ -109,6 +111,7 @@ export default function App() {
         reverse={reverse}
         SET_reverse={SET_reverse}
       />
+
       <Board
         TOGGLE_form={toggleForm}
         vocabs={displayed_VOCABS}
@@ -122,7 +125,6 @@ export default function App() {
         highlightedVocab_ID={highlightedVocab_ID}
         reverse={reverse}
       />
-
       <AnimatePresence>
         {ISformOpen && (
           <motion.div
